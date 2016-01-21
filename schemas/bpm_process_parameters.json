@@ -1,0 +1,49 @@
+
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "A BPM Process definition",
+  "title": "BPM Process definition",
+  "type": "object",
+  "version": "0.1",
+  "properties": {
+    "pipPackages": {
+      "description": "A list of pip packages dependencies names",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "propertyId": "7287e9cb-ec66-45a5-abfb-3e011619f896"
+    },
+    "entryPoint": {
+      "type": "object",
+      "description": "The process should start by using this.",
+      "properties": {
+        "moduleName": {
+          "type": "string",
+          "description": "The name of the module",
+          "propertyId": "a8760bb1-f5c8-4426-9e43-e5e11a070981"
+        },
+        "functionName": {
+          "type": "string",
+          "description": "The name of the function to call",
+          "propertyId": "a8760bb1-f5c8-4426-9e43-e5e11a070981"
+        }
+      }
+    },
+    "globals": {
+      "description": "The global variables that is provided as input to the process",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "propertyId": "90c836ee-d154-47f4-832c-6e767cbc1883"
+    },
+    "runAs": {
+      "description": "The user to run the process as",
+      "type": "string",
+      "propertyId": "0fe69651-b912-4bd9-89ae-d1020b21fef9"
+    }
+  },
+  "namespace": "bpm",
+  "collection": "",
+  "schemaId": "e76afc2a-7159-48e4-a1ec-26a8af33c707"
+}

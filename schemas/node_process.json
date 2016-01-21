@@ -1,0 +1,56 @@
+
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "A BPM Process definition node",
+  "title": "BPM Process definition node",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties": {
+        "$ref": "mbe://node.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "$ref": "bpm://bpm_process_parameters.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "canStart": {
+          "description": "A list of the groups that are allowed to start these processes.",
+          "type": "array",
+          "items": {
+            "$ref": "mbe://type.json#/properties/objectId",
+            "refSchemaId": "5d3b8e21-adf3-4005-b73c-1fb63a46f399",
+            "propertyId": "7774173f-1948-4b61-8834-aaec70f2b050",
+            "objectId": "true"
+          },
+          "minItems": 1
+        },
+        "canStop": {
+          "description": "A list of the groups that are allowed to stop these processes.",
+          "type": "array",
+          "items": {
+            "$ref": "mbe://type.json#/properties/objectId",
+            "refSchemaId": "5d3b8e21-adf3-4005-b73c-1fb63a46f399",
+            "propertyId": "8ae1173b-6055-43f0-af8f-e3144e3b9a78",
+            "objectId": "true"
+          },
+          "minItems": 1
+        },
+        "folder": {
+          "description": "The location of the process",
+          "type": "string",
+          "propertyId": "c399f545-23a0-41bb-b8e1-20d8263c15d9"
+        }
+      }
+
+    }
+  ],
+  "namespace": "bpm",
+  "required": ["canStart", "canStop"],
+  "collection": "node",
+  "schemaId": "b8f7b679-bb6c-4ef9-af30-c50962dd8a54"
+}

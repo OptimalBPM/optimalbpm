@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "BPM Process result",
+  "title": "BPM Process result",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties": {
+        "$ref": "of://message.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "globals": {
+          "type": "object",
+          "description": "The global variables when the process finished",
+          "properties": {},
+          "additionalProperties": true,
+          "propertyId": "90c836ee-d154-47f4-832c-6e767cbc1883"
+        },
+        "result": {
+          "description": "The return value of the process",
+          "properties": {},
+          "additionalProperties": true,
+          "propertyId": "4a6d20f8-fd07-4f17-a86d-1b6e5b327733"
+        }
+      }
+    }
+  ],
+  "required": [
+    "globals",
+    "result"
+  ],
+  "namespace": "bpm",
+  "collection": "log",
+  "schemaId": "4ab55bc5-24f6-4325-8939-6143b3f1adf1"
+}

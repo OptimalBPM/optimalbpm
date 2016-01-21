@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "BPM Agent control message",
+  "title": "BPM Agent Control",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties": {
+        "$ref": "of://message.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "command": {
+          "description": "The command.",
+          "type": "string",
+          "enum": ["stop", "restart"],
+          "propertyId": "780acb41-20b3-4641-994a-c2354b062fe5"
+        },
+        "reason": {
+          "description": "The reason for sending the command.",
+          "type": "string",
+          "propertyId": "787d9699-84ad-49c7-9295-d76fca8ec7c6"
+        }
+      }
+    }
+  ],
+  "namespace": "bpm",
+  "required": ["command"],
+  "collection": "log",
+  "schemaId": "4487a7ca-2bc3-45b9-832f-41eaf05d0860"
+}

@@ -1,0 +1,227 @@
+{
+  "from": {
+    "title" : "from <i>%library%</i> import <i>%identifier%</i>",
+    "description": "A <b>from</b> statement causes a process to import a certain identifier.",
+    "parts": [
+      {
+        "kind": "reserved",
+        "values": ["from"]
+      },
+      {
+        "kind": "python-reference",
+        "key": "library",
+        "add": "from_modules"
+
+      },
+      {
+        "kind": "reserved",
+        "values": ["import"]
+      },
+      {
+        "kind": "python-reference",
+        "key": "identifier",
+        "add": "from_names"
+      },
+      {
+        "kind": "reserved",
+        "values": ["\n"]
+      }
+    ]
+  },
+  "import": {
+    "title" : "import <i>%identifier%</i>",
+    "description": "A <b>import</b> statement causes a process to import a module.",
+    "parts": [
+      {
+        "kind": "reserved",
+        "values": ["import"]
+      },
+      {
+        "kind": "python-reference",
+        "key": "identifier",
+        "add": "imports"
+      },
+      {
+        "kind": "reserved",
+        "values": ["\n"]
+      }
+
+    ]
+  },
+  "if": {
+    "title" : "if <i>%condition%</i> then",
+    "description": "The content of an <b>if</b> statement is executed it the condition is true.",
+    "parts": [
+      {
+        "kind": "reserved",
+        "values": ["if"]
+      },
+      {
+        "kind": "endswith",
+        "key": "condition",
+        "match": [[52, ":"], [4, "\n"]]
+      },
+      {
+        "kind": "reserved",
+        "values": [":", "\n"]
+      }
+    ]
+  },
+  "else": {
+    "title" : "Otherwise:",
+    "description": "An <b>else</b> statement is after if statements for its content to be executed if the condition is false.",
+    "parts": [
+      {
+        "kind": "reserved",
+        "values": ["else"]
+      },
+      {
+        "kind": "reserved",
+        "values": [":", "\n"]
+      }
+    ]
+  },
+  "def": {
+    "title" : "define function <b>%function_name%</b> (<i>%parameters%</i>)",
+    "description": "Defines a function.",
+    "parts": [
+      {
+        "kind": "reserved",
+        "values": ["def"]
+      },
+      {
+        "kind": "endswith",
+        "key": "function_name",
+        "add": "identifiers",
+        "match": [[52, "("]]
+      },
+      {
+        "kind": "reserved",
+        "values": ["("]
+      },
+      {
+        "kind": "endswith",
+        "key": "parameters",
+        "match": [[52, ")"],[52, ":"], [4, "\n"]]
+      },
+      {
+        "kind": "reserved",
+        "values": [")" , ":", "\n"]
+      }
+    ]
+  },
+  "print": {
+    "title" : "print <i>%string_value%</i> to standard output.",
+    "description": "Prints <b>else</b> a value to standard output of the process.",
+    "parts": [
+      {
+        "kind": "reserved",
+        "values": ["print", "("]
+      },
+      {
+        "kind": "endswith",
+        "key": "string_value",
+        "match": [[52, ")"], [4, "\n"]]
+      },
+      {
+        "kind": "reserved",
+        "values": [")","\n"]
+      }
+    ]
+  },
+  "for": {
+    "title" : "for each %iterator% in %collection%",
+    "description": "Executes it content once for each item in the collection.",
+    "parts": [
+      {
+        "kind": "reserved",
+        "values": ["for"]
+      },
+      {
+        "kind": "endswith",
+        "key": "iterator",
+        "match": [[1, "in"]]
+      },
+      {
+        "kind": "reserved",
+        "values": ["in"]
+      },
+      {
+        "kind": "endswith",
+        "key": "collection",
+        "match": [[52, ":"], [4, "\n"]]
+      },
+      {
+        "kind": "reserved",
+        "values": [":", "\n"]
+      }
+    ]
+  },
+  "while": {
+    "title" : "while %condition%",
+    "description": "Executes its as long as the condition is true. <b>Warning</b>, this can cause the process to go into an infinite loop and hang.",
+    "parts": [
+      {
+        "kind": "reserved",
+        "values": ["while"]
+      },
+      {
+        "kind": "endswith",
+        "key": "condition",
+        "match": [[52, ":"], [4, "\n"]]
+      },
+      {
+        "kind": "reserved",
+        "values": [":", "\n"]
+      }
+    ]
+  },
+  "send_message": {
+    "title" : "Send a message to someone",
+    "description": "Send a message",
+    "parts": [
+      {
+        "kind": "reserved",
+        "values": ["send_message"]
+      },
+      {
+        "kind": "reserved",
+        "values": ["("]
+      },
+      {
+        "kind": "endswith",
+        "key": "parameters",
+        "match": [[52, ")"],[4, "\n"]]
+      },
+      {
+        "kind": "reserved",
+        "values": [")","\n"]
+      }
+    ]
+  },
+
+  "@call": {
+    "title" : "Call <b>%functionName%</b><br /> with <i>%parameters%</i>",
+    "description": "Call a function with the provided parameters",
+    "parts": [
+      {
+        "kind": "python-reference",
+        "key": "functionName",
+        "add": "function"
+      },
+      {
+        "kind": "reserved",
+        "values": ["("]
+      },
+      {
+        "kind": "endswith",
+        "key": "parameters",
+        "match": [[52, ")"],[4, "\n"]]
+      },
+      {
+        "kind": "reserved",
+        "values": [")","\n"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+/.externalToolBuilders
+.project
+.pydevproject
+/.settings
+/.git
+/.idea
+*_out.*
+*.pyc
+*__pycache__*

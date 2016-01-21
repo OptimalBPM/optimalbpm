@@ -1,0 +1,35 @@
+
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Processes",
+  "title": "Processes",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties": {
+        "$ref": "mbe://node.json#/properties"
+      }
+    },
+
+    {
+      "properties": {
+        "defaultFolder": {
+          "description": "The default location for processes",
+          "type": "string",
+          "propertyId": "090c7655-7a9f-4be8-9ecd-00d210e7088d"
+        }
+      }
+    }
+  ],
+  "required": [
+    "name",
+    "createdWhen",
+    "schemaId",
+    "canRead",
+    "canWrite"
+  ],
+  "namespace": "bpm",
+  "collection": "node",
+  "schemaId": "688a51b8-c8e7-465f-8ec9-9ad132245143"
+}

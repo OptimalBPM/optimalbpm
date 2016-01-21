@@ -1,0 +1,43 @@
+
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "An agent",
+  "title": "Agent node",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties": {
+        "$ref": "mbe://node.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "$ref": "of://peer.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "repositoriesLocation": {
+          "description": "The parent folder of all source repositories.",
+          "type": "string"
+        },
+        "numberOfWorkers": {
+          "type": "number",
+          "description": "The number of worker processes that is used to execute business processes, default is 3."
+        }
+      }
+    }
+  ],
+  "required": [
+    "name",
+    "createdWhen",
+    "schemaId",
+    "canRead",
+    "canWrite",
+    "address"
+  ],
+  "namespace": "bpm",
+  "collection": "node",
+  "schemaId": "daf49a9d-b6e7-43f5-81c7-e5a76a2f1bb9"
+}

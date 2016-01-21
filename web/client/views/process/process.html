@@ -1,0 +1,52 @@
+<div id="process_available_row" class="row row_top">
+
+    <div class="col-md-1" ><span class="left_row_headings">Available<br/>commands</span></div>
+    <div class="col-md-4 col-lg-3 design_panel">Favorites:&nbsp;
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="true" title="Control statement to drag and drop into the process">
+                IF
+                <span class="caret"></span>
+            </button>
+    </div>
+    <div class="col-md-7 col-lg-8 design_panel">
+        <div class="pull-right">Available:&nbsp;<vertical-draggable-menu style="display: inline-block" columns="nodeManager.menuColumns" tree-options = "nodeManager.menuTreeOptions"> </vertical-draggable-menu>
+        </div>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-1"><span class="left_row_headings"><br/>Process<br/>design</span></div>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-7 design_panel">
+        <div id="processContainer" class="process-steps">
+            <schema-tree
+                    item-renderer='process/views/process/process_renderer.html'
+                    new-node-object-id="000000010000010001e64bff"
+                    node-manager="nodeManager"
+                    expander-position="right">
+            </schema-tree>
+
+        </div>
+        <button type="button" class="btn btn-success" ng-click="nodeManager.save()">Write</button>
+        <div class="process-info">Encoding: {{nodeManager.encoding}} <br/>Documentation:{{nodeManager.documentation}}
+        </div>
+    </div>
+
+    <div class="col-xs-6 col-md-5 col-lg-4 design_panel">
+        <!-- The schema editor, maps to the selected_* $scope variables in the controller -->
+        <h3 class="left_row_headings">Details</h3>
+
+        <form name="ngform"
+              sf-model="selected_data"
+              sf-form="selected_form"
+              sf-schema="selected_schema"
+              sf-options=""
+              ng-submit="nodeManager.doSubmit(selected_data)">
+
+        </form>
+        <div ng-model-options="" ng-repeat="alist in Object.keys($scope.lists)"> {{alist}}
+            <div ng-repeat="key in $scope.lists[alist]">* {{key}}</div>
+        </div>
+    </div>
+
+</div>

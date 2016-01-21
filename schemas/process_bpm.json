@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "BPM process instance",
+  "title": "BPM process instance",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties": {
+        "$ref": "of://process_instance.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "$ref": "bpm://bpm_process_parameters.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "processDefinitionId": {
+          "$ref": "mbe://type.json#/properties/objectId",
+          "description": "The objectId of the process definition of this instance.",
+          "propertyId": "e9487ec8-dfce-440a-a5d5-e65e89bc84aa",
+          "objectId": "true"
+        },
+        "spawnedBy": {
+          "type": "string",
+          "description": "The BPM user that spawned the process.",
+          "propertyId": "a4990fa1-78f8-4aa1-bbf3-6e4c9863bcc0"
+        }
+      }
+    }
+  ],
+  "namespace": "bpm",
+  "required": ["processDefinitionId", "spawnedBy"],
+  "collection": "process",
+  "schemaId": "59ff4df0-ecda-4631-98d9-31060c5c8642"
+}

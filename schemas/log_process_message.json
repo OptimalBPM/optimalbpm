@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Process log message",
+  "title": "Process log message",
+  "type": "object",
+  "version": "0.1",
+  "properties": {
+    "processId": {
+      "$ref": "mbe://type.json#/properties/objectId",
+      "description": "The object _id of the process, an object id.",
+      "propertyId": "e9b714fa-9f9f-4bd0-9500-3638ba2154e2",
+      "objectId": "true"
+    },
+    "message": {
+      "type": "string",
+      "description": "The message",
+      "propertyId": "efc52798-4639-495b-b462-90099cf18ff5"
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["info", "warning", "error"],
+      "description": "The log level",
+      "propertyId": "efc52798-4639-495b-b462-90099cf18ff5"
+    },
+    "createdWhen": {
+      "description": "The time the reported happened",
+      "type": "string",
+      "format": "date-time",
+      "propertyId": "3236ff1d-3d30-43c6-a06d-db29242afca8"
+    },
+    "schemaId": {
+      "description": "A reference to the schema to which this data adheres.",
+      "$ref": "mbe://type.json#/properties/uuid",
+      "propertyId": "b1b75292-10d4-42be-a438-cd4f9835cc0a"
+    }
+  },
+  "required": [
+    "processId",
+    "message",
+    "createdWhen",
+    "schemaId"
+  ],
+  "namespace": "bpm",
+  "collection": "log",
+  "schemaId": "5686821f-0a04-4c6d-8f3b-a1092712adf7"
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "BPM Process Command message",
+  "title": "BPM Process Command",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties": {
+        "$ref": "of://message.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "command": {
+          "description": "The command.",
+          "type": "string",
+          "enum": ["pause", "unpause", "stop", "kill"],
+          "propertyId": "6478eee0-31c0-457d-93ca-f524833967a4"
+        },
+        "reason": {
+          "description": "The reason for sending the command.",
+          "type": "string",
+          "propertyId": "787d9699-84ad-49c7-9295-d76fca8ec7c6"
+        }
+      }
+    }
+  ],
+  "namespace": "bpm",
+  "required": ["command"],
+  "collection": "log",
+  "schemaId": "8bd9a1f4-146e-4e78-8bfd-fedf01236330"
+}

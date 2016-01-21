@@ -1,0 +1,28 @@
+<div ui-tree="treeOptions" data-clone-enabled="true" data-nodrop-enabled="true" data-drag-delay="200">
+    <!-- The root of the tree -->
+
+    <div ui-tree-nodes="options"  ng-model="columns">
+        <div class="dropdown" style="display: inline" ng-repeat="currColumn in columns" ui-tree-node data-collapsed="!item.expanded">
+            <button ui-tree-handle data-nodrag class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="true" title="Control statement to drag and drop into the process">
+                <span style="font-family: 'optivetica_round_lt_std' !important; font-size: small;">{{currColumn.title}}</span>
+                <span data-nodrag class="caret"></span>
+            </button>
+            <ul ui-tree-nodes="" style="position: absolute" class="dropdown-menu .dropdown-menu-right" ng-model="currColumn.children">
+                <li ng-repeat='currentChild in currColumn.children' after-repeat="menuManager.initPopovers();" ui-tree-node>
+                    <a  ui-tree-handle data-html="true" data-toggle="popover" data-trigger="hover"
+                       title="{{menuManager.fixPopoverTitle(currentChild['title'])}}"
+                       data-placement="auto right"
+                       data-content="{{currentChild['description']}}<br /><span class='small'><i class='fa fa-hand-rock-o'><i>&nbsp;Drag and drop the item into the process</i>">
+                       <!-- TODO: Be able to not resort to setting style manually (OB1-147) -->
+                        <span style="font-family: 'optivetica_round_lt_std' !important; font-size: small;">{{currentChild['menuTitle'].toUpperCase()}}</span>
+                    </a>
+
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+
+</div>

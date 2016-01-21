@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Start BPM Process instance schema",
+  "title": "Start BPM Process message",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties": {
+        "$ref": "of://message.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "$ref": "bpm://bpm_process_parameters.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "reason": {
+          "type": "string",
+          "description": "The reason the process was started."
+        },
+        "processDefinitionId": {
+          "$ref": "mbe://type.json#/properties/objectId",
+          "description": "The objectId of the process definition of this instance.",
+          "propertyId": "e9487ec8-dfce-440a-a5d5-e65e89bc84aa",
+          "objectId": "true"
+        },
+        "processId": {
+          "$ref": "mbe://type.json#/properties/objectId",
+          "description": "The object _id of the process, an object id.",
+          "propertyId": "e9b714fa-9f9f-4bd0-9500-3638ba2154e2",
+          "objectId": "true"
+        }
+      }
+    }
+  ],
+  "required": ["processDefinitionId", "processId", "userId"],
+  "namespace": "bpm",
+  "collection": "log",
+  "schemaId": "bb442f6d-2095-4dbe-824f-fa12da6d53d4"
+}

@@ -1,0 +1,27 @@
+{
+  "keyword": {
+    "title": "keyword",
+    "type": "object",
+    "properties": {
+    }
+  },
+  "additionalProperties": true,
+  "assign": {
+    "title": "assignment",
+    "type": "object",
+    "properties": {
+    }
+  },
+  "call": {
+    "title": "call",
+    "type": "object",
+    "properties": {
+    }
+  },
+  "documentation": {
+    "title": "documentation",
+    "type": "object",
+    "properties": {
+    }
+  }
+}

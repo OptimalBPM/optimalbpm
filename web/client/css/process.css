@@ -1,0 +1,222 @@
+.available-menu-item {
+    font-family: "optivetica_round_lt_std" !important;
+    font-size: medium;
+}
+
+.blank-top {
+    display: none;
+
+}
+.blank-bottom {
+    display: none;
+
+}
+
+.blank-left {
+    display: none;
+
+}
+
+.blank-indent {
+    padding-left: 10px !important;
+}
+.blank-item {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom-style: dashed;
+    border-bottom-width: 1px;
+    border-bottom-right-radius: 8px;
+    border-bottom-color: #f87c00;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.loop-indent {
+    padding-left: 5px !important;
+}
+.loop-top {
+    width: 10px;
+    background-image: url("../images/loop_top.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: 2% 50%;
+
+    margin-top: 5px;
+}
+
+.loop-item {
+    display: block;
+    height: 100%;
+    width: auto;
+    background-image: url("../images/loop_mid.png");
+    background-size: 10px 100%;
+    background-repeat: no-repeat;
+    background-position-x: 0px;
+
+    padding-left: 5px;
+    margin-left: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+}
+.loop-bottom {
+    width: 10px;
+    background-image: url("../images/loop_bottom.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: 46% 50%;
+}
+
+.if-indent {
+    padding-left: 5px !important;
+}
+.if-top {
+    height: 1px;
+}
+
+.if-item {
+    display: block;
+    height: 100%;
+    width: auto;
+    background-image: url("../images/if-mid.png");
+    background-size: 5px 100%;
+    background-repeat: no-repeat;
+    background-position-x: 0px;
+
+    padding-left: 5px;
+    margin-left: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    margin-top: 5px;
+}
+.if-bottom {
+    height: 1px;
+}
+
+.if-indent {
+    padding-left: 5px !important;
+}
+.else-indent {
+    padding-left: 5px !important;
+}
+.else-top {
+    width: 18px;
+    height: 18px;
+    background-image: url("../images/else_top.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: 2% 50%;
+    margin-top: -2px;
+    margin-left: -2px;
+}
+
+.else-item {
+    display: block;
+    height: 100%;
+    width: auto;
+    background-image: url("../images/if-mid.png");
+    background-size: 5px 100%;
+    background-repeat: no-repeat;
+    background-position-x: 0px;
+
+    padding-left: 5px;
+    margin-left: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    margin-top: -2px;
+}
+.else-bottom {
+    height: 1px;
+}
+
+.else-indent {
+    padding-left: 5px !important;
+}
+
+
+.try-top {
+    width: 12px;
+    height: 12px;
+    background-image: url("../images/try_top.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: 0px, 0px;
+
+}
+
+.try-item {
+    display: block;
+    height: 100%;
+    width: auto;
+    background-image: url("../images/try_mid_line.png");
+    background-size:  1px 100%;
+    background-repeat: no-repeat;
+    background-position-x: 0px;
+    background-position-y: top;
+    padding-left: 5px;
+    margin-left: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    margin-top: 0px;
+}
+.try-bottom {
+    width: 12px;
+    height: 12px;
+    background-image: url("../images/try_bottom.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: 0px,0px;
+}
+
+.try-indent {
+    padding-left: 1px !important;
+}
+
+
+.except-top {
+    width: 12px;
+    height: 12px;
+    background-image: url("../images/try_top.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: 0px, 0px;
+    margin-top: 1px;
+}
+
+.except-item {
+    display: block;
+    height: 100%;
+    width: auto;
+    background-image: url("../images/try_mid_line.png");
+    background-size:  1px 100%;
+    background-repeat: no-repeat;
+    background-position-x: 0px;
+    background-position-y: top;
+    padding-left: 5px;
+    margin-left: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    margin-top: 0px;
+}
+.except-bottom {
+    width: 12px;
+    height: 12px;
+    background-image: url("../images/try_bottom.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: 0px,0px;
+}
+
+.except-indent {
+    padding-left: 5px !important;
+}
+
+.try_except_icons {
+    vertical-align: top;
+    margin-top: 1px;
+    margin-left: 0px;
+}
