@@ -1,3 +1,0 @@
-"""
-    Initialization for MBE tests.
-"""
