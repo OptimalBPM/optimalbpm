@@ -1,0 +1,290 @@
+{
+  "from": {
+    "meta": {
+      "title": "from <i>%library%</i> import <i>%reference%</i>",
+      "description": "A <b>from</b> statement causes a process to import a certain identifier."
+    },
+    "parts": [
+      {
+        "kind": "keyword",
+        "values": [
+          "from"
+        ]
+      },
+      {
+        "kind": "python-reference",
+        "key": "library",
+        "add": "from_modules"
+      },
+      {
+        "kind": "keyword",
+        "values": [
+          "import"
+        ]
+      },
+      {
+        "kind": "python-reference",
+        "key": "reference",
+        "add": "from_names"
+      }
+    ]
+  },
+  "import": {
+    "meta": {
+      "title": "import <i>%reference%</i>",
+      "description": "A <b>import</b> statement causes a process to import a module."
+    },
+    "parts": [
+      {
+        "kind": "keyword",
+        "values": [
+          "import"
+        ]
+      },
+      {
+        "kind": "python-reference",
+        "key": "reference",
+        "add": "imports"
+      }
+    ]
+  },
+  "if": {
+    "meta": {
+      "title": "if <i>%condition%</i> then",
+      "description": "The content of an <b>if</b> statement is executed if the condition is true."
+    },
+    "parts": [
+      {
+        "kind": "keyword",
+        "values": [
+          "if"
+        ]
+      },
+      {
+        "kind": "expression",
+        "key": "condition"
+      },
+      {
+        "kind": "block"
+      }
+    ]
+  },
+  "elif": {
+    "meta": {
+      "title": "else if <i>%condition%</i> then",
+      "description": "The content of an <b>else if</b> statement is executed it the previous condition wasn't true, but his is."
+    },
+    "required_precursor": "if",
+    "parts": [
+      {
+        "kind": "keyword",
+        "values": [
+          "elif"
+        ]
+      },
+      {
+        "kind": "expression",
+        "key": "condition"
+      },
+      {
+        "kind": "block"
+      }
+    ]
+  },
+  "else": {
+    "meta": {
+      "title": "else",
+      "description": "The content of an <b>else</b> is executed if all the other conditions are false."
+    },
+    "required_precursor": [
+      "if",
+      "elif"
+    ],
+    "parts": [
+      {
+        "kind": "keyword",
+        "values": [
+          "else"
+        ]
+      },
+      {
+        "kind": "block"
+      }
+    ]
+  },
+  "def": {
+    "meta": {
+      "title": "define function <i>%function_name%</i> (<i>%parameters%</i>)",
+      "description": "Creates a function that with the functionality contained in the block."
+    },
+    "is_definition": true,
+    "parts": [
+      {
+        "kind": "keyword",
+        "values": [
+          "def"
+        ]
+      },
+      {
+        "kind": "python-reference",
+        "key": "function_name"
+      },
+      {
+        "kind": "parameters",
+        "key": "parameters"
+      },
+      {
+        "kind": "block"
+      }
+    ]
+  },
+  "try": {
+    "meta": {
+      "title": "<img class='try_except_icons' width='15px' height='15px' src='process/images/try_mid_mid.png'></img>",
+      "description": "Tries to execute its content and passes any errors to the following <b>except</b>-statement.<br /><div class='alert alert-danger'>Warning: If there is no following <b>except</b>-statement, the errors will be suppressed.</div>"
+    },
+    "expanded": true,
+    "parts": [
+      {
+        "kind": "keyword",
+        "values": [
+          "try"
+        ]
+      },
+      {
+        "kind": "block"
+      }
+    ]
+  },
+  "except": {
+    "meta": {
+      "title": "<img class='try_except_icons' width='15px' height='15px' src='/images/except_mid_mid.png'></img>",
+      "description": "If an error occured in the previous <b>try</b>-statement, the content will be executed."
+    },
+    "required_precursor": "try",
+    "expanded": true,
+    "parts": [
+      {
+        "kind": "keyword",
+        "values": [
+          "except"
+        ]
+      },
+      {
+        "kind": "python-reference",
+        "key": "exception_class"
+      },
+      {
+        "kind": "keyword",
+        "values": [
+          "as"
+        ]
+      },
+      {
+        "kind": "python-reference",
+        "key": "exception_variable"
+      },
+      {
+        "kind": "block"
+      }
+    ]
+  },
+  "for": {
+    "meta": {
+      "title": "for each <i>%item%</i> in <i>%collection%</i>",
+      "description": "Executes it content once for each item in the collection."
+    },
+    "parts": [
+      {
+        "kind": "keyword",
+        "values": [
+          "for"
+        ]
+      },
+      {
+        "kind": "python-reference",
+        "key": "item"
+      },
+      {
+        "kind": "keyword",
+        "values": [
+          "in"
+        ]
+      },
+      {
+        "kind": "expression",
+        "key": "collection"
+      },
+      {
+        "kind": "block"
+      }
+    ]
+  },
+  "while": {
+    "meta": {
+      "title": "while <i>%condition%</i>",
+      "description": "Executes its content as long as the condition is true.<br /><div class='alert alert-danger'> <b>Warning</b>, this can cause the process to go into an infinite loop and hang.</div>"
+    },
+    "parts": [
+      {
+        "kind": "keyword",
+        "values": [
+          "while"
+        ]
+      },
+      {
+        "kind": "expression",
+        "key": "condition"
+      },
+      {
+        "kind": "block"
+      }
+    ]
+  },
+  "@assign": {
+    "meta": {
+      "title": "<i>%assignments%</i>=<b>%parameters%</b>",
+      "description": "Assigns a value to the specified variable."
+    }
+  },
+  "@call": {
+    "meta": {
+      "title": "Call <i>%functionName%</i><br /> with <i>%parameters%</i>",
+      "description": "Call a function with the provided parameters"
+    },
+    "parts": [
+      {
+        "kind": "python-reference",
+        "key": "functionName",
+        "add": "function"
+      },
+      {
+        "kind": "keyword",
+        "values": [
+          "("
+        ]
+      },
+      {
+        "kind": "endswith",
+        "key": "parameters",
+        "match": [
+          [
+            52,
+            ")"
+          ],
+          [
+            4,
+            "\n"
+          ]
+        ]
+      },
+      {
+        "kind": "keyword",
+        "values": [
+          ")",
+          "\n"
+        ]
+      }
+    ]
+  }
+}
