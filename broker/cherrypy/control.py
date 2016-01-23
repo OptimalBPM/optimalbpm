@@ -8,8 +8,8 @@ import cherrypy
 from mbe.cherrypy import aop_check_session
 from mbe.constants import object_id_right_admin_everything
 from mbe.groups import has_right
-from optimalbpm.lib.control import Control
-from optimalbpm.lib.messaging.factory import start_process_message
+from optimalbpm.broker.control import Control
+from optimalbpm.broker.messaging.factory import start_process_message
 
 from of.broker.globals import states
 
@@ -27,9 +27,9 @@ class CherryPyControl(object):
 
     states = None
 
-    def __init__(self, _broker_object):
-        self._control = Control(_broker_object.database_access, _broker_object.node._node, _broker_object.monitor.queue, _broker_object.stop_broker,
-                                              _broker_object.address, _broker_object.process_id)
+    def __init__(self, _root_object):
+        self._control = Control(_root_object.database_access, _root_object.node._node, _root_object.monitor.queue, _root_object.stop_broker,
+                                _root_object.address, _root_object.process_id)
 
 
     @cherrypy.expose

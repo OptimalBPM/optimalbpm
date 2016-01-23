@@ -93,8 +93,9 @@ def before_feature(context, feature):
 
 def after_feature(context, feature):
     print("After feature " + feature.name + ", stopping broker.")
-    context.sender.close(code=GOING_AWAY, reason="Close sender")
-    context.receiver.close(code=GOING_AWAY, reason="Close receiver")
+
     if feature.name in ["Process Management", "Process definition management API", "Message broker"]:
+        context.sender.close(code=GOING_AWAY, reason="Close sender")
+        context.receiver.close(code=GOING_AWAY, reason="Close receiver")
         context.monitor.stop()
         time.sleep(.1)

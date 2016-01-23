@@ -6,7 +6,7 @@ import threading
 import time
 
 from ws4py.client.threadedclient import WebSocketClient
-from optimalbpm.messaging.constants import AGENT_SHUTTING_DOWN, AGENT_RESTARTING
+from optimalbpm.broker.messaging.constants import AGENT_SHUTTING_DOWN, AGENT_RESTARTING
 
 from of.common.messaging.websocket import BPMWebSocket
 import of.common.messaging.websocket

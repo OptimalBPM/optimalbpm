@@ -80,12 +80,16 @@
       ]
 
   },
-  "broker": {
+  "hooks": {
     "hooks_module": "hooks_broker"
   },
+
   "namespaces": {
-
-
-
+    "bpm": {
+      "meta": {
+        "description": "Optimal BPM",
+        "title": "Optimal BPM"
+      }
+    }
   }
 }
