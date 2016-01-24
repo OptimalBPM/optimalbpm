@@ -28,7 +28,7 @@ from optimalbpm.agent.lib.messaging.websocket import AgentWebSocket
 from optimalbpm.agent.lib.supervisor.handler import WorkerSupervisor
 from optimalbpm import run_agent
 from of.common.internal import load_settings, register_signals
-from of.common.messaging.factory import store_system_process_document, \
+from of.common.messaging.factory import store_process_system_document, \
     log_process_state_message
 from of.common.messaging.utils import register_at_broker
 from of.common.queue.monitor import Monitor
@@ -36,7 +36,7 @@ from of.common.queue.monitor import Monitor
 from of.schemas.constants import zero_object_id
 from of.schemas.validation import of_uri_handler, of_schema_folder
 import of.common.messaging.websocket
-
+import optimalbpm.schemas.constants
 
 
 __author__ = "Nicklas Borjesson"
@@ -227,7 +227,7 @@ def start_agent():
 
     print(_make_log_prefix() + "Register agent system process")
     _control_monitor.handler.message_monitor.queue.put(
-        [None, store_system_process_document(_process_id=_process_id,
+        [None, store_process_system_document(_process_id=_process_id,
                                              _name="Agent instance(" + _address + ")")])
     print(_make_log_prefix() + "Log agent system state")
     _control_monitor.handler.message_monitor.queue.put([None,

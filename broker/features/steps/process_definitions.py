@@ -2,7 +2,6 @@ import copy
 
 from behave import *
 from nose.tools.trivial import ok_
-from optimalbpm.schemas.constants import schema_id_node_process
 
 use_step_matcher("re")
 
@@ -18,8 +17,7 @@ def step_impl(context):
         "name": "Test_Process_definition",
         "runAs": "TestUser",
         "pipPackages": ["lxml"],
-
-        "schemaId": schema_id_node_process,
+        "schemaRef": "bpm://node_process.json",
         "createdWhen": "2014-11-13T01:00:00+00:00",
         "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],
         "canWrite": [
@@ -79,7 +77,6 @@ def step_impl(context):
         ok_(False, "Failed to load process definition, differing result.")
     else:
         ok_(True)
-
 
 
 @given("a process definition is deleted")

@@ -33,6 +33,5 @@
   ],
   "namespace": "bpm",
   "required": ["processDefinitionId", "spawnedBy"],
-  "collection": "process",
-  "schemaId": "59ff4df0-ecda-4631-98d9-31060c5c8642"
+  "collection": "process"
 }

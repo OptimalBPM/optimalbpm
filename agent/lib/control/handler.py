@@ -5,7 +5,7 @@ import threading
 
 
 from of.common.queue.handler import Handler
-from optimalbpm.schemas.constants import schema_id_message_agent_control
+
 
 __author__ = 'Nicklas Börjesson'
 
@@ -45,7 +45,7 @@ class ControlHandler(Handler):
         self.address = _address
 
         self.schema_id__handler = {
-            schema_id_message_agent_control: self.handle_agent_control_message
+            "bpm://message_agent_control.json": self.handle_agent_control_message
         }
         self.worker_monitor = _worker_monitor
         self.message_monitor = _message_monitor
@@ -97,7 +97,7 @@ class ControlHandler(Handler):
         print(self.log_prefix + "Handling message : " + str(_message_data))
 
         try:
-            _schema_id = _message_data["schemaId"]
+            _schema_id = _message_data["schemaRef"]
         except KeyError:
             self.handle_error(self.log_prefix + "No schema id found in message.")
             return

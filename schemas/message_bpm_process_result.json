@@ -33,6 +33,5 @@
     "result"
   ],
   "namespace": "bpm",
-  "collection": "log",
-  "schemaId": "4ab55bc5-24f6-4325-8939-6143b3f1adf1"
+  "collection": "log"
 }

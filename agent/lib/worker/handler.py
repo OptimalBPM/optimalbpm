@@ -19,9 +19,7 @@ from optimalbpm.broker.messaging.factory import store_bpm_process_instance_messa
     message_bpm_process_result, log_process_message
 from of.common.messaging.utils import message_is_none
 from of.common.queue.handler import Handler
-from of.schemas.constants import schema_id_message
-from optimalbpm.schemas.constants import schema_id_message_bpm_process_start, schema_id_message_bpm_process_command, \
-    schema_id_message_worker_process_command
+
 
 __author__ = 'Nicklas Borjesson'
 
@@ -118,7 +116,7 @@ class WorkerHandler(Handler):
         _message_data = _message
         print(self.log_prefix + "Worker process got a message:" + str(_message_data))
 
-        if _message_data["schemaId"] == schema_id_message_bpm_process_start:
+        if _message_data["schemaRef"] == "bpm://message_bpm_process_start.json":
             # The message is a process start message,start a process.
             if self.job_running:
                 # If the worker has a job currently running, reply with an error message and do nothing
@@ -130,7 +128,7 @@ class WorkerHandler(Handler):
                 print(self.log_prefix + "Starting BPM process")
                 self.start_bpm_process(_message=_message_data)
 
-        elif _message_data["schemaId"] == schema_id_message_bpm_process_command:
+        elif _message_data["schemaRef"] == "bpm://message_bpm_process_command.json":
             # The message is a command to the bpm process
             print(self.log_prefix + "Got a BPM process control message:" + _message_data["command"])
             if _message_data["command"] == "stop":
@@ -142,7 +140,7 @@ class WorkerHandler(Handler):
                 self.bpm_process_thread.terminated = True
                 # TODO: Implement "pause" (OB1-140)
 
-        elif _message_data["schemaId"] == schema_id_message_worker_process_command:
+        elif _message_data["schemaRef"] == "bpm://message_worker_process_command.json":
             # The message is a command to the actual worker process
             if _message_data["command"] == "stop":
                 # Told to stop the worker. Stopping process.
@@ -164,7 +162,7 @@ class WorkerHandler(Handler):
             else:
                 print(self.log_prefix + "Unhandled command " + _message_data["command"])
 
-        elif _message_data["schemaId"] == schema_id_message:
+        elif _message_data["schemaRef"] == "of://message":
             #: TODO: Figure out if processes should just ever get general messages, and if so, how to handle?(OB1-141)
             self.message = _message_data
             print(self.log_prefix + "Got a message:" + self.message)
@@ -563,6 +561,6 @@ class WorkerHandlerMockup(WorkerHandler):
         :param _message: A message
         """
         _message_data = _message
-        if _message_data["schemaId"] == schema_id_message:
+        if _message_data["schemaRef"] == "of://message.json":
             self.message = _message_data
             print(self.log_prefix + "Got this data:" + str(_message_data))

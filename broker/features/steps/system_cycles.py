@@ -49,7 +49,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    _processes = call_api(_url="https://127.0.0.1:8080/control/get_processes",
+    _processes = call_api(_url="https://127.0.0.1:8080/admin/control/get_processes",
              _session_id=context.session["session_id"],
              _data={}
              )
@@ -67,7 +67,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    call_api(_url="https://127.0.0.1:8080/control/agent_control",
+    call_api(_url="https://127.0.0.1:8080/admin/control/agent_control",
              _session_id=context.session["session_id"],
              _data={"address": "agent01", "command": "stop", "reason": "Testing to stop an Agent."}
              )

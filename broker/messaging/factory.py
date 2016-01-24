@@ -5,9 +5,7 @@ Use these function instead of building messages manually to follow changes.
 
 import datetime
 import os
-from optimalbpm.schemas.constants import schema_id_message_worker_process_command, schema_id_message_agent_control, \
-    schema_id_message_bpm_process_command, schema_id_message_bpm_process_result, schema_id_log_process_message, \
-    schema_id_bpm_process_instance, schema_id_message_bpm_process_start
+
 
 if os.name != "nt":
     import pwd
@@ -17,7 +15,6 @@ import socket
 from bson.objectid import ObjectId
 
 
-from of.schemas.constants import schema_id_message_error, schema_id_log_progression
 
 __author__ = 'Nicklas Borjesson'
 
@@ -42,7 +39,7 @@ def start_process_message(_user_id, _process_definition_id, _destination, _globa
         "processId": str(ObjectId()),
         "reason": _reason,
         "messageId": _message_id,
-        "schemaId": schema_id_message_bpm_process_start
+        "schemaRef": "bpm://message_bpm_process_start.json"
     }
     if _source_process_id:
         _process_message["sourceProcessId"] = _source_process_id
@@ -62,7 +59,7 @@ def store_bpm_process_instance_message(_start_message, _worker_process_id):
         "spawnedBy": _start_message["userId"],
         "spawnedWhen": str(datetime.datetime.utcnow()),
         "processDefinitionId": _start_message["processDefinitionId"],
-        "schemaId": schema_id_bpm_process_instance
+        "schemaRef": "bpm://process_bpm.json"
     }
 
     if "entryPoint" in _start_message:
@@ -85,7 +82,7 @@ def log_process_message(_message, _process_id, _kind):
         "kind": _kind,
         "processId": _process_id,
         "createdWhen": str(datetime.datetime.utcnow()),
-        "schemaId": schema_id_log_process_message
+        "schemaRef": "bpm://log_process_message.json"
     }
 
 
@@ -103,7 +100,7 @@ def log_progress_message(_process_id, _progression_id, _absolute, _change, _user
         "processId": _process_id,
         "progressionId": _progression_id,
         "userId": _user_id,
-        "schemaId": schema_id_log_progression
+        "schemaRef": "of://log_progression.json"
     }
     if _absolute:
         _struct["absolute"] = _absolute
@@ -126,7 +123,7 @@ def message_bpm_process_result(_start_message, _globals, _process_id, _result):
         "sourceProcessId": _process_id,
         "source": _start_message["destination"],
         "createdWhen": str(datetime.datetime.utcnow()),
-        "schemaId": schema_id_message_bpm_process_result
+        "schemaRef": "bpm://message_bpm_process_result.json"
     }
     if "sourceProcessId" in _start_message:
         _result["destinationProcessId"] = _start_message["sourceProcessId"]
@@ -148,7 +145,7 @@ def bpm_process_control(_destination, _destination_process_id, _command, _reason
         "source": _source,
         "sourceProcessId": _source_process_id,
         "userId": _user_id,
-        "schemaId": schema_id_message_bpm_process_command
+        "schemaRef": "bpm://message_bpm_process_command.json"
     }
 
 
@@ -166,7 +163,7 @@ def worker_process_control(_destination, _destination_process_id, _command, _rea
         "source": _source,
         "sourceProcessId": _source_process_id,
         "userId": _user_id,
-        "schemaId": schema_id_message_worker_process_command
+        "schemaRef": "bpm://message_worker_process_command.json"
     }
 
 
@@ -184,5 +181,5 @@ def agent_control(_destination, _destination_process_id, _command, _reason, _mes
         "source": _source,
         "sourceProcessId": _source_process_id,
         "userId": _user_id,
-        "schemaId": schema_id_message_agent_control
+        "schemaRef": "bpm://message_agent_control.json"
     }

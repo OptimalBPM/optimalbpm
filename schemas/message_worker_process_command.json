@@ -29,12 +29,12 @@
   "required": [
     "name",
     "createdWhen",
-    "schemaId",
+    "schemaRef",
     "canRead",
     "canWrite",
     "command"
   ],
   "namespace": "bpm",
   "collection": "log",
-  "schemaId": "c1d71a36-2ac0-42fd-bca6-5cf0987a9f76"
+  "schemaRef": "c1d71a36-2ac0-42fd-bca6-5cf0987a9f76"
 }

@@ -11,7 +11,6 @@ from of.common.logging import BPMLogging
 from of.schemas.constants import zero_object_id
 from of.broker.lib.repositories import Repositories
 from optimalbpm.broker.messaging.factory import agent_control
-from optimalbpm.schemas.constants import schema_id_node_process
 
 __author__ = 'Nicklas Borjesson'
 
@@ -64,8 +63,8 @@ class Control:
         :param _user: A user instance
         :return: A resulting id
         """
-        if "schemaId" in _process_definition and _process_definition[
-                "schemaId"] == schema_id_node_process:
+        if "schemaRef" in _process_definition and _process_definition[
+                "schemaRef"] == "bpm://node_process.json":
 
             _init_repository = "_id" not in _process_definition
             _result_id = self.node.save(_process_definition, _user)
@@ -75,7 +74,7 @@ class Control:
 
                 # self.repositories.init_repository(_result_id)
         else:
-            raise Exception("save_process_definition: Missing or wrong schemaId for process definition data.")
+            raise Exception("save_process_definition: Missing or wrong schemaRef for process definition data.")
         return _result_id
 
     def load_process_definition(self, _process_definition_id, _user):

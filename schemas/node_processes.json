@@ -25,11 +25,10 @@
   "required": [
     "name",
     "createdWhen",
-    "schemaId",
+    "schemaRef",
     "canRead",
     "canWrite"
   ],
   "namespace": "bpm",
-  "collection": "node",
-  "schemaId": "688a51b8-c8e7-465f-8ec9-9ad132245143"
+  "collection": "node"
 }

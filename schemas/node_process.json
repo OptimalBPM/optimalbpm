@@ -23,7 +23,7 @@
           "type": "array",
           "items": {
             "$ref": "mbe://type.json#/properties/objectId",
-            "refSchemaId": "5d3b8e21-adf3-4005-b73c-1fb63a46f399",
+            "refSchemaRef": "mbe://group.json",
             "propertyId": "7774173f-1948-4b61-8834-aaec70f2b050",
             "objectId": "true"
           },
@@ -34,7 +34,7 @@
           "type": "array",
           "items": {
             "$ref": "mbe://type.json#/properties/objectId",
-            "refSchemaId": "5d3b8e21-adf3-4005-b73c-1fb63a46f399",
+            "refSchemaRef": "mbe://group.json",
             "propertyId": "8ae1173b-6055-43f0-af8f-e3144e3b9a78",
             "objectId": "true"
           },
@@ -51,6 +51,5 @@
   ],
   "namespace": "bpm",
   "required": ["canStart", "canStop"],
-  "collection": "node",
-  "schemaId": "b8f7b679-bb6c-4ef9-af30-c50962dd8a54"
+  "collection": "node"
 }

@@ -6,7 +6,7 @@
     "description": "Test process 1",
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "folder": "{test_processes_folder}/optimalbpm/processes/test_process_1",
-    "schemaId": "b8f7b679-bb6c-4ef9-af30-c50962dd8a54",
+    "schemaRef": "bpm://node_process.json",
     "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],
     "canWrite": [
       "000000010000010001e64c28",
@@ -15,7 +15,7 @@
     "canStart": ["000000010000010001e64c28"],
     "canStop": ["000000010000010001e64c28"],
     "allowedChildTypes": [
-      "b8f7b679-bb6c-4ef9-af30-c50962dd8a54"
+      "bpm://node_process.json"
     ]
   }
 ]

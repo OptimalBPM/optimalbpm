@@ -8,8 +8,6 @@ from nose.tools.trivial import ok_
 from of.common.messaging.factory import log_process_state_message
 
 from optimalbpm.broker.messaging.factory import start_process_message
-from optimalbpm.schemas.constants import schema_id_message_bpm_process_start, schema_id_bpm_process_instance, \
-    schema_id_message_bpm_process_result
 
 use_step_matcher("re")
 
@@ -22,7 +20,7 @@ def getNextMessageId():
 
 def on_destination_process_control_message(web_socket, message):
     print("\non_destination_process_control_message: " + str(message))
-    if message['schemaId'] == schema_id_message_bpm_process_start:
+    if message['schemaRef'] == "bpm://message_bpm_process_start.json":
         # This is the first start process, respond with process instance
         web_socket.context.process_id = message['processId']
         web_socket.received_message(json.dumps(
@@ -32,7 +30,7 @@ def on_destination_process_control_message(web_socket, message):
                 "spawnedWhen": str(datetime.datetime.utcnow()),
                 "name": "Test_process_name",
                 "processDefinitionId": message["processDefinitionId"],
-                "schemaId": schema_id_bpm_process_instance
+                "schemaRef": "bpm://process_bpm.json"
             })
         )
 
@@ -47,7 +45,7 @@ def on_destination_process_control_message(web_socket, message):
             {
                 "destination": "source_peer" ,
                 "processId": web_socket.context.process_id,
-                "schemaId": schema_id_message_bpm_process_result,
+                "schemaRef": "bpm://message_bpm_process_result.json",
                 "sourceProcessId": web_socket.context.process_id,
                 "messageId": getNextMessageId(),
                 "source": "destination_peer",
@@ -58,7 +56,7 @@ def on_destination_process_control_message(web_socket, message):
 
 def on_source_process_control_message(web_socket, message):
     print("\non_source_process_control_message: " + str(message))
-    if message['schemaId'] == schema_id_message_bpm_process_result:
+    if message['schemaRef'] == "bpm://message_bpm_process_result.json":
         web_socket.context.tests_ended = time.perf_counter()
         web_socket.context.process_result = message
 
@@ -91,7 +89,7 @@ def step_impl(context):
     :type context behave.runner.Context
     """
 
-    ok_(context.receiver.message['schemaId'] == 'bb442f6d-2095-4dbe-824f-fa12da6d53d4')
+    ok_(context.receiver.message['schemaRef'] == 'bpm://message_bpm_process_start.json')
 
 
 @step("the state must become (?P<process_state>.+)")

@@ -7,7 +7,6 @@ import logging
 from of.common.messaging.factory import reply_with_error_message
 from of.common.messaging.handler import WebSocketHandler
 from optimalbpm.broker.messaging.constants import AGENT_SHUTTING_DOWN
-from optimalbpm.schemas.constants import schema_id_message_worker_process_command
 
 __author__ = 'Nicklas Börjesson'
 
@@ -31,7 +30,7 @@ class AgentWebSocketHandler(WebSocketHandler):
 
     def __init__(self, _process_id, _peers, _schema_tools, _address, _broker_address):
         """
-        Initialize the class, most significantly the schemaId category to function short cut map
+        Initialize the class, most significantly the schemaRef category to function short cut map
         :param _process_id: The processId of the agent
         :param _peers: A dict holding the peers
         :param _schema_tools: An SchemaTools instance for validation
@@ -59,7 +58,7 @@ class AgentWebSocketHandler(WebSocketHandler):
         """
         self.schema_tools.validate(_message_data)
         # TODO: Should this verify that this is from the broker websocket?? (PROD-20)
-        if _message_data["schemaId"] == schema_id_message_worker_process_command:
+        if _message_data["schemaRef"] == "bpm://message_worker_process_command.json":
             self.process_handler.forward_message(_message_data)
         else:
             self.control_queue.put(_message_data)

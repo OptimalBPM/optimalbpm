@@ -32,12 +32,11 @@
   "required": [
     "name",
     "createdWhen",
-    "schemaId",
+    "schemaRef",
     "canRead",
     "canWrite",
     "address"
   ],
   "namespace": "bpm",
-  "collection": "node",
-  "schemaId": "daf49a9d-b6e7-43f5-81c7-e5a76a2f1bb9"
+  "collection": "node"
 }

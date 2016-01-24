@@ -38,6 +38,5 @@
   ],
   "required": ["processDefinitionId", "processId", "userId"],
   "namespace": "bpm",
-  "collection": "log",
-  "schemaId": "bb442f6d-2095-4dbe-824f-fa12da6d53d4"
+  "collection": "log"
 }

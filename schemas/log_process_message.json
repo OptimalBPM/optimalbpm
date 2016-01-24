@@ -28,9 +28,10 @@
       "format": "date-time",
       "propertyId": "3236ff1d-3d30-43c6-a06d-db29242afca8"
     },
-    "schemaId": {
+    "schemaRef": {
       "description": "A reference to the schema to which this data adheres.",
-      "$ref": "mbe://type.json#/properties/uuid",
+      "type": "string",
+      "format": "uri",
       "propertyId": "b1b75292-10d4-42be-a438-cd4f9835cc0a"
     }
   },
@@ -38,9 +39,9 @@
     "processId",
     "message",
     "createdWhen",
-    "schemaId"
+    "schemaRef"
   ],
   "namespace": "bpm",
-  "collection": "log",
-  "schemaId": "5686821f-0a04-4c6d-8f3b-a1092712adf7"
+  "collection": "log"
+
 }

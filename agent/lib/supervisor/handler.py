@@ -15,10 +15,8 @@ from of.common.messaging.factory import log_process_state_message, reply_with_er
 from optimalbpm.broker.messaging.factory import bpm_process_control, worker_process_control, get_current_login
 from of.common.queue.handler import Handler
 from optimalbpm.agent.lib.worker.run import run_worker_process
-from of.schemas.constants import schema_id_message, schema_id_log_process_state, schema_id_system_process, \
-    zero_object_id
-from optimalbpm.schemas.constants import schema_id_message_bpm_process_start, schema_id_message_bpm_process_result,\
-    schema_id_message_bpm_process_command
+from of.schemas.constants import zero_object_id
+
 
 __author__ = 'Nicklas Borjesson'
 
@@ -74,7 +72,7 @@ class WorkerSupervisor(Handler):
 
         self.job_queue = queue.Queue()
         self.schema_id__handler = {
-            schema_id_message_bpm_process_start: self.handle_bpm_process_start
+            "bpm://message_bpm_process_start.json": self.handle_bpm_process_start
         }
         self.repo_base_folder = _repo_base_folder
 
@@ -125,7 +123,7 @@ class WorkerSupervisor(Handler):
             "systemPid": _new_process.pid,
             "spawnedWhen": _new_worker["spawnedWhen"],
             "name": "Worker process",
-            "schemaId": schema_id_system_process
+            "schemaRef": "bpm://process_system.json"
         }])
 
         self.workers[_new_process_id] = _new_worker
@@ -230,14 +228,14 @@ class WorkerSupervisor(Handler):
 
             # TODO: Should any filtering be done here? (OB1-138)
             _message_data = _item[1]
-            if "schemaId" not in _message_data:
-                raise Exception(self.log_prefix + "Missing schemaId: " + str(_message_data))
+            if "schemaRef" not in _message_data:
+                raise Exception(self.log_prefix + "Missing schemaRef: " + str(_message_data))
 
-            if _message_data["schemaId"] == schema_id_message_bpm_process_result:
+            if _message_data["schemaRef"] == "bpm://message_bpm_process_result.json":
                 # A process result message implies that the worker is done and available for new jobs
                 self.release_worker(_message_data["sourceProcessId"])
 
-            elif _message_data["schemaId"] == schema_id_log_process_state and \
+            elif _message_data["schemaRef"] == "of://log_process_state.json" and \
                     _message_data["processId"] in self.workers and \
                     _message_data["state"] in ["killed"]:
                 # If a worker is logging that it is being killed, it should be remove from the workers
@@ -253,10 +251,10 @@ class WorkerSupervisor(Handler):
         Forwards a incoming message to the proper worker process queue
         """
 
-        if _message_data["schemaId"] == schema_id_message_bpm_process_start:
+        if _message_data["schemaRef"] == "bpm://message_bpm_process_start.json":
             # It is a process start message, start a process
             self.handle_bpm_process_start(_message_data)
-        elif _message_data["schemaId"] == schema_id_message_bpm_process_command and \
+        elif _message_data["schemaRef"] == "bpm://message_bpm_process_command.json" and \
                 _message_data["command"] == "kill":
             # It is a command to kill a worker, do so.
             # TODO: This part should be extracted into a function. (OB1-138)
@@ -390,7 +388,7 @@ class MockupWorkerSupervisor(WorkerSupervisor):
     def forward_message(self, _message_data):
         print(self.log_prefix + str(self) + "Got a message:" + str(_message_data))
         self.message = _message_data
-        if _message_data["schemaId"] == schema_id_message:
+        if _message_data["schemaRef"] == schema_id_message:
             # This is almost a mock of code that should be tested...this must be kept matching the code.
             self.busy_workers[_message_data["destinationProcessId"]]["queue"].put(_message_data)
         if self.on_process_start:

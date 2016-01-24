@@ -5,6 +5,8 @@ import os
 
 from of.common.testing.init_env import init_env
 from optimalbpm.schemas.validation import bpm_uri_handler
+import optimalbpm.schemas.constants
+
 __author__ = 'nibo'
 
 script_dir = os.path.dirname(__file__)

@@ -6,11 +6,7 @@ from behave import *
 
 from nose.tools.trivial import ok_
 
-
-from of.schemas.constants import schema_id_log_process_state, schema_id_log_progression, schema_id_system_process
-from optimalbpm.messaging.factory import bpm_process_control
-from optimalbpm.schemas.constants import schema_id_bpm_process_instance, schema_id_log_process_message, \
-    schema_id_message_bpm_process_result, schema_id_message_bpm_process_start
+from optimalbpm.broker.messaging.factory import bpm_process_control
 
 use_step_matcher("re")
 
@@ -26,18 +22,18 @@ def getNextMessageId():
 def on_blocking_message(_socket, _message):
     print("on_blocking_message : " + str(_message))
     _socket.context.schema_tools.validate(_message)
-    if _message["schemaId"] == schema_id_log_progression and \
+    if _message["schemaRef"] == "of://log_progression.json" and \
                     _message["processId"] == _socket.context.blocking_process_id:
         _socket.context.test_blocking_bpm_process_progress = True
-    elif _message["schemaId"] == schema_id_log_process_state and \
+    elif _message["schemaRef"] == "of://log_process_state.json" and \
                     _message["processId"] == _socket.context.blocking_process_id and \
                     _message["state"] == "running":
         _socket.context.test_blocking_bpm_log_process_state = True
-    elif _message["schemaId"] == schema_id_log_process_state and \
+    elif _message["schemaRef"] == "of://log_process_state.json" and \
                     _message["processId"] == _socket.context.blocking_process_id and \
                     _message["state"] == "stopped":
         _socket.context.test_message_bpm_process_stop_success = True
-    elif _message["schemaId"] == schema_id_log_process_state and \
+    elif _message["schemaRef"] == "of://log_process_state.json" and \
                     _message["processId"] == _socket.context.blocking_process_id and \
                     _message["state"] == "killed":
         _socket.context.test_message_bpm_process_kill_success = True
@@ -47,19 +43,19 @@ def on_message(_socket, _message):
     print("on_message : " + str(_message))
     _socket.context.schema_tools.validate(_message)
 
-    if _message["schemaId"] == schema_id_system_process:
+    if _message["schemaRef"] == "of://process_system.json":
         _socket.context.test_worker_process_instance = True
-    elif _message["schemaId"] == schema_id_bpm_process_instance and \
+    elif _message["schemaRef"] == "bpm://process_bpm.json" and \
                     _message["_id"] == _socket.context.first_process_id:
         _socket.context.test_bpm_process_instance = True
-    elif _message["schemaId"] == schema_id_log_process_state and _message["state"] == "running" and \
+    elif _message["schemaRef"] == "of://log_process_state.json" and _message["state"] == "running" and \
                     _message["processId"] == _socket.context.first_process_id:
         _socket.context.test_bpm_process_state_running = True
-    elif _message["schemaId"] == schema_id_log_process_message and _message["message"] == "message from print_globals" \
+    elif _message["schemaRef"] == "bpm://log_process_message.json" and _message["message"] == "message from print_globals" \
             and _message["processId"] == _socket.context.first_process_id:
         _socket.context.test_bpm_process_message = True
     # Reply by starting a new process
-    elif _message["schemaId"] == schema_id_message_bpm_process_result \
+    elif _message["schemaRef"] == "bpm://message_bpm_process_result.json" \
             and _message["sourceProcessId"] == _socket.context.first_process_id \
             and _message["result"] == "result":
         _socket.context.test_message_bpm_process_result = True
@@ -74,13 +70,13 @@ def on_message(_socket, _message):
             "sourceProcessId": str(_socket.context.process_process_id),
             "messageId": getNextMessageId(),
             "source": "broker_peer",
-            "schemaId": schema_id_message_bpm_process_start
+            "schemaRef": "bpm://message_bpm_process_start.json"
         }
 
         _socket.received_message(json.dumps(_socket.context.message))
         _socket.context.test_bpm_process_second_start = True
 
-    elif _message["schemaId"] == schema_id_log_process_message and _message["message"] == "second process log" \
+    elif _message["schemaRef"] == "bpm://log_process_message.json" and _message["message"] == "second process log" \
             and _message["processId"] == _socket.context.second_process_id:
         _socket.context.test_bpm_process_second_log = True
         _socket.context.message = {
@@ -93,12 +89,12 @@ def on_message(_socket, _message):
             "sourceProcessId": str(_socket.context.process_process_id),
             "messageId": getNextMessageId(),
             "source": "broker_peer",
-            "schemaId": schema_id_message_bpm_process_start
+            "schemaRef": "bpm://message_bpm_process_start.json"
         }
 
         _socket.received_message(json.dumps(_socket.context.message))
         _socket.context.test_bpm_process_third_start = True
-    elif _message["schemaId"] == schema_id_message_bpm_process_result \
+    elif _message["schemaRef"] == "bpm://message_bpm_process_result.json" \
             and _message["sourceProcessId"] == _socket.context.third_process_id \
             and _message["globals"]["result"] == "main result":
         _socket.context.test_message_bpm_third_process_result = True
@@ -114,7 +110,7 @@ def on_message(_socket, _message):
 
         _socket.received_message(json.dumps(_socket.context.message))
         _socket.context.test_message_bpm_process_second_stop = True
-    elif (_message["schemaId"] == schema_id_log_process_state and \
+    elif (_message["schemaRef"] == "of://log_process_state" and \
                       _message["state"] == "stopped" and \
                       _message["processId"] == _socket.context.second_process_id):
         _socket.context.test_message_bpm_process_second_stopped = True
@@ -138,7 +134,7 @@ def step_impl(context):
         "sourceProcessId": str(context.process_process_id),
         "messageId": getNextMessageId(),
         "source": "broker_peer",
-        "schemaId": schema_id_message_bpm_process_start
+        "schemaRef": "bpm://message_bpm_process_start.json"
     }
 
     context.broker_socket.received_message(json.dumps(context.message))
@@ -266,7 +262,7 @@ def step_impl(context):
         "sourceProcessId": str(context.process_process_id),
         "messageId": getNextMessageId(),
         "source": "broker_peer",
-        "schemaId": schema_id_message_bpm_process_start
+        "schemaRef": "bpm://message_bpm_process_start.json"
     }
 
     context.broker_socket.received_message(json.dumps(context.message))

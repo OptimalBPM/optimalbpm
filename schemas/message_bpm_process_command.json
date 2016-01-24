@@ -28,6 +28,5 @@
   ],
   "namespace": "bpm",
   "required": ["command"],
-  "collection": "log",
-  "schemaId": "8bd9a1f4-146e-4e78-8bfd-fedf01236330"
+  "collection": "log"
 }
