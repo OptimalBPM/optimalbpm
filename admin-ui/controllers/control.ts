@@ -36,7 +36,7 @@ export class ControlController {
         _process_data.source_process_id = "";
         _process_data.message_id = 1;
 
-        this.$http.post('/control/start_process', _process_data).
+        this.$http.post('control/start_process', _process_data).
             success((data, status, headers, config) => {
                 this.$scope.startedProcesses.push(data);
 
@@ -48,7 +48,7 @@ export class ControlController {
 
     get_process_states = () => {
 
-        this.$http.get('/control/get_process_states').
+        this.$http.get('control/get_process_states').
             success((data, status, headers, config) => {
                 this.$scope.states = data;
 
@@ -60,7 +60,7 @@ export class ControlController {
 
     get_process_history = (process_id : string) => {
 
-        this.$http.post('/control/get_process_history',{"process_id": process_id}).
+        this.$http.post('control/get_process_history',{"process_id": process_id}).
             success((data, status, headers, config) => {
                 this.$scope.current_process_history = data;
 
@@ -78,7 +78,7 @@ export class ControlController {
     };
 
     kill_agent01 = () => {
-        this.$http.post('/control/agent_control',{"address": "agent01", "command": "stop", "reason": "Testing to stop an Agent."}).
+        this.$http.post('control/agent_control',{"address": "agent01", "command": "stop", "reason": "Testing to stop an Agent."}).
             success((data, status, headers, config) => {
                 this.$scope.current_process_history = data;
 

@@ -2,7 +2,7 @@
   "description": "Optimal BPM",
   "dependencies": {},
   "admin-ui": {
-    "mountpoint": "admin/process",
+    "mountpoint": "process",
     "controllers": [
       {
         "name": "ProcessController",
@@ -66,14 +66,14 @@
       {
         "caption": "CONTROL",
         "weight": 0.4,
-        "path": "/control",
+        "path": "control",
         "items": [],
         "right": "Administer"
       },
       {
         "caption": "DESIGN",
         "weight": 0.5,
-        "path": "/process",
+        "path": "process",
         "items": [],
         "right": "Administer"
       }
