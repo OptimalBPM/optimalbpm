@@ -84,7 +84,15 @@ class AgentWebSocket(BPMWebSocket, WebSocketClient):
         else:
             print(self.log_prefix + "Shutting down, disconnecting the peer \"" +self.address +"\"")
         # Terminate all threads
-        self.terminate()
+        if self.stream:
+            self.terminate()
+        else:
+            # Manually handle closing
+            self.closed(1006, "Going away")
+            self.close_connection()
+            self.environ = None
+
+
         super(AgentWebSocket, self).close(code, reason)
         of.common.messaging.websocket.monitor.handler.unregister_web_socket(self)
 
