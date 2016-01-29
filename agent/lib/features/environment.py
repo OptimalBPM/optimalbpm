@@ -19,6 +19,7 @@ from of.common.queue.monitor import Monitor
 from of.schemas.validation import of_uri_handler, of_schema_folder
 from optimalbpm.schemas.validation import bpm_uri_handler
 import of.common.messaging.websocket
+from optimalbpm.testing.init_env import init_bpm_env
 
 script_dir = os.path.dirname(__file__)
 __author__ = 'nibo'
@@ -38,6 +39,8 @@ def logprinter(msg, severity):
 
 def stop_broker():
     pass
+def before_all(context):
+    init_bpm_env(context)
 
 def before_feature(context, feature):
     """

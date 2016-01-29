@@ -84,16 +84,16 @@ class AgentWebSocket(BPMWebSocket, WebSocketClient):
         else:
             print(self.log_prefix + "Shutting down, disconnecting the peer \"" +self.address +"\"")
         # Terminate all threads
-        if self.stream:
+        if hasattr(self, "stream") and self.stream:
             self.terminate()
+            super(AgentWebSocket, self).close(code, reason)
         else:
             # Manually handle closing
             self.closed(1006, "Going away")
-            self.close_connection()
+            if hasattr(self, "sock") and self.sock:
+                self.close_connection()
             self.environ = None
 
-
-        super(AgentWebSocket, self).close(code, reason)
         of.common.messaging.websocket.monitor.handler.unregister_web_socket(self)
 
         # TODO: Handle broker restarting and/or shutting down (PROD-87)

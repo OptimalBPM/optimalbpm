@@ -110,11 +110,12 @@ def on_message(_socket, _message):
 
         _socket.received_message(json.dumps(_socket.context.message))
         _socket.context.test_message_bpm_process_second_stop = True
-    elif (_message["schemaRef"] == "of://log_process_state" and \
+    elif (_message["schemaRef"] == "of://log_process_state.json" and \
                       _message["state"] == "stopped" and \
                       _message["processId"] == _socket.context.second_process_id):
         _socket.context.test_message_bpm_process_second_stopped = True
-
+    else:
+        print("Ignoring the message type in message:" + str(_message))
 
 @given("a process start message is sent to control monitor")
 def step_impl(context):

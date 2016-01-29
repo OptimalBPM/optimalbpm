@@ -8,8 +8,7 @@ from bson.objectid import ObjectId
 from nose.tools.trivial import ok_
 from of.common.messaging.factory import reply_with_error_message
 
-from of.schemas.constants import schema_id_message
-from optimalbpm.schemas.constants import schema_id_message_bpm_process_start
+
 
 use_step_matcher("re")
 
@@ -23,7 +22,7 @@ def getNextMessageId():
 
 def on_broker_message(web_socket, message):
     print("\non_broker_message: " + str(message))
-    if message['schemaRef'] == schema_id_message:
+    if message['schemaRef'] == "of://message.json":
         # This is the first start process, respond with process instance
         web_socket.context.process_id = str(ObjectId())
         web_socket.received_message(json.dumps(
@@ -33,7 +32,7 @@ def on_broker_message(web_socket, message):
             "destinationProcessId": message['sourceProcessId'],
             "sourceProcessId": message['destinationProcessId'],
             "data": "The_Response_Data_åäö",
-            "schemaRef": schema_id_message,
+            "schemaRef": "of://message.json",
             "source": "broker_peer"
             }))
 
@@ -58,7 +57,7 @@ def step_impl(context):
         "destinationProcessId": destination_process_id,
         "data": "The_Data_åäö",
         "source": "agent_peer",
-        "schemaRef": schema_id_message
+        "schemaRef": "of://message.json"
     }
     context.message_monitor.queue.put([None, context.message])
 
@@ -69,7 +68,7 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     time.sleep(0.01)
-    ok_(context.broker_socket.message['schemaRef'] == schema_id_message)
+    ok_(context.broker_socket.message['schemaRef'] == "of://message.json")
 
 
 @step("a response should be sent")
@@ -84,7 +83,7 @@ def step_impl(context):
         "sourceProcessId": context.broker_process_id,
         "destinationProcessId": context.process_process_id,
         "data": "The_Data_åäö",
-        "schemaRef": schema_id_message,
+        "schemaRef": "of://message.json",
         "source": "broker_peer"
     }
 
@@ -97,7 +96,7 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     time.sleep(0.01)
-    ok_(context.worker_handler.message['schemaRef'] == schema_id_message and
+    ok_(context.worker_handler.message['schemaRef'] == "of://message.json" and
         context.worker_handler.message['data'] == context.message["data"])
 
 
@@ -120,7 +119,7 @@ def step_impl(context):
             "sourceProcessId": str(context.process_process_id),
             "messageId": getNextMessageId(),
             "source": "broker_peer",
-            "schemaRef": schema_id_message_bpm_process_start
+            "schemaRef": "bpm://message_bpm_process_start.json"
         }
 
     context.broker_socket.received_message(json.dumps(context.message))

@@ -127,6 +127,7 @@ def start_agent():
         try:
             _data = register_at_broker(_address=_address, _type="agent", _server="https://" + _broker_url,
                                        _username=_username, _password=_password)
+            print("AGENT TRIED REGISTERING, Data returned: " + _data)
         except Exception as e:
             if _retry_count > 1:
                 print(_make_log_prefix() + "Failed to register at the broker, will retry " + str(

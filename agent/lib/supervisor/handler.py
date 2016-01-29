@@ -123,7 +123,7 @@ class WorkerSupervisor(Handler):
             "systemPid": _new_process.pid,
             "spawnedWhen": _new_worker["spawnedWhen"],
             "name": "Worker process",
-            "schemaRef": "bpm://process_system.json"
+            "schemaRef": "of://process_system.json"
         }])
 
         self.workers[_new_process_id] = _new_worker
@@ -388,7 +388,7 @@ class MockupWorkerSupervisor(WorkerSupervisor):
     def forward_message(self, _message_data):
         print(self.log_prefix + str(self) + "Got a message:" + str(_message_data))
         self.message = _message_data
-        if _message_data["schemaRef"] == schema_id_message:
+        if _message_data["schemaRef"] == "of://message.json":
             # This is almost a mock of code that should be tested...this must be kept matching the code.
             self.busy_workers[_message_data["destinationProcessId"]]["queue"].put(_message_data)
         if self.on_process_start:
