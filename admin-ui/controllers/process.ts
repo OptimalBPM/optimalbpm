@@ -1,4 +1,3 @@
-/// <reference path="../typings/angularjs/angular.d.ts" />
 
 /**
  * Module that implements a tree using MBE, a schema validated form and ui layout
@@ -6,7 +5,7 @@
  * @module nodes
  * @service Nodes
  * @author Nicklas Börjesson
- * @link https://www.github.com/OptimalBPM/mbe-nodes
+ * @link https://www.github.com/OptimalBPM/
  */
 'use strict';
 import "angular";
@@ -103,6 +102,9 @@ export class ProcessController extends NodeManager implements NodeManagement {
     menuTreeOptions : any;
     // The menu columns
     keywords : any[];
+
+    // Externally stored parameter data
+    paramData : any;
 
     // The scope
     nodeScope : ProcessScope;
@@ -219,6 +221,19 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
     };
 
+    generateObjectId = () : string => {
+        var increment: string = Math.floor(Math.random() * (16777216)).toString(16);
+        var pid: string = Math.floor(Math.random() * (65536)).toString(16);
+        var machine: string = Math.floor(Math.random() * (16777216)).toString(16);
+        var timestamp: string = Math.floor(new Date().valueOf() / 1000).toString(16);
+
+        return '00000000'.substr(0, 8 - timestamp.length) + timestamp +
+               '000000'.substr(0, 6 - machine.length) + machine +
+               '0000'.substr(0, 4 - pid.length) + pid +
+               '000000'.substr(0, 6 - increment.length) + increment;
+    };
+
+
     copyDoc = (docObj):void => {
         if (docObj) {
             return Object.create(docObj);
@@ -307,7 +322,9 @@ export class ProcessController extends NodeManager implements NodeManagement {
                         this.process_data = data;
                         var _curr_parent = null;
                         this.maxId = 0;
+                        this.paramData = data.paramData;
                         this.tree.children = this.recurseVerbs(null, data.verbs);
+
                         resolve()
                     })
                     .error((data, status, headers, config):any => {
@@ -467,7 +484,6 @@ export class ProcessController extends NodeManager implements NodeManagement {
                 field["options"] = options;
                 if (field["type"] == "complex-ui") {
                     // Options will always be set in these cases, Handle complex parameters
-
                     field["options"]["definitionsCallback"] =this.getDefinition;
                 }
             }
@@ -519,9 +535,9 @@ export class ProcessController extends NodeManager implements NodeManagement {
             for (key in node["assignments"]) {
                 schema["properties"]["assignments." + key] = {"type": "string"};
 
-                 form.push(makeField("string", "assignments." + node["key"], prettyfyKey(key)));
+                form.push(makeField("string", "assignments." + key, prettyfyKey(key)));
                 if (add_assignment_order) {
-                    data.assignment_order.push(node["key"])
+                    data.assignment_order.push(key)
                 }
             }
 
@@ -537,11 +553,33 @@ export class ProcessController extends NodeManager implements NodeManagement {
                     if (parameter["type"] == "complex-ui") {
                         // Handle complex parameters
                         schema["properties"]["parameters." + parameter["key"]] = {"type": "object"};
-                        if (!(parameter["key"] in data.parameters))
-                        {
-                            // Complex ui needs to have some kind of value
-                            data.parameters[parameter["key"]] = {}
+
+                        // If a call has a complex parameter, it needs to have a resolution map for later use
+                        if (!("dataRefs" in data)) {
+                            data.dataRefs = {}
                         }
+                        // TODO: Parts of this handling is somewhat bit hacky, investigate if setDetails couldn't do some of this
+                        // Check if the data hasn't been replaced already
+                        if (!(parameter["key"] in data.dataRefs)) {
+                            // Complex ui always have a getData("00000000000000000")-call, parse that objectId.
+                            var dataRef: string = data.parameters[parameter["key"]].substr(9, 24);
+                            // Change the data in the parameter to the actual data
+                            if (dataRef in this.paramData) {
+
+                                // Store the reference so this can be changed back later on
+                                data.dataRefs[parameter["key"]] = dataRef;
+                                data.parameters[parameter["key"]] = this.paramData[dataRef];
+                            }
+                            else {
+                                dataRef = this.generateObjectId();
+                                data.dataRefs[parameter["key"]] = dataRef;
+                                this.paramData[dataRef] = {};
+                                // Complex ui needs to have some kind of value
+                                data.parameters[parameter["key"]] = this.paramData[dataRef];
+                            }
+
+                        }
+
                     } else {
                         schema["properties"]["parameters." + parameter["key"]] = {"type": parameter["type"]};
 
@@ -698,6 +736,16 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
         items.forEach((item) => {
             var curr_data = this.tree.data[item["id"]]
+            if (curr_data.raw && "dataRefs" in curr_data) {
+                // Loop all parameters, save data and create calls if they are complex
+                for (var paramId in curr_data.dataRefs) {
+                    this.paramData[curr_data.dataRefs[paramId]] = curr_data.parameters[paramId];
+                    curr_data.parameters[paramId] = "getData(\"" + curr_data.dataRefs[paramId] + "\")";
+                }
+
+                curr_data.raw = null
+            }
+
             if (item.children && item.children.length) {
                 curr_data.children = this.recurseData(item.children);
             }
