@@ -48,8 +48,6 @@ class CherryPyProcess(object):
         self.definitions.load_definitions(core_language + [os.path.join(script_dir, "../translation/features/fake_bpm_lib.json")])
 
 
-        # TODO: Implement loading of third party definitions(OB1-109)
-
     # TODO: There should exist some special right for this like object_id_admin_process(ORG-110)
 
 

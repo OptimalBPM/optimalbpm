@@ -120,7 +120,7 @@ class WorkerHandler(Handler):
             # The message is a process start message,start a process.
             if self.job_running:
                 # If the worker has a job currently running, reply with an error message and do nothing
-                # TODO: This message should probably be handled in some way by the agent (OB1-139)
+                # TODO: This message should probably be handled in some way by the agent (PROD-28)
                 self.send_queue.put([None, reply_with_error_message(self, _message_data,
                                                                     "Worker.handle_message: Cannot start BPM Process, process " + str(
                                                                         self.bpm_process_id) + " already running.")])
@@ -133,8 +133,8 @@ class WorkerHandler(Handler):
             print(self.log_prefix + "Got a BPM process control message:" + _message_data["command"])
             if _message_data["command"] == "stop":
                 # Told to stop. Stopping process.
-                # TODO: Break out BPM process termination, should be done in worker termination as well. (OB1-138)
-                # TODO: The broker should be able to offer the users the option to retry running the process (OB1-139)
+                # TODO: Break out BPM process termination, should be done in worker termination as well. (PROD-27)
+                # TODO: The broker should be able to offer the users the option to retry running the process (PROD-28)
                 print(self.log_prefix + "XXXXXXXXXXXX-Telling thread to terminate, script :" + str(self.script_path))
                 self.bpm_process_thread.termination_message = _message_data
                 self.bpm_process_thread.terminated = True
@@ -149,7 +149,7 @@ class WorkerHandler(Handler):
                 # First stop the monitor, we don't want any more commands coming in.
                 self.monitor.stop()
 
-                # TODO: First stop the bpm process thread. (OB1-138)
+                # TODO: First stop the bpm process thread. (PROD-27)
 
                 print(self.log_prefix + "Worker monitor stopped.")
                 self.send_queue.put([None, log_process_state_message(

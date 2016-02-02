@@ -186,7 +186,7 @@ class Verb(object):
         :return The ending token
         """
 
-        # TODO: Check what happens if an expression is nicely formatted over several lines (OB1-150)
+        # TODO: Check what happens if an expression is nicely formatted over several lines (ORG-104)
         _paren_level = 0
         # Walk through the expression, end if an extra parenthesis, newline or :.
         _expression = ""
@@ -445,7 +445,7 @@ class Verb(object):
                         _identifier = ""
                         _token = _process_tokens.next()
                         continue
-                    # TODO: Handle "[", assignments to expressions (OB1-150)
+                    # TODO: Handle "[", assignments to expressions (ORG-104)
                     elif _tokenstring in ["=", "+="]:
                         self.type = "assign"
                         # This is an assignment, add the last assignment

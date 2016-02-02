@@ -226,7 +226,7 @@ class WorkerSupervisor(Handler):
             raise Exception("The process handler only handles messages from worker processes.")
         else:
 
-            # TODO: Should any filtering be done here? (OB1-138)
+            # TODO: Should any filtering be done here? (PROD-27)
             _message_data = _item[1]
             if "schemaRef" not in _message_data:
                 raise Exception(self.log_prefix + "Missing schemaRef: " + str(_message_data))
@@ -257,7 +257,7 @@ class WorkerSupervisor(Handler):
         elif _message_data["schemaRef"] == "bpm://message_bpm_process_command.json" and \
                 _message_data["command"] == "kill":
             # It is a command to kill a worker, do so.
-            # TODO: This part should be extracted into a function. (OB1-138)
+            # TODO: This part should be extracted into a function. (PROD-27)
             _worker = self.busy_workers[_message_data["destinationProcessId"]]
             print(self.log_prefix + "Kill " + str(_message_data))
             _worker["process"].terminate()
