@@ -20,7 +20,7 @@ from mbe.groups import has_right
 from optimalbpm.broker.translation.python.translator import ProcessTokens, core_language
 
 
-# TODO: Consider what the documentation in the top of each module should look like (OB1-42)
+# TODO: Consider what the documentation in the top of each module should look like (PROD-40)
 
 __author__ = 'Nicklas Borjesson'
 
@@ -50,7 +50,7 @@ class CherryPyProcess(object):
 
         # TODO: Implement loading of third party definitions(OB1-109)
 
-    # TODO: There should exist some special right for this like object_id_admin_process(OB1-144)
+    # TODO: There should exist some special right for this like object_id_admin_process(ORG-110)
 
 
     @cherrypy.expose
@@ -64,7 +64,7 @@ class CherryPyProcess(object):
         """
         has_right(object_id_right_admin_everything, kwargs["user"])
 
-        # TODO: load specific process..._process_id = cherrypy.request.remote.processid(OB1-145)
+        # TODO: load specific process..._process_id = cherrypy.request.remote.processid(PROD-31)
         _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)
         _verbs = _tokens.parse_file(
             os.path.expanduser("~/optimalframework/agent_repositories/000000010000010002e64d20/source_out.py"))
@@ -89,7 +89,7 @@ class CherryPyProcess(object):
         Save a process structure into a source file
         :param kwargs: A parameter object
         """
-        # TODO: Document the structure of the process parameters, perhaps create a schema?(OB1-144)
+        # TODO: Document the structure of the process parameters, perhaps create a schema?(ORG-110)
         has_right(object_id_right_admin_everything, kwargs["user"])
         _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)
         _verbs = _tokens.json_to_verbs(cherrypy.request.json["verbs"])

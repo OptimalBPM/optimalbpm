@@ -95,7 +95,7 @@ class WorkerSupervisor(Handler):
         """
 
         # Start a worker process
-        # TODO: Look at RunAs and similar to run in context (OB1-137)
+        # TODO: Look at RunAs and similar to run in context (PROD-26)
 
         _new_process_id = str(ObjectId())
         _new_queue_manager = multiprocessing.Manager()

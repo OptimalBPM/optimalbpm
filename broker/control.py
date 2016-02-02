@@ -70,7 +70,7 @@ class Control:
             _result_id = self.node.save(_process_definition, _user)
             if _init_repository:
                 pass
-                # TODO: Implement GIT stuff (OB1-142)
+                # TODO: Implement GIT stuff (PROD-11)
 
                 # self.repositories.init_repository(_result_id)
         else:
@@ -85,7 +85,7 @@ class Control:
         :param _user: A user instance
         :return: a Process definition document identified by _process_definition_id .
         """
-        # TODO: This manually converts it into an ObjectId instance, likely not needed in later MBE versions(OB1-44)
+        # TODO: This manually converts it into an ObjectId instance, likely not needed in later MBE versions(PROD-41)
         _result = self.node.find({"_id": ObjectId(_process_definition_id)}, _user)
 
         if len(_result) != 1:
@@ -248,7 +248,7 @@ class Control:
 
         :return: A list of all active processes
         """
-        # TODO: Filter by what canRead on the nodes? Have some node rights cache? (OB1-144)
+        # TODO: Filter by what canRead on the nodes? Have some node rights cache? (ORG-110)
         # Also, this is more of a web socket stream.
         return self.db_access.find({"conditions": {}, "collection": "process"})
 
@@ -258,7 +258,7 @@ class Control:
 
         :return: A list of all schemas
         """
-        # TODO: Filter by what canRead on the nodes? Have some node rights cache? (OB1-144)
+        # TODO: Filter by what canRead on the nodes? Have some node rights cache? (ORG-110)
         # Also, this is more of a web socket stream.
         result = {}
         for key, schema in self.db_access.schema_tools.json_schema_objects.items():
@@ -272,6 +272,6 @@ class Control:
 
         :return: A list of all the states
         """
-        # TODO: Filter by what canRead on the nodes? Have some node rights cache? (OB1-144)
+        # TODO: Filter by what canRead on the nodes? Have some node rights cache? (ORG-110)
         # Also, this is more of a web socket stream.
         return self.db_access.find({"conditions": {"processId": ObjectId(_process_id)}, "collection": "log"})

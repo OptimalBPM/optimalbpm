@@ -7,7 +7,7 @@ from of.schemas.constants import zero_object_id
 import dulwich
 
 __author__ = 'Nicklas Borjesson'
-# TODO: Implement GIT/dulwich on agent and broker (OB1-142)
+# TODO: Implement GIT/dulwich on agent and broker (PROD-11)
 
 
 class DulwichWrapper:

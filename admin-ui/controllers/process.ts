@@ -87,6 +87,12 @@ export class ProcessController extends NodeManager implements NodeManagement {
     // Lookup lists
     lists:Dict = {};
 
+    // Processes
+    processes : any[] = [];
+
+    // Current process
+    currProcess : any;
+
     // The descriptive text of the process
     documentation = null;
     // The encoding of the process file
@@ -111,7 +117,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
     // A List of ids that have been changed.
     changedIds : string[] = [];
 
-    // TODO: Create a directive for the top menu items (OB1-147)
+    // TODO: Create a directive for the top menu items (ORG-107)
     availableItems:ng.IScope;
 
     // The list of verbs
@@ -314,10 +320,10 @@ export class ProcessController extends NodeManager implements NodeManagement {
     /**
      * Load verbs array
      */
-    loadProcess = ():ng.IPromise<any> => {
+    loadProcess = (id : string):ng.IPromise<any> => {
 
         return this.$q((resolve, reject) => {
-                return this.$http.get('process/load_process')
+                return this.$http.post('process/load_process', {"id": id})
                     .success((data):any => {
                         this.process_data = data;
                         var _curr_parent = null;
@@ -620,8 +626,8 @@ export class ProcessController extends NodeManager implements NodeManagement {
                     "helpvalue": "<i>The variable(s) to assign the data to.</i>"
                 });
 
-            // TODO: Add data from documentation.(OB1-145)
-            // TODO: Add new input type for identifiers. (OB1-145)
+            // TODO: Add data from documentation.(PROD-31)
+            // TODO: Add new input type for identifiers. (PROD-31)
 
             // Loop assignments
             for (key in node["assignments"]) {
@@ -776,7 +782,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
 
     save = () => {
-        // TODO: Add resetting of token lists for changed items. (OB1-145)
+        // TODO: Add resetting of token lists for changed items. (PROD-31)
         this.process_data["verbs"] = this.recurseData(this.tree.children)
 
         this.saveProcess(this.process_data);
@@ -823,6 +829,15 @@ export class ProcessController extends NodeManager implements NodeManagement {
         this.menuTreeOptions= {
             beforeDrop: this.onBeforeDrop
         };
+
+        this.processes = [
+            {"id": "000000010000010002e64d20",
+                "name": "All stuff"
+            },
+            {"id": "000000010000010002e64d21",
+                "name": "Complex text"
+            }];
+
         console.log("Initiated the process controller");
 
     }

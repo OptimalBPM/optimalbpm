@@ -67,7 +67,7 @@ class ControlHandler(Handler):
         :param _error: The error message
         """
         print(self.log_prefix + "An error occured, should implement handle error. Error: " + str(_error))
-        # TODO: Implement sending error log messages to the broker using error message (OB1-132)
+        # TODO: Implement sending error log messages to the broker using error message (PROD-32)
         # self.logging_function(msg=_error, severity=logging.ERROR)
 
     def handle_agent_control_message(self, _message_data):

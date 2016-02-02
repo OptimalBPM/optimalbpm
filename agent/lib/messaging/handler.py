@@ -87,7 +87,7 @@ class AgentWebSocketHandler(WebSocketHandler):
             # This is an outbound message
 
             self.outbound_message_count += 1
-            # TODO: Handle multiple broker peers(other peers?), be informed trough some kind of messaging.(OB1-136)
+            # TODO: Handle multiple broker peers(other peers?), be informed trough some kind of messaging.(PROD-25)
             # For now, however, always have one broker.
             _message_data["source"] = self.address
 

@@ -70,7 +70,7 @@ def _make_log_prefix():
 
 def logprinter(msg, severity):
     print(msg)
-    # TODO: This should be implemented and send errors to the broker (OB1-132)
+    # TODO: This should be implemented and send errors to the broker (PROD-32)
     # However, it will need process_id and stuff like that.
 
 
@@ -159,7 +159,7 @@ def start_agent():
                                     _uri_handlers={"of": of_uri_handler, "bpm": bpm_uri_handler})
     except Exception as e:
         print(_make_log_prefix() + "Fatal: An error occurred while loading schema tools:" + str(e))
-        # TODO: Here other things should be done, like reporting to system logs, sending messages or something.(OB1-132)
+        # TODO: Here other things should be done, like reporting to system logs, sending messages or something.(PROD-32)
         os._exit(1)
         return
 
@@ -203,7 +203,7 @@ def start_agent():
                                     ),
             _logging_function=logprinter)
 
-        # The global variable for handling websockets. TODO: Could this be done without globals? (OB1-134)
+        # The global variable for handling websockets. TODO: Could this be done without globals? (PROD-33)
         of.common.messaging.websocket.monitor = _message_monitor
         print(_make_log_prefix() + "Initializing monitors done")
 

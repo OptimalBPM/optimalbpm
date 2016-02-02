@@ -18,7 +18,7 @@ def _logging(_msg, _severity):
     Handles logging
     """
 
-    # TODO: Implement logging properly (OB1-132)
+    # TODO: Implement logging properly (PROD-32)
     print(_msg + "-" + _severity)
 
 

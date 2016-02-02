@@ -16,7 +16,12 @@
 </div>
 
 <div class="row">
-    <div class="col-md-1"><span class="left_row_headings"><br/>Process<br/>design</span></div>
+    <div class="col-md-1">
+        <span class="left_row_headings"><br/>Process<br/>design</span>
+        <br/>
+        <span class="left_row_headings"><br/>Select<br/>process</span>
+        <select ng-model="nodeManager.currProcess" ng-click="load" ng-options="item.id as item.name for item in nodeManager.processes"></select>
+    </div>
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-7 design_panel">
         <div id="processContainer" class="process-steps">
             <schema-tree
@@ -44,8 +49,8 @@
               ng-submit="nodeManager.doSubmit(selected_data)">
 
         </form>
-        <div ng-model-options="" ng-repeat="alist in Object.keys($scope.lists)"> {{alist}}
-            <div ng-repeat="key in $scope.lists[alist]">* {{key}}</div>
+        <div ng-model-options="" ng-repeat="alist in Object.keys(nodeManager.lists)"> {{alist}}
+            <div ng-repeat="key in nodeManager.lists[alist]">* {{key}}</div>
         </div>
     </div>
 
