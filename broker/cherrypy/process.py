@@ -62,19 +62,22 @@ class CherryPyProcess(object):
         """
         has_right(object_id_right_admin_everything, kwargs["user"])
 
-        # TODO: load specific process..._process_id = cherrypy.request.remote.processid(PROD-31)
+        _process_id = cherrypy.request.json["processId"]
         _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)
         _verbs = _tokens.parse_file(
-            os.path.expanduser("~/optimalframework/agent_repositories/000000010000010002e64d20/source_out.py"))
+            os.path.expanduser("~/optimalframework/agent_repositories/" + _process_id +"/source.py"))
         _result = dict()
         _result["verbs"] = _tokens.verbs_to_json(_verbs)
         _result["raw"] = _tokens.raw
         _result["encoding"] = _tokens.encoding
         _result["name"] = "source.py"
         _result["documentation"] = _tokens.documentation
-        _filename_data = os.path.expanduser("~/optimalframework/agent_repositories/000000010000010002e64d20/data.json")
-        with open(_filename_data, "r") as f:
-            _result["paramData"] = json.load(f)
+        _filename_data = os.path.expanduser("~/optimalframework/agent_repositories/" + _process_id +"/data.json")
+        if os.path.exists(_filename_data):
+            with open(_filename_data, "r") as f:
+                _result["paramData"] = json.load(f)
+        else:
+            _result["paramData"] = {}
 
         return _result
 

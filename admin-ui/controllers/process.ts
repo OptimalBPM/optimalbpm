@@ -318,12 +318,12 @@ export class ProcessController extends NodeManager implements NodeManagement {
     };
 
     /**
-     * Load verbs array
+     * Load process data
      */
-    loadProcess = (id : string):ng.IPromise<any> => {
+    loadProcess = (processId : string):ng.IPromise<any> => {
 
         return this.$q((resolve, reject) => {
-                return this.$http.post('process/load_process', {"id": id})
+                return this.$http.post('process/load_process', {"processId": processId})
                     .success((data):any => {
                         this.process_data = data;
                         var _curr_parent = null;
@@ -340,9 +340,12 @@ export class ProcessController extends NodeManager implements NodeManagement {
             }
         );
     };
-
+    /**
+     * Populate the available commands menu
+     */
     populateMenuColumns = (data) => {
 
+        // Creates a new menu node
         var createDefinition = (id, currDefinition, expanded, identifier, allowedChildTypes, type, menuTitle) => {
             var new_node:MenuNode = new MenuNode();
             new_node.id = id;
@@ -567,8 +570,8 @@ export class ProcessController extends NodeManager implements NodeManagement {
                         // TODO: Parts of this handling is somewhat bit hacky, investigate if setDetails couldn't do some of this
                         // Check if the data hasn't been replaced already
                         if (!(parameter["key"] in data.dataRefs)) {
-                            // Complex ui always have a getData("00000000000000000")-call, parse that objectId.
-                            var dataRef: string = data.parameters[parameter["key"]].substr(9, 24);
+                            // Complex ui always have a get_data("00000000000000000")-call, parse that objectId.
+                            var dataRef: string = data.parameters[parameter["key"]].substr(10, 24);
                             // Change the data in the parameter to the actual data
                             if (dataRef in this.paramData) {
 
@@ -706,9 +709,8 @@ export class ProcessController extends NodeManager implements NodeManagement {
         return new this.$q((resolve, reject) => {
             this.onInitSchemas().then(() => {
                 this.loadDefinitions().then(() => {
-                    this.loadProcess().then(()=> {
-                        resolve();
-                    });
+                    resolve();
+
                 });
             });
             /*  // Initialize all metadata
@@ -746,7 +748,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
                 // Loop all parameters, save data and create calls if they are complex
                 for (var paramId in curr_data.dataRefs) {
                     this.paramData[curr_data.dataRefs[paramId]] = curr_data.parameters[paramId];
-                    curr_data.parameters[paramId] = "getData(\"" + curr_data.dataRefs[paramId] + "\")";
+                    curr_data.parameters[paramId] = "get_data(\"" + curr_data.dataRefs[paramId] + "\")";
                 }
 
                 curr_data.raw = null
