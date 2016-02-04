@@ -805,7 +805,6 @@ export class ProcessController extends NodeManager implements NodeManagement {
     save = () => {
         // TODO: Add resetting of token lists for changed items. (PROD-31)
         this.process_data["verbs"] = this.recurseData(this.tree.children)
-
         this.saveProcess(this.process_data);
     };
 

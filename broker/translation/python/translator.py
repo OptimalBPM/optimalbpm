@@ -150,7 +150,11 @@ class ProcessTokens(object):
         : _header_raw The raw header of the process
         : _filename Output filename
         """
-        _tokens = _header_raw
+
+        if _header_raw:
+            _tokens = _header_raw
+        else:
+            _tokens = [[59, 'utf-8', [0, 0], [0, 0], '']]
         # Loop all verbs
         for _verb in _verbs:
             print(_verb.identifier)

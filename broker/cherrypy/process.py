@@ -64,15 +64,21 @@ class CherryPyProcess(object):
 
         _process_id = cherrypy.request.json["processId"]
         _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)
-        _verbs = _tokens.parse_file(
-            os.path.expanduser("~/optimalframework/agent_repositories/" + _process_id +"/source.py"))
+        _repo_path = os.path.expanduser("~/optimalframework/agent_repositories/" + _process_id)
+        _filename_process = _repo_path +"/source.py"
+        if os.path.exists(_filename_process):
+            _verbs = _tokens.parse_file(_filename_process)
+        else:
+            _verbs = []
         _result = dict()
+        _result["processId"] = _process_id
         _result["verbs"] = _tokens.verbs_to_json(_verbs)
         _result["raw"] = _tokens.raw
         _result["encoding"] = _tokens.encoding
         _result["name"] = "source.py"
         _result["documentation"] = _tokens.documentation
-        _filename_data = os.path.expanduser("~/optimalframework/agent_repositories/" + _process_id +"/data.json")
+        _filename_data = _repo_path+"/data.json"
+
         if os.path.exists(_filename_data):
             with open(_filename_data, "r") as f:
                 _result["paramData"] = json.load(f)
@@ -94,15 +100,19 @@ class CherryPyProcess(object):
         has_right(object_id_right_admin_everything, kwargs["user"])
         _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)
         _verbs = _tokens.json_to_verbs(cherrypy.request.json["verbs"])
-        _filename = os.path.expanduser("~/optimalframework/agent_repositories/000000010000010002e64d20/source_out.py")
+        _process_id = cherrypy.request.json["processId"]
+        _repo_path = os.path.expanduser("~/optimalframework/agent_repositories/" + _process_id)
+        if not os.path.exists(_repo_path):
+            os.makedirs(_repo_path)
+
+        _filename = os.path.join(_repo_path,"source.py")
         _tokens.encode_verbs(_verbs=_verbs, _header_raw=cherrypy.request.json["raw"],
                              _filename=_filename)
-        _filename_data = os.path.expanduser("~/optimalframework/agent_repositories/000000010000010002e64d20/data.json")
+        _filename_data = os.path.join(_repo_path,"data.json")
         with open(_filename_data, "w") as f:
             json.dump(cherrypy.request.json["paramData"], f)
 
-
-        print("save_process: Wrote to " + _filename)
+        print("save_process to " + _repo_path + ", done")
 
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')

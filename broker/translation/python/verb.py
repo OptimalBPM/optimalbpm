@@ -659,28 +659,31 @@ class Verb(object):
         # Loop assignments
         _assignments = []
         _result = []
-        for _curr_assignment_name in self.assignment_order:
-            _curr_assignment = self.assignments[_curr_assignment_name]
-            if _curr_assignment_name[0:11] == "assignment_":
-                _assignments += [NAME, _curr_assignment], [OP, ","]
         if len(_assignments) > 0:
+            for _curr_assignment_name in self.assignment_order:
+                _curr_assignment = self.assignments[_curr_assignment_name]
+                if _curr_assignment_name[0:11] == "assignment_":
+                    _assignments += [NAME, _curr_assignment], [OP, ","]
+
             _result += _assignments[0:-1]
             _result.append([OP, self.assignment_operator])
 
         _result.append([NAME, self.identifier])
 
         _result.append([OP, "("])
-        _params = []
-        if len(self.parameters) == 1 and "expression" in self.parameters:
-            _params += self.tokenize_expression(self.parameters["expression"])
-            _params.append([OP, ","])
-        else:
-            for _curr_parameter_name in self.parameter_order:
-                _curr_parameter = self.parameters[_curr_parameter_name]
-                _params += self.tokenize_expression(_curr_parameter)
-                _params.append([OP, ","])
 
-        _result += _params[0:-1]
+        if self.parameters and len(self.parameters) > 0:
+            _params = []
+            if len(self.parameters) == 1 and "expression" in self.parameters:
+                _params += self.tokenize_expression(self.parameters["expression"])
+                _params.append([OP, ","])
+            else:
+                for _curr_parameter_name in self.parameter_order:
+                    _curr_parameter = self.parameters[_curr_parameter_name]
+                    _params += self.tokenize_expression(_curr_parameter)
+                    _params.append([OP, ","])
+
+            _result += _params[0:-1]
 
         _result.append([OP, ")"])
 
