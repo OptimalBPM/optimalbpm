@@ -32,6 +32,13 @@
           "description": "The object _id of the process, an object id.",
           "propertyId": "e9b714fa-9f9f-4bd0-9500-3638ba2154e2",
           "objectId": "true"
+        },
+        "globals": {
+          "description": "The global variables that is provided as input to the process",
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true,
+          "propertyId": "90c836ee-d154-47f4-832c-6e767cbc1883"
         }
       }
     }

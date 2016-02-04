@@ -437,6 +437,25 @@ export class ProcessController extends NodeManager implements NodeManagement {
         );
     };
 
+    /**
+     * Load definitions array
+     */
+    loadProcesses = ():ng.IPromise<any> => {
+
+        return this.$q((resolve, reject) => {
+            // See schema/constants.py
+            return this.$http.post('node/lookup', {"collection": "node", "conditions": {"parent_id": "ObjectId(000000010000010002e64d02)"}})
+                .success((data):any => {
+                    this.processes =  data;
+                    resolve()
+                })
+                .error((data, status, headers, config):any => {
+
+                    this.bootstrapAlert("Loading processes failed: " + status);
+                })
+            }
+        );
+    };
 
 
     parseNamespace = (identifier) => {
@@ -832,14 +851,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
             beforeDrop: this.onBeforeDrop
         };
 
-        this.processes = [
-            {"id": "000000010000010002e64d20",
-                "name": "All stuff"
-            },
-            {"id": "000000010000010002e64d21",
-                "name": "Complex text"
-            }];
-
+        this.loadProcesses();
         console.log("Initiated the process controller");
 
     }

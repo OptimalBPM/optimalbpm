@@ -20,7 +20,7 @@
         <span class="left_row_headings"><br/>Process<br/>design</span>
         <br/>
         <span class="left_row_headings"><br/>Select<br/>process</span>
-        <select ng-model="nodeManager.currProcess" ng-change="nodeManager.loadProcess(nodeManager.currProcess)" ng-options="item.id as item.name for item in nodeManager.processes"></select>
+        <select ng-model="nodeManager.currProcess" ng-change="nodeManager.loadProcess(nodeManager.currProcess)" ng-options="item.value as item.text for item in nodeManager.processes"></select>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-7 design_panel">
         <div id="processContainer" class="process-steps">
