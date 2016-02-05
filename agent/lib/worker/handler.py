@@ -330,13 +330,15 @@ class WorkerHandler(Handler):
         try:
             # Call the run_module, it returns the globals after execution
             _new_globals = runpy.run_module(mod_name=_module_name, init_globals=_globals)
-        except TerminationException:
+        except TerminationException as e:
+            print("TerminationException running the process:" + str(e))
             # The process was terminated
             _result = self.report_termination(_globals)
             _new_globals = _globals
 
         except Exception as e:
             # An unhandled error occured running the process
+            print("Error running the process:" + str(e))
             _result = self.report_error(self.log_prefix + "Error in module " + _module_name + ".py:" + str(e), e)
             _new_globals = None
         else:
