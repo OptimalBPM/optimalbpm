@@ -10,7 +10,7 @@ from of.common.internal import not_implemented
 from of.common.logging import BPMLogging
 from of.schemas.constants import zero_object_id
 from of.broker.lib.repositories import Repositories
-from optimalbpm.broker.messaging.factory import agent_control
+from plugins.optimalbpm.broker.messaging.factory import agent_control
 
 __author__ = 'Nicklas Borjesson'
 
