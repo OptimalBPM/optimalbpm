@@ -7,7 +7,7 @@ from bson.objectid import ObjectId
 from nose.tools.trivial import ok_
 from of.common.messaging.factory import log_process_state_message
 
-from optimalbpm.broker.messaging.factory import start_process_message
+from plugins.optimalbpm.broker.messaging.factory import start_process_message
 
 use_step_matcher("re")
 

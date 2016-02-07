@@ -9,17 +9,17 @@ from multiprocessing import Queue as MultiprocessingQueue, Queue
 from bson.objectid import ObjectId
 from mbe.schema import SchemaTools
 
-from optimalbpm.agent.lib.control.handler import ControlHandler
-from optimalbpm.agent.lib.messaging.handler import AgentWebSocketHandler
-from optimalbpm.agent.lib.messaging.websocket import MockupAgentWebSocketClient
-import optimalbpm.agent.lib.messaging.websocket
-from optimalbpm.agent.lib.supervisor.handler import WorkerSupervisor, MockupWorkerSupervisor
-from optimalbpm.agent.lib.worker.handler import WorkerHandlerMockup
+from plugins.optimalbpm.agent.lib.control.handler import ControlHandler
+from plugins.optimalbpm.agent.lib.messaging.handler import AgentWebSocketHandler
+from plugins.optimalbpm.agent.lib.messaging.websocket import MockupAgentWebSocketClient
+import plugins.optimalbpm.agent.lib.messaging.websocket
+from plugins.optimalbpm.agent.lib.supervisor.handler import WorkerSupervisor, MockupWorkerSupervisor
+from plugins.optimalbpm.agent.lib.worker.handler import WorkerHandlerMockup
 from of.common.queue.monitor import Monitor
 from of.schemas.validation import of_uri_handler, of_schema_folder
-from optimalbpm.schemas.validation import bpm_uri_handler
+from plugins.optimalbpm.schemas.validation import bpm_uri_handler
 import of.common.messaging.websocket
-from optimalbpm.testing.init_env import init_bpm_env
+from plugins.optimalbpm.testing.init_env import init_bpm_env
 
 script_dir = os.path.dirname(__file__)
 __author__ = 'nibo'

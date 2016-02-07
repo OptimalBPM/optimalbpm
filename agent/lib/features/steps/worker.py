@@ -6,7 +6,7 @@ from behave import *
 
 from nose.tools.trivial import ok_
 
-from optimalbpm.broker.messaging.factory import bpm_process_control
+from plugins.optimalbpm.broker.messaging.factory import bpm_process_control
 
 use_step_matcher("re")
 

@@ -14,7 +14,7 @@ from time import sleep
 from bson.objectid import ObjectId
 
 # The directory of the current file
-from optimalbpm.schemas.validation import bpm_uri_handler
+from plugins.optimalbpm.schemas.validation import bpm_uri_handler
 
 script_dir = os.path.dirname(__file__)
 
@@ -22,11 +22,11 @@ script_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(script_dir, "../../"))
 
 from mbe.schema import SchemaTools
-from optimalbpm.agent.lib.control.handler import ControlHandler
-from optimalbpm.agent.lib.messaging.handler import AgentWebSocketHandler
-from optimalbpm.agent.lib.messaging.websocket import AgentWebSocket
-from optimalbpm.agent.lib.supervisor.handler import WorkerSupervisor
-from optimalbpm import run_agent
+from plugins.optimalbpm.agent.lib.control.handler import ControlHandler
+from plugins.optimalbpm.agent.lib.messaging.handler import AgentWebSocketHandler
+from plugins.optimalbpm.agent.lib.messaging.websocket import AgentWebSocket
+from plugins.optimalbpm.agent.lib.supervisor.handler import WorkerSupervisor
+from plugins.optimalbpm import run_agent
 from of.common.internal import load_settings, register_signals
 from of.common.messaging.factory import store_process_system_document, \
     log_process_state_message
@@ -36,8 +36,10 @@ from of.common.queue.monitor import Monitor
 from of.schemas.constants import zero_object_id
 from of.schemas.validation import of_uri_handler, of_schema_folder
 import of.common.messaging.websocket
-import optimalbpm.schemas.constants
 
+# Add the plugin definitions to the of ones.
+import plugins.optimalbpm.schemas.constants
+plugins.optimalbpm.schemas.constants.init()
 
 __author__ = "Nicklas Borjesson"
 

@@ -6,7 +6,7 @@ import logging
 
 from of.common.messaging.factory import reply_with_error_message
 from of.common.messaging.handler import WebSocketHandler
-from optimalbpm.broker.messaging.constants import AGENT_SHUTTING_DOWN
+from plugins.optimalbpm.broker.messaging.constants import AGENT_SHUTTING_DOWN
 
 __author__ = 'Nicklas Börjesson'
 

@@ -12,9 +12,9 @@ import queue
 from bson.objectid import ObjectId
 
 from of.common.messaging.factory import log_process_state_message, reply_with_error_message, get_current_login
-from optimalbpm.broker.messaging.factory import bpm_process_control, worker_process_control, get_current_login
+from plugins.optimalbpm.broker.messaging.factory import bpm_process_control, worker_process_control, get_current_login
 from of.common.queue.handler import Handler
-from optimalbpm.agent.lib.worker.run import run_worker_process
+from plugins.optimalbpm.agent.lib.worker.run import run_worker_process
 from of.schemas.constants import zero_object_id
 
 

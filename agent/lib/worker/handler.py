@@ -15,7 +15,7 @@ from types import FunctionType, MethodType, ModuleType
 
 from of.common.internal import not_implemented
 from of.common.messaging.factory import reply_with_error_message, log_process_state_message
-from optimalbpm.broker.messaging.factory import store_bpm_process_instance_message, log_progress_message, \
+from plugins.optimalbpm.broker.messaging.factory import store_bpm_process_instance_message, log_progress_message, \
     message_bpm_process_result, log_process_message
 from of.common.messaging.utils import message_is_none
 from of.common.queue.handler import Handler

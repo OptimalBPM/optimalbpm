@@ -4,10 +4,13 @@ The init_env module/script initializes an OptimalBPM testing environment.
 import os
 
 from of.common.testing.init_env import init_env
-from optimalbpm.schemas.validation import bpm_uri_handler
-import optimalbpm.schemas.constants
+from plugins.optimalbpm.schemas.validation import bpm_uri_handler
 
 __author__ = 'nibo'
+
+import plugins.optimalbpm.schemas.constants
+plugins.optimalbpm.schemas.constants.init()
+
 
 script_dir = os.path.dirname(__file__)
 

@@ -1,6 +1,8 @@
-from optimalbpm.broker.cherrypy.control import CherryPyControl
-from optimalbpm.broker.cherrypy.process import CherryPyProcess
-import optimalbpm.schemas.constants
+from plugins.optimalbpm.broker.cherrypy.control import CherryPyControl
+from plugins.optimalbpm.broker.cherrypy.process import CherryPyProcess
+
+import plugins.optimalbpm.schemas.constants
+plugins.optimalbpm.schemas.constants.init()
 __author__ = 'nibo'
 
 

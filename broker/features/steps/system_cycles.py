@@ -14,7 +14,7 @@ from behave import *
 from nose.tools.trivial import ok_
 
 
-from optimalbpm.agent.lib.features import run_agent_testing
+from plugins.optimalbpm.agent.lib.features import run_agent_testing
 from of.common.messaging.utils import register_at_broker, call_api
 from of.broker.features.steps import broker_cycles
 

@@ -8,8 +8,8 @@ import cherrypy
 from mbe.cherrypy import aop_check_session
 from mbe.constants import object_id_right_admin_everything
 from mbe.groups import has_right
-from optimalbpm.broker.control import Control
-from optimalbpm.broker.messaging.factory import start_process_message
+from plugins.optimalbpm.broker.control import Control
+from plugins.optimalbpm.broker.messaging.factory import start_process_message
 
 from of.broker.globals import states
 

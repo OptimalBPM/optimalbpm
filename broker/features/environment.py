@@ -13,12 +13,12 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from mbe.node import Node
-from optimalbpm.broker.control import Control
+from plugins.optimalbpm.broker.control import Control
 from of.broker.lib.messaging.handler import BrokerWebSocketHandler
 from of.common.messaging.constants import GOING_AWAY
 from of.common.queue.monitor import Monitor
 import of.common.messaging.websocket
-from optimalbpm.testing.init_env import init_bpm_env
+from plugins.optimalbpm.testing.init_env import init_bpm_env
 from of.broker.lib.messaging.websocket import MockupWebSocket
 from of.schemas.constants import zero_object_id
 

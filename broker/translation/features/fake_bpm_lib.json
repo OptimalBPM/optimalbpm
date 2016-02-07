@@ -1,5 +1,5 @@
 {
-  "optimalbpm.broker.lib.translation.features.fake_bpm_lib": {
+  "plugins.optimalbpm.broker.lib.translation.features.fake_bpm_lib": {
     "meta": {
       "description": "Dummy-functions for testing"
     },

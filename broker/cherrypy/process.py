@@ -17,7 +17,7 @@ import cherrypy
 from mbe.cherrypy import aop_check_session
 from mbe.constants import object_id_right_admin_everything
 from mbe.groups import has_right
-from optimalbpm.broker.translation.python.translator import ProcessTokens, core_language
+from plugins.optimalbpm.broker.translation.python.translator import ProcessTokens, core_language
 
 
 # TODO: Consider what the documentation in the top of each module should look like (PROD-40)

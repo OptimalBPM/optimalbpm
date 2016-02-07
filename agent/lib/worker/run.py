@@ -10,7 +10,7 @@ from of.common.queue.monitor import Monitor
 
 __author__ = 'Nicklas Borjesson'
 
-from optimalbpm.agent.lib.worker.handler import WorkerHandler
+from plugins.optimalbpm.agent.lib.worker.handler import WorkerHandler
 
 
 def _logging(_msg, _severity):
