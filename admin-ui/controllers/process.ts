@@ -589,17 +589,20 @@ export class ProcessController extends NodeManager implements NodeManagement {
                         // TODO: Parts of this handling is somewhat bit hacky, investigate if setDetails couldn't do some of this
                         // Check if the data hasn't been replaced already
                         if (!(parameter["key"] in data.dataRefs)) {
-                            // Complex ui always have a get_data("00000000000000000")-call, parse that objectId.
-                            var dataRef: string = data.parameters[parameter["key"]].substr(10, 24);
+
                             // Change the data in the parameter to the actual data
-                            if (dataRef in this.paramData) {
+
+                            // If initialized, Complex ui always have a get_data("00000000000000000")-call, parse that objectId.
+                            if (!(parameter["key"] in data.parameters) && (dataRef in this.paramData)) {
+                                var dataRef: string = data.parameters[parameter["key"]].substr(10, 24);
 
                                 // Store the reference so this can be changed back later on
                                 data.dataRefs[parameter["key"]] = dataRef;
                                 data.parameters[parameter["key"]] = this.paramData[dataRef];
                             }
                             else {
-                                dataRef = this.generateObjectId();
+                                // Initialize the parameter
+                                var dataRef = this.generateObjectId();
                                 data.dataRefs[parameter["key"]] = dataRef;
                                 this.paramData[dataRef] = {};
                                 // Complex ui needs to have some kind of value
