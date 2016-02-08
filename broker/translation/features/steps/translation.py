@@ -106,17 +106,3 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     ok_(cmp(os.path.join(script_dir, "../source.py"), os.path.join(script_dir, "../source_out.py"), "Files do not match!"))
-
-
-@step("all verbs raw property is reset")
-def step_impl(context):
-    """
-    :type context behave.runner.Context
-    """
-    def reset_verbs_recursively(_verb):
-        _verb.raw = None
-        for _curr_child in _verb.children:
-            reset_verbs_recursively(_curr_child)
-
-    for _curr_child in context.verbs:
-        reset_verbs_recursively(_curr_child)

@@ -106,7 +106,7 @@ class CherryPyProcess(object):
             os.makedirs(_repo_path)
 
         _filename = os.path.join(_repo_path,"source.py")
-        _verbs = self.json_to_verbs(_data= cherrypy.request.json["verbs"])
+        _verbs = _tokens.json_to_verbs(_json= cherrypy.request.json["verbs"])
         if "documentation" in cherrypy.request.json:
             _tokens.documentation = cherrypy.request.json["documentation"]
         _namespaces, _map = _tokens.encode_process(_verbs = _verbs, _filename=_filename)
