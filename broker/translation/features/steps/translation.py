@@ -4,7 +4,7 @@ from tokenize import TokenInfo
 from behave import *
 from nose.tools.trivial import ok_
 from of.broker.lib.definitions import Definitions
-from plugins.optimalbpm.web.server.translation.python.translator import ProcessTokens, core_language
+from plugins.optimalbpm.broker.translation.python.translator import ProcessTokens, core_language
 
 use_step_matcher("re")
 
