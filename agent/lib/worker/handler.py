@@ -6,8 +6,15 @@ import copy
 import json
 import logging
 import importlib
-from importlib._bootstrap import ModuleSpec, SourceFileLoader
+from importlib._bootstrap import ModuleSpec
+
+try:
+    from importlib._bootstrap import SourceFileLoader
+except:
+    from importlib._bootstrap_external import SourceFileLoader
+
 import runpy
+
 
 from threading import Thread
 import threading
@@ -22,7 +29,6 @@ from of.common.queue.handler import Handler
 
 
 __author__ = 'Nicklas Borjesson'
-
 
 class BPMTread(Thread):
     """
@@ -195,7 +201,15 @@ class WorkerHandler(Handler):
         """
         time.sleep(_duration)
 
+    def get_data(self, _id):
+        """
+        Get data for a complex parameter
+        :param _duration: Time in seconds
+        :return:
+        """
 
+        # TODO: This function
+        return self.data[_id]
 
     def report_result(self, _globals, _result):
         """
@@ -446,6 +460,24 @@ class WorkerHandler(Handler):
         """
         return self.trace_calls
 
+
+    def load_namespaces(self, _source_path, _dest_globals):
+        with open(os.path.join(_source_path, "namespaces.json")) as f:
+            _namespaces = json.load(f)
+        for _namespace in _namespaces:
+            _module = importlib.import_module("plugins." + _namespace)
+            _module.__dict__.update({
+                "report_error": self.report_error,
+                "report_result": self.report_result,
+                "log_progress": self.log_progress,
+                "log_message": self.log_message
+                                    })
+            _dest_globals[_namespace] = _module
+
+    def load_data(self, _source_path):
+        with open(os.path.join(_source_path, "data.json")) as f:
+            self.data = json.load(f)
+
     def start_bpm_process(self, _message):
         """
         Initializes and starts a BPM process based on the content of the message
@@ -464,7 +496,7 @@ class WorkerHandler(Handler):
             _entry_point = message_is_none(_message, "entryPoint", None)
             _globals = message_is_none(_message, "globals", {})
 
-            # Add repository location to sys,path to be able to import
+            # Add repository location to sys.path to be able to import
             _source_path = os.path.join(os.path.expanduser(self.repo_base_folder), _message["processDefinitionId"])
             sys.path.append(_source_path)
 
@@ -506,6 +538,11 @@ class WorkerHandler(Handler):
         else:
             try:
                 _thread_name = "BPM Process " + self.bpm_process_id + " thread"
+
+                # Load data
+                self.load_data(_source_path=_source_path)
+
+
                 # Add callbacks to scope
                 _globals.update(
                     {
@@ -513,9 +550,12 @@ class WorkerHandler(Handler):
                         "report_result": self.report_result,
                         "log_progress": self.log_progress,
                         "log_message": self.log_message,
-                        "pause": self.pause
+                        "pause": self.pause,
+                        "get_data": self.get_data
                     }
                 )
+                # Add the name space modules to the process globals
+                self.load_namespaces(_source_path=_source_path, _dest_globals=_globals)
 
                 if _function:
                     _function.__globals__.update(_globals)
@@ -535,6 +575,7 @@ class WorkerHandler(Handler):
                     _reason = _message["reason"]
                 else:
                     _reason = "No reason"
+
                 self.send_queue.put([None, log_process_state_message(
                     _changed_by=self.bpm_process_thread.user_id,
                     _state="running",
