@@ -36,8 +36,14 @@ class ProcessTokens(object):
     # The current position
     position = None
 
-    # The raw tokens of the header
-    raw = None
+    # A position/verb-map, used to generate a line/doc-map
+    position_map = None
+
+    # The non-local namespaces referred to by the process
+    namespaces = None
+
+    # The parsed tokens
+    tokens = None
 
     def __init__(self, _token_list=None, _keywords=None, _definitions=None):
         if _keywords:
@@ -51,6 +57,10 @@ class ProcessTokens(object):
         if _token_list:
             self._items = _token_list
             self.position = 0
+
+        self.position_map = {}
+        self.namespaces = []
+
 
     def first(self):
         """
@@ -129,7 +139,6 @@ class ProcessTokens(object):
             _token, self.documentation = parse_documentation(_token, self)
         else:
             return []
-        self.raw = self._items[0:self.position]
 
         _verbs = []
 
@@ -142,29 +151,35 @@ class ProcessTokens(object):
 
         return _verbs
 
-    def encode_verbs(self, _verbs, _header_raw, _filename):
+    def encode_process(self, _verbs, _filename):
         """
         This function converts all verbs to tokens, untokenizes them and writes to an output file
 
         : _verbs A list of verbs
-        : _header_raw The raw header of the process
         : _filename Output filename
         """
 
-        if _header_raw:
-            _tokens = _header_raw
+        # Init the line map and
+        _line_map = {}
+
+        # First tokenize the file documentation
+        if self.documentation:
+            self.tokens = [[59, 'utf-8', [0, 0], [0, 0], ''], [STRING, '"""' + self.documentation + '"""'], [NEWLINE, "\n"]]
+            # add the documentation mapping
+            _line_map[1] = {"identifier": "file", "documentation": self.documentation}
+
         else:
-            _tokens = [[59, 'utf-8', [0, 0], [0, 0], '']]
+            self.tokens = [[59, 'utf-8', [0, 0], [0, 0], '']]
+
         # Loop all verbs
         for _verb in _verbs:
             print(_verb.identifier)
-            _new_tokens = _verb.to_tokens(self)
-            _tokens += _new_tokens
+            _verb.to_tokens(self)
 
         # For some reason the last command should not be ended with a newline...
-        if _tokens[-1][0] == NEWLINE:
-            _tokens.pop()
-        _tokens.append([ENDMARKER, ""])
+        if self.tokens[-1][0] == NEWLINE:
+            self.tokens.pop()
+        self.tokens.append([ENDMARKER, ""])
 
         # We will ignore the zeroth row, it is the encoding token which is not included as part of the text content
         # but as a part of the the tokenizers tokenization process. I.E. not round trip.
@@ -173,9 +188,10 @@ class ProcessTokens(object):
         _indents = 0
         _indent_length = 4
 
-        # Loop all tokens
-        for _curr_token_idx in range(1, len(_tokens)):
-            _curr_token = _tokens[_curr_token_idx]
+        # Loop all tokens to and fill out the data needed make them work as part of a larger set of tokens and
+        # satisfy the tokenizer with proper TokenInfo instances.
+        for _curr_token_idx in range(1, len(self.tokens)):
+            _curr_token = self.tokens[_curr_token_idx]
 
             # Handle indents and dedents
             if _curr_token[0] == INDENT:
@@ -190,7 +206,7 @@ class ProcessTokens(object):
                 # Its a textual token, and not the first on the row
                 if _curr_token[0] in [NAME, NUMBER, STRING] and _curr_token_idx > 0:
                     # Add space if not preceeded by these
-                    if _tokens[_curr_token_idx - 1][1] not in [".", "(", '"""']:
+                    if self.tokens[_curr_token_idx - 1][1] not in [".", "(", '"""']:
                         _curr_col += 1
                 # Add space if it is an operator and not one of these
                 if (_curr_token[0] in [OP]) and (_curr_token[1] not in [".", ")", ",", "(", ":"]):
@@ -220,12 +236,12 @@ class ProcessTokens(object):
             if _curr_token[0] in [DEDENT]:
                 # Set end row as that will be passed on to the next token.
                 _end_col = _indent_length * _indents
-                _tokens[_curr_token_idx] = TokenInfo(type=_curr_token[0], string=_curr_value,
+                self.tokens[_curr_token_idx] = TokenInfo(type=_curr_token[0], string=_curr_value,
                                                      start=(_curr_row, 0), end=(_end_row, 0),
                                                      line=_curr_indent_string + _curr_value)
             else:
                 # Always set NL to starting in 0
-                if _curr_token[0] == NL and _tokens[_curr_token_idx - 1][0] in [NEWLINE, NL]:
+                if _curr_token[0] == NL and self.tokens[_curr_token_idx - 1][0] in [NEWLINE, NL]:
                     _curr_value = "\n"
                     _curr_col = 0
                     _end_col = 1
@@ -235,9 +251,11 @@ class ProcessTokens(object):
                 else:
                     # Add the length of the current line to the current end column
                     _end_col = _curr_col + len(_curr_indent_string + _curr_value)
+                if _curr_token_idx in self.position_map:
+                    _line_map[_curr_row] = self.position_map[_curr_token_idx]
 
                 # Create the TokenInfo instance
-                _tokens[_curr_token_idx] = TokenInfo(type=_curr_token[0], string=_curr_value,
+                self.tokens[_curr_token_idx] = TokenInfo(type=_curr_token[0], string=_curr_value,
                                                      start=(_curr_row, _curr_col), end=(_end_row, _end_col),
                                                      line=_curr_indent_string + _curr_value)
 
@@ -254,8 +272,10 @@ class ProcessTokens(object):
 
         # Write the result to the file
         with open(_filename, "w", encoding="utf-8") as _file:
-            _string = tokenize.untokenize(_tokens)
+            _string = tokenize.untokenize(self.tokens)
             _file.write(_string.decode('utf-8'))
+
+        return self.namespaces, _line_map
 
     @staticmethod
     def load_keywords():
@@ -292,3 +312,27 @@ class ProcessTokens(object):
             _result.append(Verb.from_json(_curr_verb))
 
         return _result
+
+
+    def add_to_namespaces(self, _identifier):
+        """
+        Parses the namespace from identifier and adds it to namespaces if not present
+        :param _identifier: The identifier
+        :return:
+        """
+        _identifier_parts = _identifier.split(".")
+        if len(_identifier_parts) > 1:
+            if _identifier_parts[0] not in self.namespaces:
+                self.namespaces.append(_identifier_parts[0])
+
+
+    def add_verb_to_position_map(self, _verb):
+        """
+        Adds a mapping to the map for the next position
+        :param _verb: The verb to map
+        """
+        if _verb.documentation:
+            self.position_map[len(self.tokens)] = {"identifier": _verb.identifier, "documentation": _verb.documentation}
+        else:
+            self.position_map[len(self.tokens)] = {"identifier": _verb.identifier, "documentation": "Undocumented"}
+

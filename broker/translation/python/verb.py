@@ -69,9 +69,6 @@ class Verb(object):
     # The row on which the verb was found in the source, should be None if any verb has changed
     row = None
 
-    # The raw list of tokens for this verb(only), not set if the verb is changed
-    raw = None
-
     # A list of tokens containing whitespace
     lead_in_whitespace = None
 
@@ -122,7 +119,6 @@ class Verb(object):
                    "assignment_order": self.assignment_order,
                    "children": [_curr_child.to_json() for _curr_child in self.children],
                    "row": self.row,
-                   "raw": self.raw,
                    "lead_in_whitespace": self.lead_in_whitespace,
                    "token_begin": self._token_begin,
                    "token_end": self._token_end,
@@ -151,7 +147,6 @@ class Verb(object):
         _result.assignment_order = _json["assignment_order"]
         _result.children = [Verb.from_json(_curr_child) for _curr_child in _json["children"]]
         _result.row = _json["row"]
-        _result.raw = _json["raw"]
         _result.lead_in_whitespace = _json["lead_in_whitespace"]
         _result._token_begin = _json["token_begin"]
         _result._token_end = _json["token_end"]
@@ -549,7 +544,6 @@ class Verb(object):
         # Is the documentation not followed by
 
         self._token_end = _process_tokens.position
-        self.raw = _process_tokens._items[self._token_begin: self._token_end]
         return _token
 
     def tokenize_documentation(self, _process_tokens):
@@ -576,7 +570,6 @@ class Verb(object):
 
     def tokenize_keyword(self, _process_tokens):
         # Loop keyword
-        _result = []
 
         _definition = _process_tokens.keywords[self.identifier]
         _curr_part = None
@@ -586,30 +579,30 @@ class Verb(object):
             _curr_part = _parts[_curr_part_idx]
             if _curr_part["kind"] == "keyword":
                 for _curr_value in _curr_part["values"]:
-                    _result.append([NAME, _curr_value])
+                    _process_tokens.tokens.append([NAME, _curr_value])
 
             elif _curr_part["kind"] == "python-reference":
                 # Assemble identifier
                 _ref = self.parameters[_curr_part["key"]]
                 _ref_parts = str.split(_ref, ".")
                 for _curr_ref_part_idx in range(0, len(_ref_parts)):
-                    _result.append([NAME, _ref_parts[_curr_ref_part_idx]])
+                    _process_tokens.tokens.append([NAME, _ref_parts[_curr_ref_part_idx]])
                     if _curr_ref_part_idx < len(_ref_parts) - 1:
-                        _result.append([OP, "."])
+                        _process_tokens.tokens.append([OP, "."])
 
             elif _curr_part["kind"] == "expression":
-                _result += self.tokenize_expression(self.parameters[_curr_part["key"]])
+                _process_tokens.tokens += self.tokenize_expression(self.parameters[_curr_part["key"]])
 
             elif _curr_part["kind"] == "block":
-                _result.append([OP, ":"])
-                _result.append([NEWLINE, "\n"])
-                _result.append([INDENT, "    "])
+                _process_tokens.tokens.append([OP, ":"])
+                _process_tokens.tokens.append([NEWLINE, "\n"])
+                _process_tokens.tokens.append([INDENT, "    "])
                 for _curr_child in self.children:
-                    _result += _curr_child.to_tokens(_process_tokens)
-                _result.append([DEDENT, ""])
+                    _curr_child.to_tokens(_process_tokens)
+                _process_tokens.tokens.append([DEDENT, ""])
 
             elif _curr_part["kind"] == "parameters":
-                _result.append([OP, "("])
+                _process_tokens.tokens.append([OP, "("])
                 _params = []
                 for _curr_param_name in self.parameter_order:
                     _curr_parameter = self.parameters[_curr_param_name]
@@ -619,27 +612,27 @@ class Verb(object):
                             _params += [[OP, "="], [NAME, _curr_parameter]]
                         _params.append([OP, ","])
 
-                _result += _params[0:-1]  # Ignore the last commma
+                _process_tokens.tokens += _params[0:-1]  # Ignore the last commma
                 # ( YOU try to nicely insert an item every third item and not the last)
 
-                _result.append([OP, ")"])
+                _process_tokens.tokens.append([OP, ")"])
 
         # Do not add newlines after blocks, they have dedents.
         if _curr_part and _curr_part["kind"] != "block":
-            _result.append([NEWLINE, "\n"])
-        return _result
+            _process_tokens.tokens.append([NEWLINE, "\n"])
+
 
     def tokenize_assignment(self, _process_tokens):
         # Loop assignments
         _assignments = []
-        _result = []
+
         for _curr_assignment_name in self.assignment_order:
             _curr_assignment = self.assignments[_curr_assignment_name]
             if _curr_assignment_name[0:11] == "assignment_":
                 _assignments += [NAME, _curr_assignment], [OP, ","]
-        _result += _assignments[0:-1]
+        _process_tokens.tokens += _assignments[0:-1]
 
-        _result.append([OP, self.assignment_operator])
+        _process_tokens.tokens.append([OP, self.assignment_operator])
 
         # Loop expressions
         _expressions = []
@@ -648,29 +641,35 @@ class Verb(object):
             if _curr_expression_name[0:11] == "expression_":
                 _expressions += self.tokenize_expression(_curr_expression)
                 _expressions.append([OP, ","])
-        _result += _expressions[0:-1]
+        _process_tokens.tokens += _expressions[0:-1]
 
-        _result.append([NEWLINE, "\n"])
-        return _result
+        _process_tokens.tokens.append([NEWLINE, "\n"])
+
 
     def tokenize_call(self, _process_tokens):
-        # Calls
+        """
+        Add the tokens for a call verb to process tokens
+        :param _process_tokens: A ProcessTokens instance
+        :return: The list of tokens
+        """
+
+        _process_tokens.add_to_namespaces(self.identifier)
 
         # Loop assignments
         _assignments = []
-        _result = []
+
         if len(self.assignments) > 0:
             for _curr_assignment_name in self.assignment_order:
                 _curr_assignment = self.assignments[_curr_assignment_name]
                 if _curr_assignment_name[0:11] == "assignment_":
                     _assignments += [NAME, _curr_assignment], [OP, ","]
 
-            _result += _assignments[0:-1]
-            _result.append([OP, self.assignment_operator])
+            _process_tokens.tokens += _assignments[0:-1]
+            _process_tokens.tokens.append([OP, self.assignment_operator])
 
-        _result.append([NAME, self.identifier])
+        _process_tokens.tokens.append([NAME, self.identifier])
 
-        _result.append([OP, "("])
+        _process_tokens.tokens.append([OP, "("])
 
         if self.parameters and len(self.parameters) > 0:
             _params = []
@@ -683,25 +682,21 @@ class Verb(object):
                     _params += self.tokenize_expression(_curr_parameter)
                     _params.append([OP, ","])
 
-            _result += _params[0:-1]
+            _process_tokens.tokens += _params[0:-1]
 
-        _result.append([OP, ")"])
+        _process_tokens.tokens.append([OP, ")"])
 
-        _result.append([NEWLINE, "\n"])
-        return _result
+        _process_tokens.tokens.append([NEWLINE, "\n"])
 
     def to_tokens(self, _process_tokens):
+        # Initiate with lead_in_whitespace (initiated to [])
+        _process_tokens.tokens += list(self.lead_in_whitespace)
 
-        # If raw is set, the verb has not been changed.
-        if self.raw:
-            # No need for tokenization of this verb, return the raw token array
-            return self.raw
-        else:
-            # Initiate with lead_in_whitespace (initiated to [])
-            _result = list(self.lead_in_whitespace)
+        # Add documentation if present
+        _process_tokens.tokens += self.tokenize_documentation(_process_tokens)
+        # Add mapping
+        _process_tokens.add_verb_to_position_map(self)
+        # Handle by type (function map)
+        self.to_shortcuts[self.type](_process_tokens)
 
-            # Add documentation if present
-            _result += self.tokenize_documentation(_process_tokens)
-            # Handle by type (function map)
-            _new_process_tokens = self.to_shortcuts[self.type](_process_tokens)
-            return _result + _new_process_tokens
+

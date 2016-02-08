@@ -97,8 +97,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-
-    _definitions = context.tokens.encode_verbs(context.verbs, context.tokens.raw, os.path.join(script_dir, "../source_out.py"))
+    _definitions = context.tokens.encode_process(context.verbs, os.path.join(script_dir, "../source_out.py"))
 
 
 @then("the files must match")

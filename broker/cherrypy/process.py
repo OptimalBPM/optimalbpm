@@ -65,7 +65,7 @@ class CherryPyProcess(object):
         _process_id = cherrypy.request.json["processId"]
         _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)
         _repo_path = os.path.expanduser("~/optimalframework/agent_repositories/" + _process_id)
-        _filename_process = _repo_path +"/source.py"
+        _filename_process = _repo_path +"/main.py"
         if os.path.exists(_filename_process):
             _verbs = _tokens.parse_file(_filename_process)
         else:
@@ -73,7 +73,6 @@ class CherryPyProcess(object):
         _result = dict()
         _result["processId"] = _process_id
         _result["verbs"] = _tokens.verbs_to_json(_verbs)
-        _result["raw"] = _tokens.raw
         _result["encoding"] = _tokens.encoding
         _result["name"] = "source.py"
         _result["documentation"] = _tokens.documentation
@@ -99,15 +98,26 @@ class CherryPyProcess(object):
         # TODO: Document the structure of the process parameters, perhaps create a schema?(ORG-110)
         has_right(object_id_right_admin_everything, kwargs["user"])
         _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)
-        _verbs = _tokens.json_to_verbs(cherrypy.request.json["verbs"])
+        _tokens.documentation = cherrypy.request.json["documentation"]
+
         _process_id = cherrypy.request.json["processId"]
         _repo_path = os.path.expanduser("~/optimalframework/agent_repositories/" + _process_id)
         if not os.path.exists(_repo_path):
             os.makedirs(_repo_path)
 
         _filename = os.path.join(_repo_path,"source.py")
-        _tokens.encode_verbs(_verbs=_verbs, _header_raw=cherrypy.request.json["raw"],
-                             _filename=_filename)
+        _verbs = self.json_to_verbs(_data= cherrypy.request.json["verbs"])
+        if "documentation" in cherrypy.request.json:
+            _tokens.documentation = cherrypy.request.json["documentation"]
+        _namespaces, _map = _tokens.encode_process(_verbs = _verbs, _filename=_filename)
+
+        _filename_namespaces = os.path.join(_repo_path,"namespaces.json")
+        with open(_filename_namespaces, "w") as f:
+            json.dump(_namespaces, f)
+        _filename_map = os.path.join(_repo_path,"map.json")
+        with open(_filename_map, "w") as f:
+            json.dump(_map, f)
+
         _filename_data = os.path.join(_repo_path,"data.json")
         with open(_filename_data, "w") as f:
             json.dump(cherrypy.request.json["paramData"], f)

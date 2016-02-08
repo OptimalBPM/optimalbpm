@@ -366,7 +366,6 @@ export class ProcessController extends NodeManager implements NodeManagement {
                 "type_title": new_node.title,
                 "type_description": new_node.description,
                 "row": null,
-                "raw": null,
                 "children": [],
                 "expanded":expanded,
                 "lead_in_whitespace": [],
@@ -766,14 +765,13 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
         items.forEach((item) => {
             var curr_data = this.tree.data[item["id"]]
-            if (curr_data.raw && "dataRefs" in curr_data) {
+            if ("dataRefs" in curr_data) {
                 // Loop all parameters, save data and create calls if they are complex
                 for (var paramId in curr_data.dataRefs) {
                     this.paramData[curr_data.dataRefs[paramId]] = curr_data.parameters[paramId];
                     curr_data.parameters[paramId] = "get_data(\"" + curr_data.dataRefs[paramId] + "\")";
                 }
 
-                curr_data.raw = null
             }
 
             if (item.children && item.children.length) {
@@ -815,11 +813,9 @@ export class ProcessController extends NodeManager implements NodeManagement {
         declare var _this :any;
         var _curr_item : TreeNode = _this.tree.selectedItem;
         _curr_item.title = _this.makeTitle(_this.nodeScope.selected_data);
-        // Ascend, set all to null.
-        _this.nodeScope.selected_data.raw = null;
+
         while (_curr_item.parentItem) {
             _curr_item = _curr_item.parentItem;
-            _this.tree.data[_curr_item.id].raw = null
         }
     };
 
