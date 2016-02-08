@@ -659,7 +659,7 @@ class Verb(object):
         # Loop assignments
         _assignments = []
         _result = []
-        if len(_assignments) > 0:
+        if len(self.assignments) > 0:
             for _curr_assignment_name in self.assignment_order:
                 _curr_assignment = self.assignments[_curr_assignment_name]
                 if _curr_assignment_name[0:11] == "assignment_":
