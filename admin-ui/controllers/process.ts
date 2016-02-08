@@ -592,12 +592,20 @@ export class ProcessController extends NodeManager implements NodeManagement {
                             // Change the data in the parameter to the actual data
 
                             // If initialized, Complex ui always have a get_data("00000000000000000")-call, parse that objectId.
-                            if (!(parameter["key"] in data.parameters) && (dataRef in this.paramData)) {
+                            if (parameter["key"] in data.parameters) {
                                 var dataRef: string = data.parameters[parameter["key"]].substr(10, 24);
-
                                 // Store the reference so this can be changed back later on
                                 data.dataRefs[parameter["key"]] = dataRef;
-                                data.parameters[parameter["key"]] = this.paramData[dataRef];
+
+                                if (dataRef in this.paramData) {
+                                    data.parameters[parameter["key"]] = this.paramData[dataRef];
+                                } else {
+                                    // No data in paramData, initialize empty
+                                    data.parameters[parameter["key"]] = {};
+                                }
+
+
+
                             }
                             else {
                                 // Initialize the parameter
@@ -770,7 +778,10 @@ export class ProcessController extends NodeManager implements NodeManagement {
                 for (var paramId in curr_data.dataRefs) {
                     this.paramData[curr_data.dataRefs[paramId]] = curr_data.parameters[paramId];
                     curr_data.parameters[paramId] = "get_data(\"" + curr_data.dataRefs[paramId] + "\")";
+
                 }
+                // Remove the dataRefs, it will be recreated next time the item is edited.
+                delete curr_data.dataRefs;
 
             }
 

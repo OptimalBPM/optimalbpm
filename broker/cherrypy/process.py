@@ -105,7 +105,7 @@ class CherryPyProcess(object):
         if not os.path.exists(_repo_path):
             os.makedirs(_repo_path)
 
-        _filename = os.path.join(_repo_path,"source.py")
+        _filename = os.path.join(_repo_path,"main.py")
         _verbs = _tokens.json_to_verbs(_json= cherrypy.request.json["verbs"])
         if "documentation" in cherrypy.request.json:
             _tokens.documentation = cherrypy.request.json["documentation"]
