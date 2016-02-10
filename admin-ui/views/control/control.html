@@ -63,10 +63,18 @@
         </table>
     </div>
 </div>
-<span class="left_row_headings"><br/>Select<br/>process</span>
-<select ng-model="controller.currProcess" ng-options="item.value as item.text for item in controller.processes"></select>
-<span class="left_row_headings"><br/>Select<br/>agent</span>
-<select ng-model="controller.currAgent" ng-options="item.value as item.text for item in controller.agents"></select>
+<div>
+    <div class="float:left">
+        <span class="left_row_headings"><br/>Select<br/>process</span>
+    </div>
+    <div class="float:right">
+        <select class="form-control" ng-model="controller.currProcess" ng-options="item.value as item.text for item in controller.processes"></select>
+    </div>
+</div>
+<div>
+    <span class="left_row_headings"><br/>Select<br/>agent</span>
+    <select class="form-control" ng-model="controller.currAgent" ng-options="item.value as item.text for item in controller.agents"></select>
+</div>
 <button ng-click="controller.start_process(controller.currProcess)">Start {{controller.currProcess}} </button>
 <button ng-click="controller.attack(controller.currProcess)">Start lots of processes</button>
 <button ng-click="controller.kill_agent(controller.currAgent)">Kill {{controller.currAgent}}</button>

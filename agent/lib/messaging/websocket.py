@@ -4,7 +4,9 @@ This module holds the WebSocketBrokerClient class
 
 import threading
 import time
+from time import sleep
 
+from of.common.messaging.constants import ABNORMAL_CLOSE, GOING_AWAY
 from ws4py.client.threadedclient import WebSocketClient
 from plugins.optimalbpm.broker.messaging.constants import AGENT_SHUTTING_DOWN, AGENT_RESTARTING
 
@@ -23,13 +25,14 @@ class AgentWebSocket(BPMWebSocket, WebSocketClient):
 
     #: Callback to a function that stops the entire agent(called when giving up reconnecting)
     stop_agent = None
-
+    #: Callback to a function that registers the agent at the broker (called when disconnected without reason)
+    register_agent = None
     #: The thread that keeps the socket running
     run_forever_thread = None
 
     def __init__(self, url, protocols=None, extensions=None, heartbeat_freq=None,
                  ssl_options=None, headers=None,
-                 _session_id=None, _stop_agent=None):
+                 _session_id=None, _stop_agent=None, _register_agent = None):
         """
 
         :param url: The remote URL
@@ -51,6 +54,7 @@ class AgentWebSocket(BPMWebSocket, WebSocketClient):
                                                     extensions=extensions, heartbeat_freq=heartbeat_freq,
                                                     ssl_options=ssl_options, headers=headers)
         self.stop_agent = _stop_agent
+        self.register_agent = _register_agent
         self.init(_session_id=_session_id)
 
 
@@ -73,33 +77,38 @@ class AgentWebSocket(BPMWebSocket, WebSocketClient):
         """
         The close function is overridden to provide better error, logging and shutdown handling.
         It is called by the websocket when the the socket has been closed for some unexpected reason.
-        This in turn causes the agent to restart and try to reconnect.
+        This in turn causes the agent to first try to reconnect and then restart.
         :param code: a web socket status code, see rfc6455 http://tools.ietf.org/html/rfc6455#section-7.4.1
         :param reason: the textual reason the socket was disconnected. if available.
         """
-        # TODO: This should probably just try and reconnect first, and not restart the entire agent. (PROD-21)
 
-        if code not in [AGENT_SHUTTING_DOWN, AGENT_RESTARTING]:
-            print(self.log_prefix + "The peer \"" +self.address +"\" disconnected the socket(reason: " + str(reason))
-        else:
-            print(self.log_prefix + "Shutting down, disconnecting the peer \"" +self.address +"\"")
-        # Terminate all threads
-        if hasattr(self, "stream") and self.stream:
-            self.terminate()
-            super(AgentWebSocket, self).close(code, reason)
-        else:
-            # Manually handle closing
-            self.closed(1006, "Going away")
-            if hasattr(self, "sock") and self.sock:
-                self.close_connection()
-            self.environ = None
+
+        print(self.log_prefix + "The peer \"" +self.address +"\" disconnected the socket(reason: " + str(reason) + ")")
+        print(self.log_prefix + "Shutting down, disconnecting the peer \"" +self.address +"\"")
+
+        # Manually handle closing
+        self.client_terminated = self.server_terminated = True
+        self.closed(GOING_AWAY, "Going away")
+        if hasattr(self, "sock") and self.sock:
+            self.close_connection()
+        self.environ = None
 
         of.common.messaging.websocket.monitor.handler.unregister_web_socket(self)
 
-        # TODO: Handle broker restarting and/or shutting down (PROD-87)
+        if code == ABNORMAL_CLOSE:
 
-        if code not in [AGENT_SHUTTING_DOWN, AGENT_RESTARTING]:
-            # TODO: The agent should most certainly not restart, but instead try to reconnect (PROD-87)
+            try:
+                print(self.log_prefix + "Waiting for two seconds")
+                sleep(2)
+                print(self.log_prefix + "Trying to re-register")
+                _register_result = self.register_agent(_retries=1, _connect=True)
+                if not _register_result:
+                    self.restart_agent("Failed to re-register, trying restarting as last resort.")
+            except Exception as e:
+                self.restart_agent("Error re-registering, trying restarting as last resort, error:" + str(e))
+
+
+        elif code not in [AGENT_SHUTTING_DOWN, AGENT_RESTARTING]:
             print(self.log_prefix + "Restarting the agent")
             self.restart_agent("Broker has terminated the connection, restarting.")
 
