@@ -73,7 +73,7 @@
 </div>
 <div>
     <span class="left_row_headings"><br/>Select<br/>agent</span>
-    <select class="form-control" ng-model="controller.currAgent" ng-options="item.value as item.text for item in controller.agents"></select>
+    <select class="form-control" ng-model="controller.currAgent" ng-options="item.text as item.text for item in controller.agents"></select>
 </div>
 <button ng-click="controller.start_process(controller.currProcess)">Start {{controller.currProcess}} </button>
 <button ng-click="controller.attack(controller.currProcess)">Start lots of processes</button>

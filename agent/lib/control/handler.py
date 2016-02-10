@@ -3,7 +3,7 @@ This module holds the ControlHandler class.
 """
 import threading
 
-
+from common.messaging.factory import reply_with_error_message
 from of.common.queue.handler import Handler
 
 
@@ -61,13 +61,14 @@ class ControlHandler(Handler):
 
         self.message_monitor.handler.control_queue = _monitor.queue
 
-    def handle_error(self, _error):
+    def handle_error(self, _error_message, _message):
         """
         A generic function for handling errors
         :param _error: The error message
         """
-        print(self.log_prefix + "An error occured, should implement handle error. Error: " + str(_error))
-        # TODO: Implement sending error log messages to the broker using error message (PROD-32)
+        print(self.log_prefix + "An error occured, replying with an error message. Error: " + str(_error_message))
+        self.message_monitor.queue.put([None, reply_with_error_message(self, _message, _error_message)])
+        # TODO: Use general logging function instead (PROD-32)
         # self.logging_function(msg=_error, severity=logging.ERROR)
 
     def handle_agent_control_message(self, _message_data):
@@ -99,20 +100,19 @@ class ControlHandler(Handler):
         try:
             _schema_id = _message_data["schemaRef"]
         except KeyError:
-            self.handle_error(self.log_prefix + "No schema id found in message.")
+            self.handle_error(self.log_prefix + "No schema id found in message.", _message_data)
             return
 
         try:
             _handler = self.schema_id__handler[_schema_id]
         except KeyError:
-            self.handle_error(self.log_prefix + "No handler found for schema Id " + str(_schema_id))
+            self.handle_error(self.log_prefix + "No handler found for schema Id " + str(_schema_id), _message_data)
             return
 
         try:
             _handler(_message_data)
         except Exception as e:
-            # TODO: This should really not close the socket, rather return information (key:PROD-21)
-            self.handle_error(self.log_prefix + "Error running handler for " + str(_schema_id) + ": " + str(e))
+            self.handle_error(self.log_prefix + "Error running handler for " + str(_schema_id) + ": " + str(e), _message_data)
 
     def shut_down(self, _user_id):
         """

@@ -69,6 +69,7 @@ class CherryPyControl(object):
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
     def agent_control(self, **kwargs):
+        print(str(cherrypy.request.json))
         return self._control.agent_control(cherrypy.request.json["address"],
                                                   cherrypy.request.json["command"],
                                                   cherrypy.request.json["reason"],
