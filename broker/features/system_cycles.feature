@@ -8,7 +8,7 @@ Feature: Optimal BPM startup and shutdown scenarios
     And we wait 1 seconds
     And it is it possible to register an agent at the broker
     And the agent is started
-    And we wait 1 seconds
+    And we wait 3 seconds
     And the agent process is registered
     And the broker is told to restart using the API
     And we wait 5 seconds

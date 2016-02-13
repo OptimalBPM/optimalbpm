@@ -134,8 +134,7 @@ def stop_agent(_reason, _restart=False):
     print(_make_log_prefix() + "Process queue manager shut down.")
 
     if _restart is True:
-        print(_make_log_prefix() + "Agent was told to restart, so in five seconds it starts a new agent instance.")
-        sleep(5)
+        print(_make_log_prefix() + "Agent was told to restart, so now it starts a new agent instance.")
         #set_start_method("spawn", force=True)
         _agent_process = Process(target=run_agent, name="optimalbpm_agent", daemon=False)
         _agent_process.start()

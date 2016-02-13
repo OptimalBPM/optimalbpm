@@ -56,6 +56,13 @@ class AgentWebSocketHandler(WebSocketHandler):
         :param _web_socket: Yet unused in this category
         :param _message_data: The control message
         """
+        if _source_web_socket["source"] != self.broker_address:
+            self.send_to_address(_message_data["source"],
+                     reply_with_error_message(
+                         _message_data,
+                         "Control messages can only originate from the broker.")
+                     )
+            return
 
         self.schema_tools.validate(_message_data)
         # TODO: Should this verify that this is from the broker websocket?? (PROD-20)
@@ -93,7 +100,8 @@ class AgentWebSocketHandler(WebSocketHandler):
             _message_data["source"] = self.address
 
             self.send_to_address(self.broker_address, _message_data)
-        elif _source_web_socket["source"] == self.broker_address:
+
+        else:
             self.inbound_message_count += 1
             # This is an inbound message
             try:
@@ -106,12 +114,6 @@ class AgentWebSocketHandler(WebSocketHandler):
                                      reply_with_error_message(self, _message_data, "test"))
             else:
                 self.process_handler.forward_message(_message_data)
-        else:
-            self.send_to_address(_message_data["source"],
-                                 reply_with_error_message(
-                                     _message_data,
-                                     "Control messages can only originate from the broker.")
-                                 )
 
 
     def shut_down(self, _user_id):
