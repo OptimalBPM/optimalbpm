@@ -107,7 +107,7 @@ class WorkerSupervisor(Handler):
 
         print(self.log_prefix + "Calling worker process start.")
         _new_process.start()
-        print(self.log_prefix + "Worker process pid:" + _new_process.pid)
+        print(self.log_prefix + "Worker process pid: " + str(_new_process.pid))
 
         _new_worker = {
             "queue": _new_queue,

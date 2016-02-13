@@ -462,21 +462,28 @@ class WorkerHandler(Handler):
 
 
     def load_namespaces(self, _source_path, _dest_globals):
-        with open(os.path.join(_source_path, "namespaces.json")) as f:
-            _namespaces = json.load(f)
-        for _namespace in _namespaces:
-            _module = importlib.import_module("plugins." + _namespace)
-            _module.__dict__.update({
-                "report_error": self.report_error,
-                "report_result": self.report_result,
-                "log_progress": self.log_progress,
-                "log_message": self.log_message
-                                    })
-            _dest_globals[_namespace] = _module
+        _namespaces_filename = os.path.join(_source_path, "namespaces.json")
+        if os.path.exists(_namespaces_filename):
+            with open(_namespaces_filename) as f:
+                _namespaces = json.load(f)
+            for _namespace in _namespaces:
+                _module = importlib.import_module("plugins." + _namespace)
+                _module.__dict__.update({
+                    "report_error": self.report_error,
+                    "report_result": self.report_result,
+                    "log_progress": self.log_progress,
+                    "log_message": self.log_message
+                                        })
+                _dest_globals[_namespace] = _module
+
 
     def load_data(self, _source_path):
-        with open(os.path.join(_source_path, "data.json")) as f:
-            self.data = json.load(f)
+        _data_filename = os.path.join(_source_path, "data.json")
+        if os.path.exists(_data_filename):
+            with open(_data_filename) as f:
+                self.data = json.load(f)
+        else:
+            self.data = {}
 
     def start_bpm_process(self, _message):
         """

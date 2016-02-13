@@ -111,7 +111,7 @@ class AgentWebSocketHandler(WebSocketHandler):
                 self.logging_function(_error, logging.ERROR)
                 # Respond to sender with an error message
                 self.send_to_address(self.broker_address,
-                                     reply_with_error_message(self, _message_data, "test"))
+                                     reply_with_error_message(self, _message_data, _error))
             else:
                 self.process_handler.forward_message(_message_data)
 
