@@ -88,7 +88,7 @@ class CherryPyControl(object):
             _source_process_id = None
 
         _start_process_message = start_process_message(
-            _user_id=kwargs["user"]["_id"],
+            _user_id=kwargs["_user"]["_id"],
             _process_definition_id=cherrypy.request.json["process_definition_id"],
             _destination=cherrypy.request.json["destination"],
             _globals=cherrypy.request.json["globals"],
@@ -112,7 +112,6 @@ class CherryPyControl(object):
     @aop_check_session
     @aop_has_right([object_id_right_admin_everything])
     def get_process_states(self, **kwargs):
-        has_right(object_id_right_admin_everything, kwargs["_user"])
         print("Request for a list of states")
         return list(copy.copy(states))
 

@@ -243,22 +243,22 @@ def start_agent():
     register_signals(stop_agent)
 
     # An address is completely necessary.
-    _address = _settings.get("agent", "address", _default=None)
+    _address = _settings.get("agent/address", _default=None)
     if not _address or _address == "":
         print("Fatal error: Agent cannot start, missing [agent] address setting in configuration file.")
         raise Exception("Agent cannot start, missing address.")
 
     # Gather credentials
-    _broker_url = _settings.get("agent", "broker_url", _default="127.0.0.1:8080")
-    _username = _settings.get("agent", "username")
+    _broker_url = _settings.get("agent/broker_url", _default="127.0.0.1:8080")
+    _username = _settings.get("agent/username")
     if not _username:
         raise Exception("Username must be configured")
 
-    _password = _settings.get("agent", "password")
+    _password = _settings.get("agent/password")
     if not _password:
         raise Exception("Password must be configured")
 
-    _retries = int(_settings.get("agent", "connection_retries", 5))
+    _retries = int(_settings.get("agent/connectionRetries", 5))
 
     # Register at the broker
     if not register_agent(_retries):
@@ -266,7 +266,7 @@ def start_agent():
             _retries + 1) + " time(s), quitting.")
         os._exit(1)
 
-    _repository_base_folder = _settings.get("agent", "repository_folder",
+    _repository_base_folder = _settings.get("agent/repositoryFolder",
                                             _default=os.path.join(os.path.dirname(__file__), "repositories"))
 
     print(_make_log_prefix() + "Load schema tool")
