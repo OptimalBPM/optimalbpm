@@ -65,7 +65,7 @@ class AgentWebSocketHandler(WebSocketHandler):
             return
 
         self.schema_tools.validate(_message_data)
-        # TODO: Should this verify that this is from the broker websocket?? (PROD-20)
+
         if _message_data["schemaRef"] == "bpm://message_worker_process_command.json":
             self.process_handler.forward_message(_message_data)
         else:
