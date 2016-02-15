@@ -60,7 +60,7 @@ class CherryPyProcess(object):
         Parses a source file into a process structure and returns it to the client
         :param kwargs: A parameter object
         """
-        has_right(object_id_right_admin_everything, kwargs["user"])
+        has_right(object_id_right_admin_everything, kwargs["_user"])
 
         _process_id = cherrypy.request.json["processId"]
         _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)
@@ -96,7 +96,7 @@ class CherryPyProcess(object):
         :param kwargs: A parameter object
         """
         # TODO: Document the structure of the process parameters, perhaps create a schema?(ORG-110)
-        has_right(object_id_right_admin_everything, kwargs["user"])
+        has_right(object_id_right_admin_everything, kwargs["_user"])
         _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)
         _tokens.documentation = cherrypy.request.json["documentation"]
 
