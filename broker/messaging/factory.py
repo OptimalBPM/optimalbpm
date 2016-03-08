@@ -10,7 +10,6 @@ import os
 if os.name != "nt":
     import pwd
 
-import socket
 
 from bson.objectid import ObjectId
 
