@@ -12,7 +12,7 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from mbe.node import Node
+from of.broker.lib.node import Node
 from plugins.optimalbpm.broker.control import Control
 from of.broker.lib.messaging.handler import BrokerWebSocketHandler
 from of.common.messaging.constants import GOING_AWAY

@@ -1,6 +1,6 @@
 import hashlib
 from pymongo.mongo_client import MongoClient
-from mbe.access import DatabaseAccess
+from of.broker.lib.access import DatabaseAccess
 
 __author__ = 'nibo'
 

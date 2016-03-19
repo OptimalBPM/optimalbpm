@@ -5,13 +5,13 @@ The administrative API of Optimal BPM
 
 from bson.objectid import ObjectId
 
-from mbe.groups import user_in_any_of_groups
+from of.common.security.groups import user_in_any_of_groups
 from of.common.internal import not_implemented
-from of.common.logging import BPMLogging
+
 from of.schemas.constants import zero_object_id
 from of.broker.lib.repositories import Repositories
 from plugins.optimalbpm.broker.messaging.factory import agent_control
-
+from of.common.messaging.factory import log_process_state_message
 __author__ = 'Nicklas Borjesson'
 
 
@@ -49,7 +49,7 @@ class Control:
         self.node = _node
         self.repositories = Repositories(_db_access, _node)
         self.send_queue = _send_queue
-        self.logging = BPMLogging(_db_access.database)
+
         self.address = _address
         self.process_id = _process_id
         self.stop_broker = _stop_broker
@@ -133,10 +133,6 @@ class Control:
             raise Exception("User doesn't have the canStart permission.")
 
         self.send_queue.put([None, _start_process_message])
-        # TODO: This could just as well be a message through the broker.
-        self.logging.log_process_state(_changed_by=_user["_id"],
-                                       _process_id=_start_process_message["processId"],
-                                       _state="deployed", _reason="Process deployed")
 
         return _start_process_message["processId"]
 

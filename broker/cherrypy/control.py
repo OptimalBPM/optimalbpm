@@ -5,9 +5,9 @@ This module exposes the Optimal BPM Admin API as a web service through a CherryP
 import copy
 import cherrypy
 
-from mbe.cherrypy import aop_check_session
-from mbe.constants import object_id_right_admin_everything
-from mbe.groups import aop_has_right
+from of.broker.cherrypy_api.node import aop_check_session
+from of.schemas.constants import id_right_admin_everything
+from of.common.security.groups import aop_has_right
 from plugins.optimalbpm.broker.control import Control
 from plugins.optimalbpm.broker.messaging.factory import start_process_message
 
@@ -36,7 +36,7 @@ class CherryPyControl(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
-    @aop_has_right([object_id_right_admin_everything])
+    @aop_has_right([id_right_admin_everything])
     def save_process_definition(self, **kwargs):
         return self._control.save_process_definition(cherrypy.request.json, kwargs["_user"])
 
@@ -44,7 +44,7 @@ class CherryPyControl(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
-    @aop_has_right([object_id_right_admin_everything])
+    @aop_has_right([id_right_admin_everything])
     def load_process_definition(self, **kwargs):
         return self._control.load_process_definition(cherrypy.request.json, kwargs["_user"])
 
@@ -52,7 +52,7 @@ class CherryPyControl(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
-    @aop_has_right([object_id_right_admin_everything])
+    @aop_has_right([id_right_admin_everything])
     def remove_process_definition(self, **kwargs):
         return self._control.remove_process_definition(cherrypy.request.json, kwargs["_user"])
 
@@ -60,7 +60,7 @@ class CherryPyControl(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
-    @aop_has_right([object_id_right_admin_everything])
+    @aop_has_right([id_right_admin_everything])
     def get_process_definition_hash(self, **kwargs):
         return self._control.get_process_definition_hash(cherrypy.request.json, kwargs["_user"])
 
@@ -68,7 +68,7 @@ class CherryPyControl(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
-    @aop_has_right([object_id_right_admin_everything])
+    @aop_has_right([id_right_admin_everything])
     def agent_control(self, **kwargs):
         print(str(cherrypy.request.json))
         return self._control.agent_control(cherrypy.request.json["address"],
@@ -80,7 +80,7 @@ class CherryPyControl(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
-    @aop_has_right([object_id_right_admin_everything])
+    @aop_has_right([id_right_admin_everything])
     def start_process(self, **kwargs):
         if "source_process_id" in cherrypy.request.json:
             _source_process_id = cherrypy.request.json["source_process_id"]
@@ -102,7 +102,7 @@ class CherryPyControl(object):
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
-    @aop_has_right([object_id_right_admin_everything])
+    @aop_has_right([id_right_admin_everything])
     def get_processes(self, **kwargs):
         print("Request for a list of processes")
         return self._control.get_processes(kwargs["_user"])
@@ -110,7 +110,7 @@ class CherryPyControl(object):
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
-    @aop_has_right([object_id_right_admin_everything])
+    @aop_has_right([id_right_admin_everything])
     def get_process_states(self, **kwargs):
         print("Request for a list of states")
         return list(copy.copy(states))
@@ -118,7 +118,7 @@ class CherryPyControl(object):
     @cherrypy.expose
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out(content_type='application/json')
-    @aop_has_right([object_id_right_admin_everything])
+    @aop_has_right([id_right_admin_everything])
     @aop_check_session
     def get_process_history(self, **kwargs):
         print("Request for history of a process")

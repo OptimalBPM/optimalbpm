@@ -1,6 +1,6 @@
 [
   {
-    "_id": "000000010000010001e64d12",
+    "_id": "000000010000010001e64d16",
     "parent_id": "000000010000010001e64c25",
     "name": "TestAgent",
     "credentials": {
@@ -10,7 +10,7 @@
       }
     },
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "mbe://user.json",
+    "schemaRef": "of://user.json",
     "groups": ["000000010000010001e64c29"],
     "canRead": [
       "000000010000010001e64c28",

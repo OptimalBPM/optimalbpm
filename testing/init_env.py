@@ -3,7 +3,7 @@ The init_env module/script initializes an OptimalBPM testing environment.
 """
 import os
 
-from of.common.testing.init_env import init_env
+from of.broker.testing.init_env import init_env
 from plugins.optimalbpm.schemas.validation import bpm_uri_handler
 
 __author__ = 'nibo'

@@ -15,18 +15,21 @@ from bson.objectid import ObjectId
 # The directory of the current file
 from plugins.optimalbpm.schemas.validation import bpm_uri_handler
 
+from common.internal import resolve_config_path
+from common.settings import JSONXPath
+
 script_dir = os.path.dirname(__file__)
 
 # Add relative optimal bpm path
 sys.path.append(os.path.join(script_dir, "../../"))
 
-from mbe.schema import SchemaTools
+from of.schemas.schema import SchemaTools
 from plugins.optimalbpm.agent.lib.control.handler import ControlHandler
 from plugins.optimalbpm.agent.lib.messaging.handler import AgentWebSocketHandler
 from plugins.optimalbpm.agent.lib.messaging.websocket import AgentWebSocket
 from plugins.optimalbpm.agent.lib.supervisor.handler import WorkerSupervisor
 from plugins.optimalbpm import run_agent
-from of.common.internal import load_settings, register_signals
+from of.common.internal import register_signals
 from of.common.messaging.factory import store_process_system_document, \
     log_process_state_message
 from of.common.messaging.utils import register_at_broker
@@ -233,7 +236,10 @@ def start_agent():
     print("=====start_agent===============================")
     print("=====Process Id: " + str(_process_id) + "=====")
     try:
-        _settings = load_settings()
+        _cfg_filename = resolve_config_path()
+        _settings = JSONXPath(_cfg_filename)
+
+
     except Exception as e:
         print("Error loading settings: " + str(e))
         return

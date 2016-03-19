@@ -10,7 +10,7 @@ from of.common.messaging.constants import ABNORMAL_CLOSE, GOING_AWAY
 from ws4py.client.threadedclient import WebSocketClient
 from plugins.optimalbpm.broker.messaging.constants import AGENT_SHUTTING_DOWN, AGENT_RESTARTING
 
-from of.common.messaging.websocket import BPMWebSocket
+from of.common.messaging.websocket import OptimalWebSocket
 import of.common.messaging.websocket
 
 __author__ = 'Nicklas Borjesson'
@@ -18,7 +18,7 @@ __author__ = 'Nicklas Borjesson'
 # Web socket error codes: http://tools.ietf.org/html/rfc6455#section-7.4.1
 
 
-class AgentWebSocket(BPMWebSocket, WebSocketClient):
+class AgentWebSocket(OptimalWebSocket, WebSocketClient):
     """
     At the agent, this class holds a websocket connection to a broker.
     """

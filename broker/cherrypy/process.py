@@ -14,9 +14,9 @@ sys.path.append(os.path.dirname(__file__))
 
 import cherrypy
 
-from mbe.cherrypy import aop_check_session
-from mbe.constants import object_id_right_admin_everything
-from mbe.groups import has_right
+from of.broker.cherrypy_api.node import aop_check_session
+from of.schemas.constants import id_right_admin_everything
+from of.common.security.groups import has_right
 from plugins.optimalbpm.broker.translation.python.translator import ProcessTokens, core_language
 
 
@@ -60,7 +60,7 @@ class CherryPyProcess(object):
         Parses a source file into a process structure and returns it to the client
         :param kwargs: A parameter object
         """
-        has_right(object_id_right_admin_everything, kwargs["_user"])
+        has_right(id_right_admin_everything, kwargs["_user"])
 
         _process_id = cherrypy.request.json["processId"]
         _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)

@@ -8,7 +8,7 @@
   "allOf": [
     {
       "properties": {
-        "$ref": "mbe://node.json#/properties"
+        "$ref": "of://node.json#/properties"
       }
     },
     {

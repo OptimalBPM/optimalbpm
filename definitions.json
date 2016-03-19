@@ -1,6 +1,7 @@
 {
   "description": "Optimal BPM",
   "dependencies": {},
+  "FailOnError": true,
   "admin-ui": {
     "mountpoint": "process",
     "controllers": [

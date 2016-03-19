@@ -7,7 +7,7 @@ import time
 from multiprocessing import Queue as MultiprocessingQueue, Queue
 
 from bson.objectid import ObjectId
-from mbe.schema import SchemaTools
+from of.schemas.schema import SchemaTools
 
 from plugins.optimalbpm.agent.lib.control.handler import ControlHandler
 from plugins.optimalbpm.agent.lib.messaging.handler import AgentWebSocketHandler
