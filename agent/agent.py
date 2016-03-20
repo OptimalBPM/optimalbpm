@@ -238,7 +238,7 @@ def start_agent():
         _settings.get("agent/logging/severityLevel", _default="warning"))
 
     _log_to_database_severity = of.common.logging.severity_identifiers.index(
-        _settings.get("agent/logging/databaseLevel", _default="warning"))
+        _settings.get("agent/logging/brokerLevel", _default="warning"))
 
     write_srvc_dbg("===register signal handlers===")
     register_signals(stop_agent)
