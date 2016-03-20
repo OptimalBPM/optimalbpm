@@ -5,6 +5,7 @@ The administrative API of Optimal BPM
 
 from bson.objectid import ObjectId
 
+from of.common.logging import EC_SERVICE, SEV_DEBUG, write_to_log
 from of.common.security.groups import user_in_any_of_groups
 from of.common.internal import not_implemented
 
@@ -177,7 +178,7 @@ class Control:
         :param _command: Can be "stop" or "restart".
         :param _user: A user instance
         """
-        self.write_dbg_info("Control.agent_control: Got the command " + str(_command))
+        write_to_log("Control.agent_control: Got the command " + str(_command), _category=EC_SERVICE, _severity=SEV_DEBUG)
 
         self.send_queue.put([None, agent_control(_destination=_address,
                                                  _destination_process_id=zero_object_id,

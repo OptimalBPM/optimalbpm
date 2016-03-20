@@ -6,6 +6,7 @@ import copy
 import cherrypy
 
 from of.broker.cherrypy_api.node import aop_check_session
+from of.common.logging import write_to_log
 from of.schemas.constants import id_right_admin_everything
 from of.common.security.groups import aop_has_right
 from plugins.optimalbpm.broker.control import Control

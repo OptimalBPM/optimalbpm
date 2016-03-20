@@ -25,11 +25,11 @@ from of.schemas.constants import zero_object_id
 __author__ = 'nibo'
 
 # Test users uuids
-object_id_user_root = "000000010000010001e64c30"
-object_id_user_test = "000000010000010001e64c31"
-object_id_user_testagent = "000000010000010001e64c32"
+id_user_root = "000000010000010001e64c30"
+id_user_test = "000000010000010001e64c31"
+id_user_testagent = "000000010000010001e64c32"
 
-object_id_right_admin_nodes = "000000010000010001e64d01"
+id_right_admin_nodes = "000000010000010001e64d01"
 
 
 def before_all(context):
@@ -68,7 +68,7 @@ def init_low_level(context, feature):
     def _stop_broker():
         pass
     if feature.name in ["Process Management", "Process definition management API"]:
-        context.node = Node(_database_access=context.db_access, _rights=[object_id_right_admin_nodes])
+        context.node = Node(_database_access=context.db_access, _rights=[id_right_admin_nodes])
         context.control = Control(context.db_access, context.node,
                                                 _send_queue=context.monitor.queue,
                                                 _stop_broker=None,

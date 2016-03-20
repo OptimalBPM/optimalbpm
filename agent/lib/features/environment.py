@@ -7,6 +7,8 @@ import time
 from multiprocessing import Queue as MultiprocessingQueue, Queue
 
 from bson.objectid import ObjectId
+
+from of.common.logging import SEV_DEBUG
 from of.schemas.schema import SchemaTools
 
 from plugins.optimalbpm.agent.lib.control.handler import ControlHandler
@@ -27,11 +29,11 @@ __author__ = 'nibo'
 _log_prefix = str(os.getpid()) + "-Environment.py: "
 
 # Test users uuids
-object_id_user_root = "000000010000010001e64c30"
-object_id_user_test = "000000010000010001e64c31"
-object_id_user_testagent = "000000010000010001e64c32"
+id_user_root = "000000010000010001e64c30"
+id_user_test = "000000010000010001e64c31"
+id_user_testagent = "000000010000010001e64c32"
 
-object_id_right_admin_nodes = "000000010000010001e64d01"
+id_right_admin_nodes = "000000010000010001e64d01"
 
 
 def stop_broker():
@@ -99,12 +101,12 @@ def before_feature(context, feature):
     context.process_monitor = Monitor(
         _handler=_process_handler_class(_process_id=context.agent_process_id,
                                         _message_monitor=context.message_monitor,
-                                        _repo_base_folder=context.repo_base_folder),
+                                        _repo_base_folder=context.repo_base_folder,
+                                        _severity=SEV_DEBUG),
         _queue=_process_send_queue)
 
     context.control_monitor = Monitor(
         _handler=ControlHandler(_process_id=context.agent_process_id,
-                                _address="agent_peer",
                                 _message_monitor=context.message_monitor,
                                 _worker_monitor=context.process_monitor,
                                 _stop_agent=stop_broker

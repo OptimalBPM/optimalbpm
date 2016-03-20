@@ -10,6 +10,8 @@ import sys
 import os
 import json
 
+from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG
+
 sys.path.append(os.path.dirname(__file__))
 
 import cherrypy
@@ -96,7 +98,7 @@ class CherryPyProcess(object):
         :param kwargs: A parameter object
         """
         # TODO: Document the structure of the process parameters, perhaps create a schema?(ORG-110)
-        has_right(object_id_right_admin_everything, kwargs["_user"])
+        has_right(id_right_admin_everything, kwargs["_user"])
         _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)
         _tokens.documentation = cherrypy.request.json["documentation"]
 
@@ -122,7 +124,7 @@ class CherryPyProcess(object):
         with open(_filename_data, "w") as f:
             json.dump(cherrypy.request.json["paramData"], f)
 
-        self.write_dbg_info("save_process to " + _repo_path + ", done")
+        write_to_log("save_process to " + _repo_path + ", done", _category=EC_NOTIFICATION, _severity=SEV_DEBUG)
 
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')

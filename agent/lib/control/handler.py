@@ -34,7 +34,6 @@ class ControlHandler(Handler):
         """
         Initialize control handler
         :param _process_id: The currenct process Id
-        :param _address: The peer address of the agent
         :param _worker_monitor: A worker monitor instance
         :param _message_monitor: The monitor for in- and outgoing message for the client
         :param _stop_agent: A callback function that stops the entire agent process
