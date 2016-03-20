@@ -56,7 +56,7 @@ class AgentWebSocketHandler(WebSocketHandler):
         :param _web_socket: Yet unused in this category
         :param _message_data: The control message
         """
-        if _web_socket["source"] != self.broker_address:
+        if _web_socket.address != self.broker_address:
             self.send_to_address(_message_data["source"],
                      reply_with_error_message(
                          _message_data,
