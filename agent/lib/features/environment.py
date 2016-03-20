@@ -34,9 +34,6 @@ object_id_user_testagent = "000000010000010001e64c32"
 object_id_right_admin_nodes = "000000010000010001e64d01"
 
 
-def logprinter(msg, severity):
-    print(_log_prefix + "Mockup logger : " + msg + " severity: " + str(severity))
-
 def stop_broker():
     pass
 def before_all(context):
@@ -97,14 +94,13 @@ def before_feature(context, feature):
     context.message_monitor = Monitor(
         _handler=AgentWebSocketHandler(_process_id=context.agent_process_id, _peers=_peers,
                                        _schema_tools=context.schema_tools, _address="agent_peer",
-                                       _broker_address="broker_peer"),
-        _logging_function=logprinter)
+                                       _broker_address="broker_peer"))
 
     context.process_monitor = Monitor(
         _handler=_process_handler_class(_process_id=context.agent_process_id,
                                         _message_monitor=context.message_monitor,
                                         _repo_base_folder=context.repo_base_folder),
-        _logging_function=logprinter, _queue=_process_send_queue)
+        _queue=_process_send_queue)
 
     context.control_monitor = Monitor(
         _handler=ControlHandler(_process_id=context.agent_process_id,
@@ -112,8 +108,7 @@ def before_feature(context, feature):
                                 _message_monitor=context.message_monitor,
                                 _worker_monitor=context.process_monitor,
                                 _stop_agent=stop_broker
-                                ),
-        _logging_function=logprinter)
+                                ))
 
     of.common.messaging.websocket.monitor = context.message_monitor
     context.process_process_id = str(ObjectId())
@@ -124,8 +119,7 @@ def before_feature(context, feature):
                                                      _parent_process_id=context.agent_process_id,
                                                      _repo_base_folder="")
 
-        context.worker_monitor = Monitor(_handler=context.worker_handler,
-                                         _logging_function=logprinter)
+        context.worker_monitor = Monitor(_handler=context.worker_handler)
 
     # Register mockup WebSockets
     context.broker_socket = MockupAgentWebSocketClient(_session_id="broker", _context=context)

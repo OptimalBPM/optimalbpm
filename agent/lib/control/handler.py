@@ -3,7 +3,7 @@ This module holds the ControlHandler class.
 """
 import threading
 
-from common.messaging.factory import reply_with_error_message
+from of.common.messaging.factory import reply_with_error_message
 from of.common.queue.handler import Handler
 
 

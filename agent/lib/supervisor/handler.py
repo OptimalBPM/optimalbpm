@@ -72,7 +72,7 @@ class WorkerSupervisor(Handler):
 
         self.job_queue = queue.Queue()
         self.schema_id__handler = {
-            "bpm://message_bpm_process_start.json": self.handle_bpm_process_start
+            "of://message_bpm_process_start.json": self.handle_bpm_process_start
         }
         self.repo_base_folder = _repo_base_folder
 

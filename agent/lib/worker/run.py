@@ -13,15 +13,6 @@ __author__ = 'Nicklas Borjesson'
 from plugins.optimalbpm.agent.lib.worker.handler import WorkerHandler
 
 
-def _logging(_msg, _severity):
-    """
-    Handles logging
-    """
-
-    # TODO: Implement logging properly (PROD-32)
-    print(_msg + "-" + _severity)
-
-
 def run_worker_process(_parent_process_id, _process_id, _queue, _send_queue, _repo_base_folder):
     """
     This function is the first thing that is called when the worker process is initialized
@@ -43,8 +34,7 @@ def run_worker_process(_parent_process_id, _process_id, _queue, _send_queue, _re
 
     # Start an monitor for that the inbound queue, specify handler
     _worker_monitor = Monitor(_handler=_worker_handler,
-                              _queue=_queue,
-                              _logging_function=_logging)
+                              _queue=_queue)
 
     # Run until terminated
     while not _worker_handler.terminated:
