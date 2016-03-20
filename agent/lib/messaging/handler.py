@@ -3,7 +3,7 @@ This module holds the AgentWebSocketHandler class
 """
 import logging
 
-
+from of.common.logging import write_to_log, EC_COMMUNICATION, SEV_ERROR
 from of.common.messaging.factory import reply_with_error_message
 from of.common.messaging.handler import WebSocketHandler
 from plugins.optimalbpm.broker.messaging.constants import AGENT_SHUTTING_DOWN
@@ -56,7 +56,7 @@ class AgentWebSocketHandler(WebSocketHandler):
         :param _web_socket: Yet unused in this category
         :param _message_data: The control message
         """
-        if _source_web_socket["source"] != self.broker_address:
+        if _web_socket["source"] != self.broker_address:
             self.send_to_address(_message_data["source"],
                      reply_with_error_message(
                          _message_data,
@@ -108,10 +108,9 @@ class AgentWebSocketHandler(WebSocketHandler):
                 self.schema_tools.validate(_message_data)
             except Exception as e:
                 _error = "An error occurred validating an inbound message:" + str(e)
-                self.logging_function(_error, logging.ERROR)
+                write_to_log(_error, _category=EC_COMMUNICATION, _severity=SEV_ERROR)
                 # Respond to sender with an error message
-                self.send_to_address(self.broker_address,
-                                     reply_with_error_message(self, _message_data, _error))
+                self.send_to_address(self.broker_address, reply_with_error_message(self, _message_data, _error))
             else:
                 self.process_handler.forward_message(_message_data)
 

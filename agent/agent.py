@@ -18,7 +18,8 @@ from requests.exceptions import SSLError
 
 from of.common.internal import resolve_config_path
 from of.common.logging import write_to_log, EC_SERVICE, SEV_DEBUG, make_textual_log_message, \
-    make_sparse_log_message, EC_UNCATEGORIZED, SEV_ERROR, SEV_FATAL, SEV_INFO, EC_NOTIFICATION, SEV_WARNING
+    make_sparse_log_message, EC_UNCATEGORIZED, SEV_ERROR, SEV_FATAL, SEV_INFO, EC_NOTIFICATION, SEV_WARNING, \
+    category_identifiers, severity_identifiers, EC_COMMUNICATION
 from of.common.messaging.utils import call_api
 from of.common.settings import JSONXPath
 
@@ -84,11 +85,6 @@ _peers = {}
 
 _start_pid = os.getpid()
 
-def _make_log_prefix():
-    """
-    Make log prefix of the agent.
-    """
-    return "[" + str(datetime.datetime.utcnow()) + "] " + str(os.getpid()) + "-" + _address + ":"
 
 
 # The severity when something is logged to the database
@@ -117,7 +113,6 @@ def log_locally(_data, _category, _severity, _process_id_param, _user_id, _occur
             make_sparse_log_message(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid,
                                      _pid))
         # TODO: Add support for /var/log/message
-        # TODO: Add address attribute for logging
 
 
 def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid):
@@ -135,23 +130,25 @@ def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _o
         _event = (
             {
                 "data": _data,
-                "category": _category,
-                "severity": _severity,
-                "user_id": _user_id,
+                "category": category_identifiers[_category],
+                "severity": severity_identifiers[_severity],
                 "uid": _uid,
                 "pid": _pid,
                 "occurredWhen": _occurred_when,
                 "address": _address_param,
                 "process_id": _process_id_param,
-                "node_id": _node_id,
                 "schemaRef": "of://event.json"
             }
         )
+        if _node_id is not None:
+            _event["node_id"] = _node_id
+        if _user_id is not None:
+            _event["user_id"] = _user_id
 
         if _session_id in _peers:
             _session =  _peers[_session_id]
-            if "websocket" in _session:
-                _session["queue"].put([_session["websocket"], _event])
+            if "web_socket" in _session and _session["web_socket"].connected:
+                _session["queue"].put(_event)
             else:
                 try:
                     call_api("https://" + _broker_url + "/write_to_log", _session_id, _event, _print_log=True, _verify_SSL=_verify_SSL)
@@ -213,7 +210,7 @@ def register_agent(_retries, _connect=False):
 
 def connect_to_websocket():
     global _broker_url, _session_id
-    write_srvc_dbg(_make_log_prefix() + "Connecting web socket to broker")
+    write_srvc_dbg("Connecting web socket to broker")
     try:
         # Initiate the web socket connection to the broker
         _web_socket = AgentWebSocket(url="wss://" + _broker_url + "/socket",
@@ -393,19 +390,19 @@ def stop_agent(_reason, _restart=False):
 
     # Make sure this is not a child process also calling signal handler
     if _start_pid != os.getpid():
-        print("Ignoring child processes' signal call to stop_agent().")
+        write_srvc_dbg("Ignoring child processes' signal call to stop_agent().")
         return
 
     if _restart is True:
-        print(_make_log_prefix() + "--------------AGENT WAS TOLD TO RESTART------------")
+        write_srvc_dbg( "--------------AGENT WAS TOLD TO RESTART------------")
     else:
-        print(_make_log_prefix() + "--------------AGENT WAS TERMINATED, shutting down orderly------------")
+        write_srvc_dbg( "--------------AGENT WAS TERMINATED, shutting down orderly------------")
 
-    print(_make_log_prefix() + "Reason:" + str(_reason))
-    print("Process Id: " + str(_process_id))
+    write_srvc_dbg( "Reason:" + str(_reason))
+    write_srvc_dbg("Process Id: " + str(_process_id))
 
     try:
-        print(_make_log_prefix() + "try and tell the broker about shutting down")
+        write_srvc_dbg("try and tell the broker about shutting down")
         _control_monitor.handler.message_monitor.queue.put([None,
                                                             log_process_state_message(_changed_by=zero_object_id,
                                                                                       _state="stopped",
@@ -414,36 +411,37 @@ def stop_agent(_reason, _restart=False):
                                                                                               _address)])
         # Give some time for it to get there
         time.sleep(0.1)
-        print(_make_log_prefix() + "try and tell the broker about shutting down, done")
+        write_srvc_dbg("try and tell the broker about shutting down, done")
     except Exception as e:
-        print(_make_log_prefix() + "try and tell the broker about shutting down, failed, error:" + str(e))
+        write_to_log("Tried and tell the broker about shutting down, failed, error:" + str(e),
+                     _category=EC_COMMUNICATION, _severity=SEV_ERROR)
 
 
-    print(_make_log_prefix() + "Stop the control monitor.")
+    write_srvc_dbg( "Stop the control monitor.")
     _control_monitor.stop(_reverse_order=True)
 
 
     time.sleep(0.4)
-    print(_make_log_prefix() + "Control monitor stopped.")
+    write_srvc_dbg("Control monitor stopped.")
     _exit_status = 0
 
     _process_queue_manager.shutdown()
-    print(_make_log_prefix() + "Process queue manager shut down.")
+    write_srvc_dbg("Process queue manager shut down.")
 
     if _restart is True:
-        print(_make_log_prefix() + "Agent was told to restart, so now it starts a new agent instance.")
+        write_to_log("Agent was told to restart, so now it starts a new agent instance.", _category=EC_SERVICE, _severity=SEV_INFO )
         #set_start_method("spawn", force=True)
         _agent_process = Process(target=run_agent, name="optimalbpm_agent", daemon=False)
         _agent_process.start()
 
         # On the current process (source) must still exist while the new process runs if its to be run using without
         # pOpen. TODO: Investigate if it really is impossible to create standalone(non-child) processes using Process.
-        print(_make_log_prefix() + "Pid of new instance: " + str(_agent_process.pid))
+        write_srvc_dbg("Pid of new instance: " + str(_agent_process.pid))
         _agent_process.join()
 
     global _terminated
     _terminated = True
-    print(_make_log_prefix() + "Agent exiting with exit status " + str(_exit_status))
+    write_srvc_dbg("Agent exiting with exit status " + str(_exit_status))
     if os.name == "nt":
         return _exit_status
     else:
