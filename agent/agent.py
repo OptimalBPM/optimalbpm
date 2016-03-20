@@ -13,22 +13,24 @@ import time
 from bson.objectid import ObjectId
 
 # The directory of the current file
-from plugins.optimalbpm.schemas.validation import bpm_uri_handler
+
 from requests.exceptions import SSLError
 
 from of.common.internal import resolve_config_path
 from of.common.logging import write_to_log, EC_SERVICE, SEV_DEBUG, make_textual_log_message, \
     make_sparse_log_message, EC_UNCATEGORIZED, SEV_ERROR, SEV_FATAL, SEV_INFO, EC_NOTIFICATION, SEV_WARNING, \
-    category_identifiers, severity_identifiers, EC_COMMUNICATION
+    category_identifiers, severity_identifiers, EC_COMMUNICATION, make_event
 from of.common.messaging.utils import call_api
 from of.common.settings import JSONXPath
+from of.schemas.schema import SchemaTools
 
 script_dir = os.path.dirname(__file__)
 
 # Add relative optimal bpm path
 sys.path.append(os.path.join(script_dir, "../../"))
 
-from of.schemas.schema import SchemaTools
+
+from plugins.optimalbpm.schemas.validation import bpm_uri_handler
 from plugins.optimalbpm.agent.lib.control.handler import ControlHandler
 from plugins.optimalbpm.agent.lib.messaging.handler import AgentWebSocketHandler
 from plugins.optimalbpm.agent.lib.messaging.websocket import AgentWebSocket
@@ -48,7 +50,7 @@ if os.name == "nt":
     from of.common.logging import write_to_event_log
 
 
-# Add the plugin definitions to the of ones.
+# Add the plugin definitions to the OF ones.
 import plugins.optimalbpm.schemas.constants
 plugins.optimalbpm.schemas.constants.init()
 
@@ -66,7 +68,7 @@ _control_monitor = None
 #: While true, run.
 _terminated = None
 #: The peer address of the agent
-_address = ""
+_address = "Not set"
 
 # Verify broker ssl certificate on connect if true. Always install a proper certificate on the broker.
 _verify_SSL = None
@@ -93,60 +95,42 @@ _log_to_database_severity = None
 
 def write_srvc_dbg(_data):
     global _process_id
-    write_to_log(_address + ": " + _data, _category=EC_SERVICE, _severity=SEV_DEBUG, _process_id=_process_id)
+    write_to_log(_data, _category=EC_SERVICE, _severity=SEV_DEBUG, _process_id=_process_id)
 
 
 def log_locally(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid):
-    global _log_to_database_severity, _process_id, _broker_url, _peers, _address
+    global _log_to_database_severity, _process_id, _broker_url, _address
 
     if _process_id_param is None:
         _process_id_param = _process_id
-    if _address_param is None:
-        _address_param = _address
+
 
     if os.name == "nt":
         write_to_event_log(make_textual_log_message(_data, _data, _category, _severity, _process_id_param, _user_id,
-                                                    _occurred_when, _address_param, _node_id, _uid, _pid),
+                                                    _occurred_when, _address, _node_id, _uid, _pid),
                            "Application", _category, _severity)
     else:
         print(
-            make_sparse_log_message(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid,
+            make_sparse_log_message(_data, _category, _severity, _process_id, _user_id, _occurred_when, _address,
+                                    _node_id, _uid,
                                      _pid))
         # TODO: Add support for /var/log/message
 
 
-def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid):
-    global _log_to_database_severity, _process_id, _broker_url, _peers, _address, _verify_SSL
+def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param,
+                    _node_id, _uid, _pid):
+    global _log_to_database_severity, _process_id, _broker_url, _peers, _verify_SSL, _address
 
     if _process_id_param is None:
         _process_id_param = _process_id
-    if _address_param is None:
-        _address_param = _address
 
     if _severity < _log_to_database_severity:
-        log_locally(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid)
+        log_locally(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address, _node_id, _uid, _pid)
     else:
 
-        _event = (
-            {
-                "data": _data,
-                "category": category_identifiers[_category],
-                "severity": severity_identifiers[_severity],
-                "uid": _uid,
-                "pid": _pid,
-                "occurredWhen": _occurred_when,
-                "address": _address_param,
-                "process_id": _process_id_param,
-                "schemaRef": "of://event.json"
-            }
-        )
-        if _node_id is not None:
-            _event["node_id"] = _node_id
-        if _user_id is not None:
-            _event["user_id"] = _user_id
-
+        _event = make_event(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address, _node_id, _uid, _pid)
         if _session_id in _peers:
-            _session =  _peers[_session_id]
+            _session = _peers[_session_id]
             if "web_socket" in _session and _session["web_socket"].connected:
                 _session["queue"].put(_event)
             else:
@@ -155,9 +139,9 @@ def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _o
 
                 except Exception as e:
                     log_locally("Failed to send to broker, error: " + str(e) + "\nEvent:" + str(_event), EC_UNCATEGORIZED, SEV_ERROR,
-                                _process_id_param, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid)
+                                _process_id_param, _user_id, _occurred_when, _address, _node_id, _uid, _pid)
 
-        log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid)
+        log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _address, _node_id, _uid, _pid)
 
 
 def register_agent(_retries, _connect=False):
@@ -323,12 +307,13 @@ def start_agent():
         _worker_monitor = Monitor(
             _handler=WorkerSupervisor(_process_id=_process_id,
                                       _message_monitor=_message_monitor,
-                                      _repo_base_folder=_repository_base_folder), _queue=_process_queue_manager.Queue())
+                                      _repo_base_folder=_repository_base_folder,
+                                      _severity=of.common.logging.severity),
+            _queue=_process_queue_manager.Queue())
 
         # Init the monitor for the agent queue
         _control_monitor = Monitor(
             _handler=ControlHandler(_process_id=_process_id,
-                                    _address=_address,
                                     _message_monitor=_message_monitor,
                                     _worker_monitor=_worker_monitor,
                                     _stop_agent=stop_agent
@@ -339,7 +324,7 @@ def start_agent():
         write_srvc_dbg("Initializing monitors done")
 
     except Exception as e:
-        raise Exception(write_to_log("Fatal: An error occurred while initiating the Agent class:" + str(e),
+        raise Exception(write_to_log("Fatal: An error occurred while initiating the monitors and handlers:" + str(e),
                                          _category=EC_SERVICE, _severity=SEV_FATAL))
         os._exit(1)
 

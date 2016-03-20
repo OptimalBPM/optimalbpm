@@ -50,7 +50,6 @@ class Control:
         self.repositories = Repositories(_db_access, _node)
         self.send_queue = _send_queue
 
-        self.address = _address
         self.process_id = _process_id
         self.stop_broker = _stop_broker
 

@@ -18,7 +18,7 @@ from plugins.optimalbpm.agent.lib.worker.run import run_worker_process
 from of.schemas.constants import zero_object_id
 
 import of.common.logging
-import optimalbpm.agent.agent
+
 
 
 __author__ = 'Nicklas Borjesson'
@@ -54,7 +54,10 @@ class WorkerSupervisor(Handler):
     #: Statistic: Total jobs run
     total_jobs_run = None
 
-    def __init__(self, _process_id, _repo_base_folder, _message_monitor, _max_worker_count=None):
+    #: Log level
+    severity = None
+
+    def __init__(self, _process_id, _repo_base_folder, _message_monitor, _severity, _max_worker_count=None):
         """
         Initates a WorkerSupervisor, initiates the queue and creates a function map.
         :param _process_id: The id of the process
@@ -67,6 +70,7 @@ class WorkerSupervisor(Handler):
         self.busy_workers = {}
         self.workers = {}
         self.available_workers = []
+        self.severity = _severity
 
         if _max_worker_count:
             self.max_worker_count = _max_worker_count
@@ -107,7 +111,7 @@ class WorkerSupervisor(Handler):
         _new_process = Process(target=run_worker_process, daemon=False,  # is in documentation, not skeleton
                                args=(self.process_id, _new_process_id, _new_queue,
                                      self.monitor.queue, self.repo_base_folder,
-                                     optimalbpm.agent.agent._address))
+                                     self.severity))
 
         self.write_dbg_info("Calling worker process start.")
         _new_process.start()

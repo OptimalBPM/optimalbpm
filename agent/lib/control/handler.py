@@ -19,8 +19,6 @@ class ControlHandler(Handler):
 
     #: A map between schema Ids and handlers
     schema_id__handler = None
-    #: The Optimal BPM address of the control
-    address = None
     #: The base folder for all repositories
     repository_base_folder = None
 
@@ -32,7 +30,7 @@ class ControlHandler(Handler):
     # A callback to the stop agent function
     stop_agent = None
 
-    def __init__(self, _process_id, _address, _worker_monitor, _message_monitor, _stop_agent):
+    def __init__(self, _process_id, _worker_monitor, _message_monitor, _stop_agent):
         """
         Initialize control handler
         :param _process_id: The currenct process Id
@@ -43,7 +41,6 @@ class ControlHandler(Handler):
         """
         super(ControlHandler, self).__init__(_process_id)
 
-        self.address = _address
 
         self.schema_id__handler = {"bpm://message_agent_control.json": self.handle_agent_control_message}
         self.worker_monitor = _worker_monitor
