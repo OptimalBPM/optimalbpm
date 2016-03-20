@@ -16,14 +16,14 @@ process_id = None
 
 from plugins.optimalbpm.agent.lib.worker.handler import WorkerHandler
 
-def log_to_queue(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _node_id,
+def log_to_queue(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id,
                  _uid, _pid):
     if _process_id_param is not None:
         _process_id_param = process_id
 
     global send_queue, process_id
-    _event = make_event(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _node_id,
-                        _uid, _pid)
+    _event = make_event(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _node_id=_node_id,
+                        _uid=_uid, _pid=_pid)
 
     send_queue.put([None, _event])
 
