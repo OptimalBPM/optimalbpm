@@ -178,7 +178,7 @@ class Control:
         :param _command: Can be "stop" or "restart".
         :param _user: A user instance
         """
-        print("Control.agent_control: Got the command " + str(_command))
+        self.write_dbg_info("Control.agent_control: Got the command " + str(_command))
 
         self.send_queue.put([None, agent_control(_destination=_address,
                                                  _destination_process_id=zero_object_id,

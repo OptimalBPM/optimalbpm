@@ -70,7 +70,7 @@ class CherryPyControl(object):
     @aop_check_session
     @aop_has_right([id_right_admin_everything])
     def agent_control(self, **kwargs):
-        print(str(cherrypy.request.json))
+        self.write_dbg_info(str(cherrypy.request.json))
         return self._control.agent_control(cherrypy.request.json["address"],
                                                   cherrypy.request.json["command"],
                                                   cherrypy.request.json["reason"],
@@ -104,7 +104,7 @@ class CherryPyControl(object):
     @aop_check_session
     @aop_has_right([id_right_admin_everything])
     def get_processes(self, **kwargs):
-        print("Request for a list of processes")
+        self.write_dbg_info("Request for a list of processes")
         return self._control.get_processes(kwargs["_user"])
 
     @cherrypy.expose
@@ -112,7 +112,7 @@ class CherryPyControl(object):
     @aop_check_session
     @aop_has_right([id_right_admin_everything])
     def get_process_states(self, **kwargs):
-        print("Request for a list of states")
+        self.write_dbg_info("Request for a list of states")
         return list(copy.copy(states))
 
     @cherrypy.expose
@@ -121,6 +121,6 @@ class CherryPyControl(object):
     @aop_has_right([id_right_admin_everything])
     @aop_check_session
     def get_process_history(self, **kwargs):
-        print("Request for history of a process")
+        self.write_dbg_info("Request for history of a process")
         _process_id = cherrypy.request.json["process_id"]
         return self._control.get_process_history(_process_id, kwargs["_user"])

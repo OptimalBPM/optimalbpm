@@ -6,6 +6,7 @@ import threading
 import time
 from time import sleep
 
+from of.common.logging import write_to_log, EC_SERVICE, SEV_ERROR
 from of.common.messaging.constants import ABNORMAL_CLOSE, GOING_AWAY
 from ws4py.client.threadedclient import WebSocketClient
 from plugins.optimalbpm.broker.messaging.constants import AGENT_SHUTTING_DOWN, AGENT_RESTARTING
@@ -83,8 +84,8 @@ class AgentWebSocket(OptimalWebSocket, WebSocketClient):
         """
 
 
-        print(self.log_prefix + "The peer \"" +self.address +"\" disconnected the socket(reason: " + str(reason) + ")")
-        print(self.log_prefix + "Shutting down, disconnecting the peer \"" +self.address +"\"")
+        self.write_dbg_info("The peer \"" +self.address +"\" disconnected the socket(reason: " + str(reason) + ")")
+        self.write_dbg_info(self.log_prefix + "Shutting down, disconnecting the peer \"" +self.address +"\"")
 
         # Manually handle closing
         self.client_terminated = self.server_terminated = True
@@ -98,9 +99,9 @@ class AgentWebSocket(OptimalWebSocket, WebSocketClient):
         if code == ABNORMAL_CLOSE:
 
             try:
-                print(self.log_prefix + "Waiting for two seconds")
+                self.write_dbg_info("Waiting for two seconds")
                 sleep(2)
-                print(self.log_prefix + "Trying to re-register")
+                self.write_dbg_info("Trying to re-register")
                 _register_result = self.register_agent(_retries=1, _connect=True)
                 if not _register_result:
                     self.restart_agent("Failed to re-register, trying restarting as last resort.")
@@ -109,7 +110,7 @@ class AgentWebSocket(OptimalWebSocket, WebSocketClient):
 
 
         elif code not in [AGENT_SHUTTING_DOWN, AGENT_RESTARTING]:
-            print(self.log_prefix + "Restarting the agent")
+            self.write_dbg_info(self.log_prefix + "Restarting the agent")
             self.restart_agent("Broker has terminated the connection, restarting.")
 
     def restart_agent(self, _reason):
@@ -119,7 +120,7 @@ class AgentWebSocket(OptimalWebSocket, WebSocketClient):
             self.stop_agent(_reason=_reason, _restart=True)
 
         except Exception as e:
-            print(self.log_prefix + "Error terminating self:" + str(e))
+            write_to_log("Error terminating self:" + str(e), _category=EC_SERVICE, _severity=SEV_ERROR)
 
 
 class MockupAgentWebSocketClient(AgentWebSocket):

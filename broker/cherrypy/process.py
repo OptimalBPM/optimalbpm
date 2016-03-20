@@ -122,7 +122,7 @@ class CherryPyProcess(object):
         with open(_filename_data, "w") as f:
             json.dump(cherrypy.request.json["paramData"], f)
 
-        print("save_process to " + _repo_path + ", done")
+        self.write_dbg_info("save_process to " + _repo_path + ", done")
 
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')

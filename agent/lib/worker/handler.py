@@ -8,6 +8,8 @@ import logging
 import importlib
 from importlib._bootstrap import ModuleSpec
 
+from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_ERROR
+
 try:
     from importlib._bootstrap import SourceFileLoader
 except:
@@ -120,7 +122,7 @@ class WorkerHandler(Handler):
         :param _message: A message
         """
         _message_data = _message
-        print(self.log_prefix + "Worker process got a message:" + str(_message_data))
+        self.write_dbg_info("Worker process got a message:" + str(_message_data))
 
         if _message_data["schemaRef"] == "bpm://message_bpm_process_start.json":
             # The message is a process start message,start a process.
@@ -131,17 +133,17 @@ class WorkerHandler(Handler):
                                                                     "Worker.handle_message: Cannot start BPM Process, process " + str(
                                                                         self.bpm_process_id) + " already running.")])
             else:
-                print(self.log_prefix + "Starting BPM process")
+                self.write_dbg_info("Starting BPM process")
                 self.start_bpm_process(_message=_message_data)
 
         elif _message_data["schemaRef"] == "bpm://message_bpm_process_command.json":
             # The message is a command to the bpm process
-            print(self.log_prefix + "Got a BPM process control message:" + _message_data["command"])
+            self.write_dbg_info("Got a BPM process control message:" + _message_data["command"])
             if _message_data["command"] == "stop":
                 # Told to stop. Stopping process.
                 # TODO: Break out BPM process termination, should be done in worker termination as well. (PROD-27)
                 # TODO: The broker should be able to offer the users the option to retry running the process (PROD-28)
-                print(self.log_prefix + "XXXXXXXXXXXX-Telling thread to terminate, script :" + str(self.script_path))
+                self.write_dbg_info("XXXXXXXXXXXX-Telling thread to terminate, script :" + str(self.script_path))
                 self.bpm_process_thread.termination_message = _message_data
                 self.bpm_process_thread.terminated = True
                 # TODO: Implement "pause" (PROD-29)
@@ -151,27 +153,27 @@ class WorkerHandler(Handler):
             if _message_data["command"] == "stop":
                 # Told to stop the worker. Stopping process.
 
-                print(self.log_prefix + "Told to stop the worker.")
+                self.write_dbg_info("Told to stop the worker.")
                 # First stop the monitor, we don't want any more commands coming in.
                 self.monitor.stop()
 
                 # TODO: First stop the bpm process thread. (PROD-27)
 
-                print(self.log_prefix + "Worker monitor stopped.")
+                self.write_dbg_info("Worker monitor stopped.")
                 self.send_queue.put([None, log_process_state_message(
                     _changed_by=message_is_none(_message_data, "userId", "No user mentioned"),
                     _state="stopped",
                     _process_id=self.process_id,
                     _reason=message_is_none(_message_data, "reason", "No reason mentioned"))])
-                print(self.log_prefix + "Reported stopping to process handler")
+                self.write_dbg_info("Reported stopping to process handler")
                 self.terminated = True
             else:
-                print(self.log_prefix + "Unhandled command " + _message_data["command"])
+                self.write_dbg_info("Unhandled command " + _message_data["command"])
 
         elif _message_data["schemaRef"] == "of://message":
             #: TODO: Figure out if processes should just ever get general messages, and if so, how to handle?(PROD-30)
             self.message = _message_data
-            print(self.log_prefix + "Got a message:" + self.message)
+            self.write_dbg_info("Got a message:" + self.message)
 
     """
     The following functions are imported into BPM process modules. They can then be used from within these modules.
@@ -240,6 +242,7 @@ class WorkerHandler(Handler):
                                                        _kind=_kind,
                                                        _process_id=self.bpm_process_id)])
 
+
     @staticmethod
     def sanitize_result(_globals):
         """
@@ -274,7 +277,7 @@ class WorkerHandler(Handler):
         """
         # Stop tracing
         sys.settrace(None)
-        print(self.log_prefix + "XXXXXXXXXXXX-Script has been stopped: " + self.script_path + ".")
+        self.write_dbg_info("XXXXXXXXXXXX-Script has been stopped: " + self.script_path + ".")
         # Send stopped running state to broker.
         self.send_queue.put([None, log_process_state_message(
             _changed_by=self.bpm_process_thread.user_id,
@@ -302,7 +305,6 @@ class WorkerHandler(Handler):
         # Stop tracing
         sys.settrace(None)
 
-        print(_error)
         # Send failed running state to broker.
         self.send_queue.put([None, log_process_state_message(
             _changed_by=self.bpm_process_thread.user_id,
@@ -339,20 +341,22 @@ class WorkerHandler(Handler):
         :param _globals: The globals.
 
         """
-        print(self.log_prefix + "->>>>>>>>>>>> Running module " + _module_name + ", globals: " + str(_globals))
+        self.write_dbg_info("->>>>>>>>>>>> Running module " + _module_name + ", globals: " + str(_globals))
 
         try:
             # Call the run_module, it returns the globals after execution
             _new_globals = runpy.run_module(mod_name=_module_name, init_globals=_globals)
         except TerminationException as e:
-            print("TerminationException running the process:" + str(e))
+            write_to_log("TerminationException running the process:" + str(e),
+                         _category=EC_NOTIFICATION, _severity=SEV_ERROR)
             # The process was terminated
             _result = self.report_termination(_globals)
             _new_globals = _globals
 
         except Exception as e:
             # An unhandled error occured running the process
-            print("Error running the process:" + str(e))
+            write_to_log("Error running the process:" + str(e),
+                         _category=EC_NOTIFICATION, _severity=SEV_ERROR)
             _result = self.report_error(self.log_prefix + "Error in module " + _module_name + ".py:" + str(e), e)
             _new_globals = None
         else:
@@ -361,7 +365,7 @@ class WorkerHandler(Handler):
             # A module has no return value
             _result = None
 
-        print(self.log_prefix + "<<<<<<<<<<<<- Done calling " + self.script_path + ".")
+        self.write_dbg_info(self.log_prefix + "<<<<<<<<<<<<- Done calling " + self.script_path + ".")
         self.report_result(_globals=_new_globals, _result=_result)
 
         self.job_running = False
@@ -374,7 +378,7 @@ class WorkerHandler(Handler):
 
         """
 
-        print(self.log_prefix + "->>>>>>>>>>>>Running function " + _function.__module__ + ", globals: " + str(
+        self.write_dbg_info("->>>>>>>>>>>>Running function " + _function.__module__ + ", globals: " + str(
             _function.__globals__))
 
         try:
@@ -395,7 +399,7 @@ class WorkerHandler(Handler):
             sys.settrace(None)
             self.report_finished()
 
-        print(self.log_prefix + "<<<<<<<<<<<<-Done running " + self.script_path + ".")
+        self.write_dbg_info(self.log_prefix + "<<<<<<<<<<<<-Done running " + self.script_path + ".")
 
         self.report_result(_globals=_function.__globals__, _result=_result)
         self.job_running = False
@@ -507,7 +511,7 @@ class WorkerHandler(Handler):
             _source_path = os.path.join(os.path.expanduser(self.repo_base_folder), _message["processDefinitionId"])
             sys.path.append(_source_path)
 
-            print(self.log_prefix + "Source path: " + _source_path)
+            self.write_dbg_info("Source path: " + _source_path)
 
             if _entry_point:
                 # If there is an entry point, it is a function call
@@ -515,7 +519,7 @@ class WorkerHandler(Handler):
                 if "functionName" in _entry_point:
                     _module = importlib.import_module(_module_name)
                     _function_name = _entry_point["functionName"]
-                    print(self.log_prefix + "In start_bpm_process, initializing: " + str(_message))
+                    self.write_dbg_info("In start_bpm_process, initializing: " + str(_message))
 
                     # Find function
                     _function = getattr(_module, _function_name)
@@ -532,13 +536,13 @@ class WorkerHandler(Handler):
             self.send_queue.put(
                 [None, store_bpm_process_instance_message(_start_message=_message, _worker_process_id=self.process_id)])
 
-            print(self.log_prefix + "In start_bpm_process, initializing of " + self.script_path + " done.")
+            self.write_dbg_info("In start_bpm_process, initializing of " + self.script_path + " done.")
         except Exception as e:
             _error_message = self.log_prefix + "error initiating BPM process. processDefinitionId: " + \
                              message_is_none(_message, "processDefinitionId", "not set") + \
                              ", process_id: " + message_is_none(_message, "processId", "not set") + \
                              ", Error: " + str(e)
-            print(_error_message)
+            write_to_log(_error_message, _category=EC_NOTIFICATION, _severity=SEV_ERROR)
 
             self.send_queue.put([None, reply_with_error_message(self, _message, _error_message)])
 
@@ -593,8 +597,9 @@ class WorkerHandler(Handler):
                 self.bpm_process_thread.start()
 
             except Exception as e:
-                self.logging_function(self.log_prefix + "error initiating module " +
-                                      self.script_path + '.run() - ' + str(e), logging.ERROR)
+                write_to_log(self.log_prefix + "error initiating module " +
+                                      self.script_path + '.run() - ' + str(e),
+                             _category=EC_NOTIFICATION, _severity=SEV_ERROR)
 
 
 class WorkerHandlerMockup(WorkerHandler):

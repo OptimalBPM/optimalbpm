@@ -3,6 +3,7 @@ This module holds the ControlHandler class.
 """
 import threading
 
+from of.common.logging import write_to_log, EC_SERVICE, SEV_ERROR
 from of.common.messaging.factory import reply_with_error_message
 from of.common.queue.handler import Handler
 
@@ -44,9 +45,7 @@ class ControlHandler(Handler):
 
         self.address = _address
 
-        self.schema_id__handler = {
-            "bpm://message_agent_control.json": self.handle_agent_control_message
-        }
+        self.schema_id__handler = {"bpm://message_agent_control.json": self.handle_agent_control_message}
         self.worker_monitor = _worker_monitor
         self.message_monitor = _message_monitor
         self.stop_agent = _stop_agent
@@ -66,10 +65,11 @@ class ControlHandler(Handler):
         A generic function for handling errors
         :param _error: The error message
         """
-        print(self.log_prefix + "An error occured, replying with an error message. Error: " + str(_error_message))
-        self.message_monitor.queue.put([None, reply_with_error_message(self, _message, _error_message)])
-        # TODO: Use general logging function instead (PROD-32)
-        # self.logging_function(msg=_error, severity=logging.ERROR)
+        write_to_log("An error occured, replying with an error message. Error: " + str(_error_message),
+                     _category=EC_SERVICE, _severity=SEV_ERROR)
+        self.message_monitor.queue.put([None,
+                                        reply_with_error_message(self, _message, _error_message)])
+
 
     def handle_agent_control_message(self, _message_data):
         """
@@ -78,7 +78,7 @@ class ControlHandler(Handler):
         :return:
         """
         def _command_local(_command):
-            print(self.log_prefix + "Told by user " + _message_data["userId"] +
+            self.write_dbg_info(self.log_prefix + "Told by user " + _message_data["userId"] +
                   " to " + _command + ", reason: " + _message_data["reason"])
             # Call the agent stop_agent()-callback
             if _command == "stop":
@@ -95,24 +95,24 @@ class ControlHandler(Handler):
         This is the generic message handler for the control handler
         :param _message_data: The message data
         """
-        print(self.log_prefix + "Handling message : " + str(_message_data))
+        self.write_dbg_info("Handling message : " + str(_message_data))
 
         try:
             _schema_id = _message_data["schemaRef"]
         except KeyError:
-            self.handle_error(self.log_prefix + "No schema id found in message.", _message_data)
+            self.handle_error("No schema id found in message.", _message_data)
             return
 
         try:
             _handler = self.schema_id__handler[_schema_id]
         except KeyError:
-            self.handle_error(self.log_prefix + "No handler found for schema Id " + str(_schema_id), _message_data)
+            self.handle_error("No handler found for schema Id " + str(_schema_id), _message_data)
             return
 
         try:
             _handler(_message_data)
         except Exception as e:
-            self.handle_error(self.log_prefix + "Error running handler for " + str(_schema_id) + ": " + str(e), _message_data)
+            self.handle_error("Error running handler for " + str(_schema_id) + ": " + str(e), _message_data)
 
     def shut_down(self, _user_id):
         """

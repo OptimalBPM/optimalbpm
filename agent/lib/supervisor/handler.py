@@ -17,6 +17,9 @@ from of.common.queue.handler import Handler
 from plugins.optimalbpm.agent.lib.worker.run import run_worker_process
 from of.schemas.constants import zero_object_id
 
+import of.common.logging
+import optimalbpm.agent.agent
+
 
 __author__ = 'Nicklas Borjesson'
 
@@ -103,11 +106,12 @@ class WorkerSupervisor(Handler):
 
         _new_process = Process(target=run_worker_process, daemon=False,  # is in documentation, not skeleton
                                args=(self.process_id, _new_process_id, _new_queue,
-                                     self.monitor.queue, self.repo_base_folder))
+                                     self.monitor.queue, self.repo_base_folder,
+                                     optimalbpm.agent.agent._address))
 
-        print(self.log_prefix + "Calling worker process start.")
+        self.write_dbg_info("Calling worker process start.")
         _new_process.start()
-        print(self.log_prefix + "Worker process pid: " + str(_new_process.pid))
+        self.write_dbg_info("Worker process pid: " + str(_new_process.pid))
 
         _new_worker = {
             "queue": _new_queue,
@@ -143,11 +147,11 @@ class WorkerSupervisor(Handler):
         if len(self.available_workers) > 0:
             # There are available workers, take one
             _worker = self.available_workers.pop()
-            print(self.log_prefix + "Process " + str(_process_id) + ": Found available worker.")
+            self.write_dbg_info("Process " + str(_process_id) + ": Found available worker.")
         elif len(self.available_workers) + len(self.busy_workers) < self.max_worker_count:
             # There are no available workers, and we have not yet reached the maximum number of allowed workers
             _worker = self.initialize_worker()
-            print(self.log_prefix + "Process " + str(_process_id) + ": Started new worker.")
+            self.write_dbg_info("Process " + str(_process_id) + ": Started new worker.")
         else:
             # There were no workers available
             return None
@@ -173,7 +177,7 @@ class WorkerSupervisor(Handler):
             raise Exception(self.log_prefix + "release_worker - Invalid processId :" + _process_id)
 
         self.total_jobs_run += 1
-        print(self.log_prefix + "Releasing worker process " + _worker["processId"] + " from " + _process_id +
+        self.write_dbg_info("Releasing worker process " + _worker["processId"] + " from " + _process_id +
               ". Jobs run: " + str(self.total_jobs_run))
 
         # Remove the worker from the list of busy workers
@@ -182,7 +186,7 @@ class WorkerSupervisor(Handler):
         try:
             _next_job = self.job_queue.get(block=False)
             # If there is a job run it
-            print(self.log_prefix + "Re-using worker process for " + _next_job["processId"])
+            self.write_dbg_info("Re-using worker process for " + _next_job["processId"])
             self.busy_workers[_next_job["processId"]] = _worker
             _worker["queue"].put(_next_job)
         except queue.Empty:
@@ -194,13 +198,12 @@ class WorkerSupervisor(Handler):
         Handle and act on BPM process start messages.
         :param _message_data: The start message
         """
-        print(self.log_prefix + "BPM Process(definition: " + _message_data[
+        self.write_dbg_info("BPM Process(definition: " + _message_data[
             "processDefinitionId"] + "): Looking for a worker.")
         _worker = self.acquire_worker(_message_data["processId"])
         if _worker:
             # Add the message to its queue
-            print(
-                self.log_prefix + "BPM Process " + _message_data["processId"] +
+            self.write_dbg_info("BPM Process " + _message_data["processId"] +
                 ": Putting the message on the workers' queue.")
 
             _worker["queue"].put(_message_data)
@@ -215,7 +218,7 @@ class WorkerSupervisor(Handler):
                                                 _reason="Queued until a worker becomes available")]
                                            )
 
-            print(self.log_prefix + "BPM Process(definition: " + _message_data[
+            self.write_dbg_info("BPM Process(definition: " + _message_data[
                 "processDefinitionId"] + "): Queued for execution when a worker becomes available. "
                                          "Max worker count limit reached.")
 
@@ -241,10 +244,10 @@ class WorkerSupervisor(Handler):
                     _message_data["processId"] in self.workers and \
                     _message_data["state"] in ["killed"]:
                 # If a worker is logging that it is being killed, it should be remove from the workers
-                print(self.log_prefix + "Worker " + _message_data["processId"] + " shut down, removing from workers.")
+                self.write_dbg_info(self.log_prefix + "Worker " + _message_data["processId"] + " shut down, removing from workers.")
                 del self.workers[_message_data["processId"]]
 
-            print(self.log_prefix + "Forwarding " + str(_message_data))
+            self.write_dbg_info("Forwarding " + str(_message_data))
             # Pass the message on to the message queue, heading for the last destination
             self.message_monitor.queue.put([_item[0], _item[1]])
 
@@ -261,7 +264,7 @@ class WorkerSupervisor(Handler):
             # It is a command to kill a worker, do so.
             # TODO: This part should be extracted into a function. (PROD-27)
             _worker = self.busy_workers[_message_data["destinationProcessId"]]
-            print(self.log_prefix + "Kill " + str(_message_data))
+            self.write_dbg_info(self.log_prefix + "Kill " + str(_message_data))
             _worker["process"].terminate()
 
             del self.busy_workers[_message_data["destinationProcessId"]]
@@ -278,16 +281,16 @@ class WorkerSupervisor(Handler):
                                                                             _process_id=_worker["processId"],
                                                                             _reason="Had an unresponsive BPM process")])
 
-            print(self.log_prefix + "Killed")
+            self.write_dbg_info(self.log_prefix + "Killed")
 
         elif "destinationProcessId" not in _message_data:
-            raise Exception(self.log_prefix + "Missing destinationProcessId: " + str(_message_data))
+            raise Exception("Missing destinationProcessId: " + str(_message_data))
         elif _message_data["destinationProcessId"] in self.busy_workers:
             # Route the data to its destination
             # The mockup must reference in exactly the same way..
             self.busy_workers[_message_data["destinationProcessId"]]["queue"].put(_message_data)
         else:
-            raise Exception(self.log_prefix + "Invalid destinationProcessId: " + _message_data["destinationProcessId"])
+            raise Exception("Invalid destinationProcessId: " + _message_data["destinationProcessId"])
 
     def shut_down(self, _user_id):
         """
@@ -312,9 +315,9 @@ class WorkerSupervisor(Handler):
 
 
             """
-            print(self.log_prefix + "Shutting down process handler")
+            self.write_dbg_info("Shutting down process handler")
 
-            print(self.log_prefix + "Telling BPM processes to stop")
+            self.write_dbg_info("Telling BPM processes to stop")
             # Send process control messages to all bpm processes
             for _process_id, _process in self.busy_workers.items():
                 _process["queue"].put(bpm_process_control(_destination="",
@@ -325,16 +328,16 @@ class WorkerSupervisor(Handler):
                                                           _source="",
                                                           _source_process_id=self.process_id,
                                                           _user_id=_user_id))
-                print(self.log_prefix + str(_process_id) + " told to stop.")
+                self.write_dbg_info(str(_process_id) + " told to stop.")
 
-            print(self.log_prefix + "BPM processes told to shut down, waiting a bit..")
+            self.write_dbg_info("BPM processes told to shut down, waiting a bit..")
 
-            print(self.log_prefix + "Clearing job queue")
+            self.write_dbg_info("Clearing job queue")
             # Loop through job queue, remove all items, tell broker
             while True:
                 try:
                     _item = self.job_queue.get_nowait()
-                    print(self.log_prefix + "Job in queue:" + str(_item))
+                    self.write_dbg_info("Job in queue:" + str(_item))
                     self.message_monitor.queue.put([None,
                                                     reply_with_error_message(self, _item,
                                                                              "Unqueued, agent shutting down.")]
@@ -344,17 +347,16 @@ class WorkerSupervisor(Handler):
 
             _check_count = 3
             while len(self.busy_workers) > 0 and _check_count > 0:
-                print(
-                    self.log_prefix + "Still running BPM processes, waiting another second before stopping "
+                self.write_dbg_info("Still running BPM processes, waiting another second before stopping "
                                       "the remaining workers. Times left:" + str(_check_count))
                 time.sleep(1)
                 _check_count -= 1
 
-            print(self.log_prefix + "Telling worker processes to shut down")
+            self.write_dbg_info("Telling worker processes to shut down")
 
             # Tell workers to shut down
             for _process in self.workers.values():
-                print(self.log_prefix + "Telling worker process " + _process["processId"] + " to stop")
+                self.write_dbg_info("Telling worker process " + _process["processId"] + " to stop")
                 _process["queue"].put(worker_process_control(_destination="",
                                                              _destination_process_id=_process["processId"],
                                                              _command="stop",
@@ -368,7 +370,7 @@ class WorkerSupervisor(Handler):
             # Kill the remaining processes
 
             for _process in list(self.workers.values()):
-                print(self.log_prefix + "Killing unresponsive process " + _process["processId"] + " (pid:" + str(
+                self.write_dbg_info("Killing unresponsive process " + _process["processId"] + " (pid:" + str(
                     _process["pid"]) + ")")
                 _process["process"].terminate()
                 self.message_monitor.queue.put([None, log_process_state_message(_changed_by=_user_id,
@@ -378,7 +380,7 @@ class WorkerSupervisor(Handler):
                                                 ])
                 del self.workers[_process["processId"]]
         except Exception as e:
-            print(self.log_prefix + "Failed to properly shut down, error:" + str(e))
+            self.write_dbg_info("Failed to properly shut down, error:" + str(e))
 
 
 class MockupWorkerSupervisor(WorkerSupervisor):

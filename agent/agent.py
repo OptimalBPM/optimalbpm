@@ -5,7 +5,7 @@ This module implements the Optimal BPM agent initialization and shut down functi
 import multiprocessing
 import os
 import sys
-import datetime
+
 from multiprocessing import Process, Queue
 import time
 
