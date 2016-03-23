@@ -54,7 +54,7 @@ class ProcessTokens(object):
         if _namespaces:
             self.namespaces = _namespaces
         else:
-            self.namespaces = {}
+            self.namespaces = CumulativeDict()
 
         if _token_list:
             self._items = _token_list

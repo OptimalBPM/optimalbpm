@@ -47,7 +47,9 @@ class CherryPyProcess(object):
         self.keywords = ProcessTokens.load_keywords()
         # Load all of BPAL
         self.namespaces = _namespaces
-        self.namespaces.load_namespaces(core_language + [os.path.join(script_dir, "../translation/features/fake_bpm_lib.json")])
+        self.namespaces.load_dicts(
+            core_language + [os.path.join(script_dir, "../translation/features/fake_bpm_lib.json")],
+            _top_attribute="namespaces")
 
 
     # TODO: There should exist some special right for this like object_id_admin_process(ORG-110)

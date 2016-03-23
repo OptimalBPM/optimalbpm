@@ -3,8 +3,9 @@ import json
 from tokenize import TokenInfo
 from behave import *
 from nose.tools.trivial import ok_
-from of.broker.lib.namespaces import Namespaces
 from plugins.optimalbpm.broker.translation.python.translator import ProcessTokens, core_language
+
+from of.common.cumulative_dict import CumulativeDict
 
 use_step_matcher("re")
 
@@ -18,8 +19,9 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    _namespaces = Namespaces()
-    _namespaces.load_namespaces(_definition_files=core_language + [os.path.join(script_dir, "../fake_bpm_lib.json")])
+    _namespaces = CumulativeDict()
+    _namespaces.load_dicts(_definition_files=core_language + [os.path.join(script_dir, "../fake_bpm_lib.json")],
+                           _top_attribute="namespaces")
     context.tokens = ProcessTokens(_namespaces = _namespaces)
     context.verbs = context.tokens.parse_file(os.path.join(script_dir, "../source.py"))
 
@@ -29,7 +31,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    ok_(context.verbs[6].children[1].children[0].identifier == 'print' and context.verbs[6].children[1].children[0].parameters == {'expression': '"This should always happen three times."'})
+    ok_(context.verbs[7].children[1].children[0].identifier == 'print' and context.verbs[7].children[1].children[0].parameters == {'expression': '"This should always happen three times."'})
 
 
 

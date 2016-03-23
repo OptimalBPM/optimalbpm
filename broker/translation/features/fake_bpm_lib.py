@@ -7,5 +7,3 @@ def obpm_say_this(_subject, _message):
 def cantcallme(_nope):
     raise Exception("SO DON'T!")
 
-class TerminationException(Exception):
-    pass

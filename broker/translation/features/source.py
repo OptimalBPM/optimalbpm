@@ -2,15 +2,16 @@
 This process file is a part of the Optimal BPM Python parsing testing,
 It is neither runnable or thought of as a example.
 """
+import agent.lib.worker.handler
 
 """  Import the tricks of the trade
  Import the tricks of the trade row #2
 """
-import of.broker.lib.translation.features.fake_bpm_lib
+import plugins.optimalbpm.broker.lib.translation.features.fake_bpm_lib
 
 """ Import the obpm_say_this function
 """
-from of.broker.lib.translation.features.fake_bpm_lib import cantcallme
+from plugins.optimalbpm.broker.lib.translation.features.fake_bpm_lib import cantcallme
 
 
 
@@ -21,7 +22,7 @@ from of.broker.lib.translation.features.fake_bpm_lib import cantcallme
 """
 __author__ = 'nibo'
 
-of.broker.lib.translation.features.fake_bpm_lib.a_global = 'nibo'
+plugins.optimalbpm.broker.lib.translation.features.fake_bpm_lib = 'nibo'
 
 
 """
@@ -33,8 +34,8 @@ Tell computer far away to say "Hello!"
 
 """
 try:
-    of.broker.lib.translation.features.fake_bpm_lib.obpm_say_this(of.broker.lib.translation.features.fake_bpm_lib.obpm_say_this("Hello!", "Hey!"), poc.bpm_gui_poc.fake_bpm_lib.a_global)
-except of.broker.lib.translation.features.fake_bpm_lib.TerminationException as e:
+    plugins.optimalbpm.broker.lib.translation.features.fake_bpm_lib.obpm_say_this(plugins.optimalbpm.broker.lib.translation.features.fake_bpm_lib.obpm_say_this("Hello!", "Hey!"), plugins.optimalbpm.broker.lib.translation.features.fake_bpm_lib.a_global)
+except plugins.optimalbpm.agent.lib.worker.handler.TerminationException as e:
     print("Wow, we are being told to terminate..better be nice and exit or re-raise the error..raising : " + str(e))
     raise("error")
 
