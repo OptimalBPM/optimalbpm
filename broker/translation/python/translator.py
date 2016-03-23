@@ -22,8 +22,8 @@ class ProcessTokens(object):
     # A list of keywords used to resolve python keywords and structures
     keywords = None
 
-    # A list of definitions used to resolve function definitions
-    definitions = None
+    # A list of namespaces used to resolve function definitions
+    namespaces = None
 
     # A dict of aliases; "alias" : "namespace.functionname"
     aliases = None
@@ -39,27 +39,30 @@ class ProcessTokens(object):
     # A position/verb-map, used to generate a line/doc-map
     position_map = None
 
-    # The non-local namespaces referred to by the process
-    namespaces = None
+    # The local namespaces referred to by the process
+    local_namespaces = None
 
     # The parsed tokens
     tokens = None
 
-    def __init__(self, _token_list=None, _keywords=None, _definitions=None):
+    def __init__(self, _token_list=None, _keywords=None, _namespaces=None):
         if _keywords:
             self.keywords = _keywords
         else:
             self.keywords = self.load_keywords()
 
-        if _definitions:
-            self.definitions = _definitions
+        if _namespaces:
+            self.namespaces = _namespaces
+        else:
+            self.namespaces = {}
 
         if _token_list:
             self._items = _token_list
             self.position = 0
 
         self.position_map = {}
-        self.namespaces = []
+        self.local_namespaces = []
+
 
 
     def first(self):
@@ -275,7 +278,7 @@ class ProcessTokens(object):
             _string = tokenize.untokenize(self.tokens)
             _file.write(_string.decode('utf-8'))
 
-        return self.namespaces, _line_map
+        return self.local_namespaces, _line_map
 
     @staticmethod
     def load_keywords():
@@ -314,7 +317,7 @@ class ProcessTokens(object):
         return _result
 
 
-    def add_to_namespaces(self, _identifier):
+    def add_to_local_namespaces(self, _identifier):
         """
         Parses the namespace from identifier and adds it to namespaces if not present
         :param _identifier: The identifier
@@ -323,7 +326,7 @@ class ProcessTokens(object):
         _identifier_parts = _identifier.split(".")
         if len(_identifier_parts) > 1:
             if _identifier_parts[0] not in self.namespaces:
-                self.namespaces.append(_identifier_parts[0])
+                self.local_namespaces.append(_identifier_parts[0])
 
 
     def add_verb_to_position_map(self, _verb):

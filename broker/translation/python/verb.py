@@ -226,7 +226,7 @@ class Verb(object):
         _token = _process_tokens.next()
 
         try:
-            _curr_definition = _process_tokens.definitions[_namespace]["functions"][_function_name]
+            _curr_definition = _process_tokens.namespaces[_namespace]["functions"][_function_name]
         except KeyError:
             # Handle calls to undefined functions
 
@@ -368,9 +368,9 @@ class Verb(object):
 
         self.identifier = _token[1]
         _definition = _process_tokens.keywords[self.identifier]
-        self.type_title = _definition["meta"]["title"]
+        self.type_title = _definition["title"]
         self.type = "keyword"
-        self.type_description = _definition["meta"]["description"]
+        self.type_description = _definition["description"]
         if "expanded" in _definition:
             self.expanded = _definition["expanded"]
         _parts = _definition["parts"]
@@ -485,8 +485,8 @@ class Verb(object):
                             if _token[0] == NEWLINE:
                                 _token = _process_tokens.next()
 
-                            self.type_title = _process_tokens.keywords["@assign"]["meta"]["title"]
-                            self.type_description = _process_tokens.keywords["@assign"]["meta"]["description"]
+                            self.type_title = _process_tokens.keywords["@assign"]["title"]
+                            self.type_description = _process_tokens.keywords["@assign"]["description"]
                             self.type = "assign"
                             self.identifier = "@assign"
                             return _token
@@ -653,7 +653,7 @@ class Verb(object):
         :return: The list of tokens
         """
 
-        _process_tokens.add_to_namespaces(self.identifier)
+        _process_tokens.add_to_local_namespaces(self.identifier)
 
         # Loop assignments
         _assignments = []

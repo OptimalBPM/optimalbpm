@@ -1,96 +1,95 @@
 {
-  "description": "Optimal BPM",
-  "dependencies": {},
-  "FailOnError": true,
-  "admin-ui": {
-    "mountpoint": "process",
-    "controllers": [
-      {
-        "name": "ProcessController",
-        "module": "process/controllers/process",
-        "dependencies": [
-          "$scope",
-          "$http",
-          "$q",
-          "$timeout"
+  "plugins": {
+    "optimalbpm": {
+      "description": "Optimal BPM",
+      "dependencies": {},
+      "failOnError": true,
+      "admin-ui": {
+        "mountpoint": "process",
+        "controllers": [
+          {
+            "name": "ProcessController",
+            "module": "process/controllers/process",
+            "dependencies": [
+              "$scope",
+              "$http",
+              "$q",
+              "$timeout"
+            ]
+          },
+          {
+            "name": "ControlController",
+            "module": "process/controllers/control",
+            "dependencies": [
+              "$scope",
+              "$http",
+              "$cookies",
+              "$interval"
+            ]
+          },
+          {
+            "name": "VerticalDraggableMenuController",
+            "module": "process/controllers/verticalDraggableMenuController",
+            "dependencies": [
+              "$scope",
+              "$timeout"
+            ]
+          }
+        ],
+        "directives": [
+          {
+            "name": "process",
+            "module": "process/directives/process"
+          },
+          {
+            "name": "control",
+            "module": "process/directives/control"
+          },
+          {
+            "name": "verticalDraggableMenu",
+            "module": "process/directives/verticalDraggableMenu"
+          }
+        ],
+        "routes": [
+          {
+            "path": "/process",
+            "route": {
+              "templateUrl": "process/views/process.html"
+            }
+          },
+          {
+            "path": "/control",
+            "route": {
+              "templateUrl": "process/views/control.html"
+            }
+          }
+        ],
+        "menus": [
+          {
+            "caption": "CONTROL",
+            "weight": 0.4,
+            "path": "control",
+            "items": [],
+            "right": "Administer"
+          },
+          {
+            "caption": "DESIGN",
+            "weight": 0.5,
+            "path": "process",
+            "items": [],
+            "right": "Administer"
+          }
         ]
       },
-      {
-        "name": "ControlController",
-        "module": "process/controllers/control",
-        "dependencies": [
-          "$scope",
-          "$http",
-          "$cookies",
-          "$interval"
-        ]
-      },
-      {
-        "name": "VerticalDraggableMenuController",
-        "module": "process/controllers/verticalDraggableMenuController",
-        "dependencies": [
-          "$scope",
-          "$timeout"
-        ]
+      "hooks": {
+        "hooks_module": "hooks_broker"
       }
-    ],
-    "directives": [
-      {
-        "name": "process",
-        "module": "process/directives/process"
-      },
-      {
-        "name": "control",
-        "module": "process/directives/control"
-      },
-      {
-        "name": "verticalDraggableMenu",
-        "module": "process/directives/verticalDraggableMenu"
-      }
-    ],
-    "routes": [
-      {
-        "path": "/process",
-        "route": {
-          "templateUrl": "process/views/process.html"
-        }
-      },
-      {
-        "path": "/control",
-        "route": {
-          "templateUrl": "process/views/control.html"
-        }
-      }
-    ]
-    ,
-    "menus": [
-      {
-        "caption": "CONTROL",
-        "weight": 0.4,
-        "path": "control",
-        "items": [],
-        "right": "Administer"
-      },
-      {
-        "caption": "DESIGN",
-        "weight": 0.5,
-        "path": "process",
-        "items": [],
-        "right": "Administer"
-      }
-      ]
-
+    }
   },
-  "hooks": {
-    "hooks_module": "hooks_broker"
-  },
-
   "namespaces": {
     "bpm": {
-      "meta": {
-        "description": "Optimal BPM",
-        "title": "Optimal BPM"
-      }
+      "description": "Optimal BPM",
+      "title": "Optimal BPM"
     }
   }
 }

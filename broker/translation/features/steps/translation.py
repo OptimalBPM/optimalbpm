@@ -3,7 +3,7 @@ import json
 from tokenize import TokenInfo
 from behave import *
 from nose.tools.trivial import ok_
-from of.broker.lib.definitions import Definitions
+from of.broker.lib.namespaces import Namespaces
 from plugins.optimalbpm.broker.translation.python.translator import ProcessTokens, core_language
 
 use_step_matcher("re")
@@ -12,48 +12,15 @@ import os
 script_dir = os.path.dirname(__file__)
 
 
-def load_definitions(_definition_files):
-    """
-    MANUALLY Load function definitions from files
-
-    :param _definition_files: A list of _definition_files
-    :return: A definitions structure
-    """
-    # TODO: This should be deprecated, it is only used for testing
-    def load_definition_file(_filename):
-        with open(_filename, "r") as _local_file:
-            _local_def_data = json.load(_local_file)
-            try:
-                
-                _definitions[_local_def_data["meta"]["namespace"]] = _local_def_data
-            except Exception as e:
-                print(str(e))
-
-    _definitions = {}
-
-    # Add pythons' system functions to the "" namespace
-    load_definition_file(os.path.join(script_dir, "..", "..", "python", "system.json"))
-
-    # Also add Optimal BPMs internal functionality to the ""
-    with open(os.path.join(script_dir, "..", "..", "python","internal.json"), "r") as _file:
-        _def_data = json.load(_file)
-        _definitions[""]["functions"].update(_def_data["functions"])
-
-    if _definition_files:
-        for _curr_definition in _definition_files:
-            load_definition_file(_curr_definition)
-
-    return _definitions
-
 
 @given("a source file is tokenized")
 def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    _definitions = Definitions()
-    _definitions.load_definitions(_definition_files=core_language + [os.path.join(script_dir, "../fake_bpm_lib.json")])
-    context.tokens = ProcessTokens(_definitions = _definitions)
+    _namespaces = Namespaces()
+    _namespaces.load_namespaces(_definition_files=core_language + [os.path.join(script_dir, "../fake_bpm_lib.json")])
+    context.tokens = ProcessTokens(_namespaces = _namespaces)
     context.verbs = context.tokens.parse_file(os.path.join(script_dir, "../source.py"))
 
 
@@ -97,7 +64,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    _definitions = context.tokens.encode_process(context.verbs, os.path.join(script_dir, "../source_out.py"))
+    _output = context.tokens.encode_process(context.verbs, os.path.join(script_dir, "../source_out.py"))
 
 
 @then("the files must match")

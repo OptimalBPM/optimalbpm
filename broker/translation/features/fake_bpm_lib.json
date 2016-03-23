@@ -1,45 +1,41 @@
 {
-  "plugins.optimalbpm.broker.lib.translation.features.fake_bpm_lib": {
-    "meta": {
-      "description": "Dummy-functions for testing"
-    },
-    "functions": {
-      "obpm_say_this": {
-        "meta": {
+  "namespaces": {
+    "plugins.optimalbpm.broker.lib.translation.features.fake_bpm_lib": {
+      "description": "Dummy-functions for testing",
+      "functions": {
+        "obpm_say_this": {
           "title": "obpm_say_this <i>%parameters%</i>",
-          "description": "Prints subject and message to standard output."
+          "description": "Prints subject and message to standard output.",
+          "parameters": [
+            {
+              "key": "subject",
+              "type": "string",
+              "title": "Subject",
+              "description": "The subject to say",
+              "output": false
+            },
+            {
+              "key": "message",
+              "type": "string",
+              "title": "Message",
+              "description": "The message to say",
+              "output": false
+            }
+          ]
         },
-        "parameters": [
-          {
-            "key": "subject",
-            "type": "string",
-            "title": "Subject",
-            "description": "The subject to say",
-            "output": false
-          },
-          {
-            "key": "message",
-            "type": "string",
-            "title": "Message",
-            "description": "The message to say",
-            "output": false
-          }
-        ]
-      },
-      "cantcallme": {
-        "meta": {
+        "cantcallme": {
           "title": "cantcallme <i>%parameters%</i>",
-          "description": "Dummy function that can't be called."
-        },
-        "parameters": [
-          {
-            "key": "parameter",
-            "type": "string",
-            "title": "Name",
-            "description": "Parameter to function your can't call.",
-            "output": false
-          }
-        ]
+          "description": "Dummy function that can't be called.",
+          "parameters": [
+            {
+              "key": "parameter",
+              "type": "string",
+              "title": "Name",
+              "description": "Parameter to function your can't call.",
+              "output": false
+            }
+          ]
+        }
       }
     }
   }

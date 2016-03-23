@@ -50,7 +50,7 @@ if os.name == "nt":
     from of.common.logging import write_to_event_log
 
 
-# Add the plugin definitions to the OF ones.
+# Add the optimalbpm plugin constants to the OF ones.
 import plugins.optimalbpm.schemas.constants
 plugins.optimalbpm.schemas.constants.init()
 

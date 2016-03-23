@@ -1,6 +1,6 @@
 
 /**
- * Module that implements a tree using MBE, a schema validated form and ui layout
+ * Module that implements a tree using schemaTree, a schema validated form and ui layout
 
  * @module nodes
  * @service Nodes
@@ -98,8 +98,8 @@ export class ProcessController extends NodeManager implements NodeManagement {
     // The encoding of the process file
     encoding = null;
 
-    // The function definitions by namespace
-    definitions = {};
+    // The function namespaces by namespace
+    namespaces = {};
 
     // The menu columns
     menuColumns : any[];
@@ -349,9 +349,9 @@ export class ProcessController extends NodeManager implements NodeManagement {
         var createDefinition = (id, currDefinition, expanded, identifier, allowedChildTypes, type, menuTitle) => {
             var new_node:MenuNode = new MenuNode();
             new_node.id = id;
-            new_node.title = currDefinition["meta"]["title"];
-            new_node.menuTitle = menuTitle
-            new_node.description = currDefinition["meta"]["description"];
+            new_node.title = currDefinition["title"];
+            new_node.menuTitle = menuTitle;
+            new_node.description = currDefinition["description"];
             new_node.type = type;
             new_node.parentItem = null;
             new_node.expanded= expanded;
@@ -393,10 +393,10 @@ export class ProcessController extends NodeManager implements NodeManagement {
         }
         this.menuColumns.push(new_column);
 
-        for (var namespace in data["definitions"]) {
-            var curr_definition = data["definitions"][namespace];
+        for (var namespace in data["namespaces"]) {
+            var curr_definition = data["namespaces"][namespace];
             if ("functions" in curr_definition) {
-                var new_column = {"title": curr_definition["meta"]["description"], "children": []};
+                var new_column = {"title": curr_definition["description"], "children": []};
 
                 for (var functionName in curr_definition["functions"]) {
 
@@ -417,27 +417,27 @@ export class ProcessController extends NodeManager implements NodeManagement {
     };
 
     /**
-     * Load definitions array
+     * Load namespaces array
      */
     loadDefinitions = ():ng.IPromise<any> => {
         return this.$q((resolve, reject) => {
             return this.$http.get('process/load_definitions')
                 .success((data):any => {
                     this.populateMenuColumns(data);
-                    this.definitions =  data["definitions"];
+                    this.namespaces =  data["namespaces"];
                     this.keywords = data["keywords"];
                     resolve()
                 })
                 .error((data, status, headers, config):any => {
 
-                    this.bootstrapAlert("Loading definitions failed: " + status);
+                    this.bootstrapAlert("Loading namespaces failed: " + status);
                 })
             }
         );
     };
 
     /**
-     * Load definitions array
+     * Load processes array
      */
     loadProcesses = ():ng.IPromise<any> => {
 
@@ -555,7 +555,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
         } else if (type == "call") {
             var refs:string[] = this.parseNamespace(node["identifier"]);
-            var _parameters = this.definitions[refs[0]]["functions"][refs[1]]["parameters"];
+            var _parameters = this.namespaces[refs[0]]["functions"][refs[1]]["parameters"];
 
             // Loop assignments
 
@@ -599,6 +599,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
                                 if (dataRef in this.paramData) {
                                     data.parameters[parameter["key"]] = this.paramData[dataRef];
+                                } else {
                                 } else {
                                     // No data in paramData, initialize empty
                                     data.parameters[parameter["key"]] = {};

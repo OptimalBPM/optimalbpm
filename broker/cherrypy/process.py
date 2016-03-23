@@ -35,19 +35,19 @@ class CherryPyProcess(object):
     """
     # Cached python keywords
     keywords = None
-    # Cached function definitions
+    # The root CherryPy object
     root_object = None
 
-    # Reference to the central definitions instance
-    definitions = None
-    def __init__(self, _definitions):
+    # Reference to the central namespaces instance
+    namespaces = None
+    def __init__(self, _namespaces):
         """
-        Initiates the class, loads keywords and definitions for the translation
+        Initiates the class, loads keywords and namespaces for the translation
         """
         self.keywords = ProcessTokens.load_keywords()
         # Load all of BPAL
-        self.definitions = _definitions
-        self.definitions.load_definitions(core_language + [os.path.join(script_dir, "../translation/features/fake_bpm_lib.json")])
+        self.namespaces = _namespaces
+        self.namespaces.load_namespaces(core_language + [os.path.join(script_dir, "../translation/features/fake_bpm_lib.json")])
 
 
     # TODO: There should exist some special right for this like object_id_admin_process(ORG-110)
@@ -65,7 +65,7 @@ class CherryPyProcess(object):
         has_right(id_right_admin_everything, kwargs["_user"])
 
         _process_id = cherrypy.request.json["processId"]
-        _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)
+        _tokens = ProcessTokens(_keywords=self.keywords, _namespaces=self.namespaces)
         _repo_path = os.path.expanduser("~/optimalframework/agent_repositories/" + _process_id)
         _filename_process = _repo_path +"/main.py"
         if os.path.exists(_filename_process):
@@ -99,7 +99,7 @@ class CherryPyProcess(object):
         """
         # TODO: Document the structure of the process parameters, perhaps create a schema?(ORG-110)
         has_right(id_right_admin_everything, kwargs["_user"])
-        _tokens = ProcessTokens(_keywords=self.keywords, _definitions=self.definitions)
+        _tokens = ProcessTokens(_keywords=self.keywords, _namespaces=self.namespaces)
         _tokens.documentation = cherrypy.request.json["documentation"]
 
         _process_id = cherrypy.request.json["processId"]
@@ -134,4 +134,4 @@ class CherryPyProcess(object):
         Load all definitions
         :param kwargs: Unused, but injected by check session
         """
-        return {"definitions": self.definitions.as_dict(), "keywords": self.keywords}
+        return {"namespaces": self.namespaces.as_dict(), "keywords": self.keywords}

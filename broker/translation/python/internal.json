@@ -1,146 +1,134 @@
 {
-  "": {
-    "meta": {
-      "namespace": "",
-      "description": "Internal Python functions"
-    },
-    "functions": {
-      "log_progress": {
-        "meta": {
+  "namespaces": {
+    "": {
+      "description": "Internal Python functions",
+      "title": "Internal",
+      "functions": {
+        "log_progress": {
           "title": "Log progress <i>%parameters%</i>",
-          "description": "The log progress command updates the progress counter for a process.<div class='alert alert-info'> This allows for customized progress reporting, use to indicate that a logical progress has been made.</div>"
+          "description": "The log progress command updates the progress counter for a process.<div class='alert alert-info'> This allows for customized progress reporting, use to indicate that a logical progress has been made.</div>",
+          "parameters": [
+            {
+              "key": "_progression_id",
+              "type": "string",
+              "title": "Progression id",
+              "description": "An id that identifies the progression to update",
+              "output": false
+            },
+            {
+              "key": "_change",
+              "type": "string",
+              "title": "Change",
+              "description": "A positive or negative number that specifies how much to change the progression value",
+              "required": false
+            },
+            {
+              "key": "_absolute",
+              "type": "string",
+              "title": "Absolute",
+              "description": "An absolute value to set the progression value to",
+              "required": false
+            }
+          ]
         },
-        "parameters": [
-          {
-            "key": "_progression_id",
-            "type": "string",
-            "title": "Progression id",
-            "description": "An id that identifies the progression to update",
-            "output": false
-          },
-          {
-            "key": "_change",
-            "type": "string",
-            "title": "Change",
-            "description": "A positive or negative number that specifies how much to change the progression value",
-            "required": false
-          },
-          {
-            "key": "_absolute",
-            "type": "string",
-            "title": "Absolute",
-            "description": "An absolute value to set the progression value to",
-            "required": false
-          }
-        ]
-      },
-      "log_message": {
-        "meta": {
+        "log_message": {
           "title": "Log message <i>%parameters%</i>",
-          "description": "Writes a message to the log.<div class='alert alert-info'> This can be used to store additional information about the current state in a process to the log.</div>"
+          "description": "Writes a message to the log.<div class='alert alert-info'> This can be used to store additional information about the current state in a process to the log.</div>",
+          "parameters": [
+            {
+              "key": "_message",
+              "type": "string",
+              "title": "Message",
+              "description": "A expression that results in the message string to log",
+              "output": false
+            },
+            {
+              "key": "_kind",
+              "type": "strapselect",
+              "titleMap": [
+                {
+                  "value": "Info",
+                  "name": "Info"
+                },
+                {
+                  "value": "Warning",
+                  "name": "Warning"
+                },
+                {
+                  "value": "Error",
+                  "name": "Error"
+                }
+              ],
+              "title": "Message kind",
+              "description": "The kind of message",
+              "required": false
+            }
+          ]
         },
-        "parameters": [
-          {
-            "key": "_message",
-            "type": "string",
-            "title": "Message",
-            "description": "A expression that results in the message string to log",
-            "output": false
-          },
-          {
-            "key": "_kind",
-            "type": "strapselect",
-            "titleMap": [
-              {
-                "value": "Info",
-                "name": "Info"
-              },
-              {
-                "value": "Warning",
-                "name": "Warning"
-              },
-              {
-                "value": "Error",
-                "name": "Error"
-              }
-            ],
-            "title": "Message kind",
-            "description": "The kind of message",
-            "required": false
-          }
-        ]
-      },
-      "report_error": {
-        "meta": {
+        "report_error": {
           "title": "Report error <i>%parameters%</i>",
-          "description": "This reports an error message to the initiator but continues execution."
+          "description": "This reports an error message to the initiator but continues execution.",
+          "parameters": [
+            {
+              "key": "_value",
+              "type": "string",
+              "title": "Value",
+              "description": "The error message to report"
+            }
+          ]
         },
-        "parameters": [
-          {
-            "key": "_value",
-            "type": "string",
-            "title": "Value",
-            "description": "The error message to report"
-          }
-        ]
-      },
-      "pause": {
-        "meta": {
+        "pause": {
           "title": "Pause <i>%parameters%</i>",
-          "description": "This command tells the process to pause for a specified duration"
+          "description": "This command tells the process to pause for a specified duration",
+          "parameters": [
+            {
+              "key": "_duration",
+              "type": "string",
+              "title": "Duration",
+              "description": "How long the process should pause, in seconds"
+            }
+          ]
         },
-        "parameters": [
-          {
-            "key": "_duration",
-            "type": "string",
-            "title": "Duration",
-            "description": "How long the process should pause, in seconds"
-          }
-        ]
-      },
-      "report_result": {
-        "meta": {
+        "report_result": {
           "title": "Report result <i>%parameters%</i>",
-          "description": "Reports the result of a process back to the initiator and ends execution.</div>"
+          "description": "Reports the result of a process back to the initiator and ends execution.</div>",
+          "parameters": [
+            {
+              "key": "_globals",
+              "type": "string",
+              "title": "Globals",
+              "description": "The processes' global variables",
+              "readonly": true
+            },
+            {
+              "key": "_result",
+              "type": "string",
+              "title": "",
+              "description": "An expression that produces the message to send",
+              "output": false
+            }
+          ]
         },
-        "parameters": [
-          {
-            "key": "_globals",
-            "type": "string",
-            "title": "Globals",
-            "description": "The processes' global variables",
-            "readonly": true
-          },
-          {
-            "key": "_result",
-            "type": "string",
-            "title": "",
-            "description": "An expression that produces the message to send",
-            "output": false
-          }
-        ]
-      },
-      "send_message": {
-        "meta": {
+        "send_message": {
           "title": "Send message <i>%parameters%</i>",
-          "description": "Sends content in </i>message</i> to <i>destination</i>.</div>"
-        },
-        "parameters": [
-          {
-            "key": "message",
-            "type": "string",
-            "title": "Message",
-            "description": "An expression that produces the message to send",
-            "output": false
-          },
-          {
-            "key": "destination",
-            "type": "string",
-            "title": "Destination",
-            "description": "An expression that produces the message to send",
-            "output": false
-          }
-        ]
+          "description": "Sends content in </i>message</i> to <i>destination</i>.</div>",
+          "parameters": [
+            {
+              "key": "message",
+              "type": "string",
+              "title": "Message",
+              "description": "An expression that produces the message to send",
+              "output": false
+            },
+            {
+              "key": "destination",
+              "type": "string",
+              "title": "Destination",
+              "description": "An expression that produces the message to send",
+              "output": false
+            }
+          ]
+        }
       }
     }
   }

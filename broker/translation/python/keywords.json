@@ -1,9 +1,7 @@
 {
   "from": {
-    "meta": {
-      "title": "from <i>%library%</i> import <i>%reference%</i>",
-      "description": "A <b>from</b> statement causes a process to import a certain identifier."
-    },
+    "title": "from <i>%library%</i> import <i>%reference%</i>",
+    "description": "A <b>from</b> statement causes a process to import a certain identifier.",
     "parts": [
       {
         "kind": "keyword",
@@ -30,10 +28,8 @@
     ]
   },
   "import": {
-    "meta": {
-      "title": "import <i>%reference%</i>",
-      "description": "A <b>import</b> statement causes a process to import a module."
-    },
+    "title": "import <i>%reference%</i>",
+    "description": "A <b>import</b> statement causes a process to import a module.",
     "parts": [
       {
         "kind": "keyword",
@@ -49,10 +45,8 @@
     ]
   },
   "if": {
-    "meta": {
-      "title": "if <i>%condition%</i> then",
-      "description": "The content of an <b>if</b> statement is executed if the condition is true."
-    },
+    "title": "if <i>%condition%</i> then",
+    "description": "The content of an <b>if</b> statement is executed if the condition is true.",
     "parts": [
       {
         "kind": "keyword",
@@ -70,10 +64,8 @@
     ]
   },
   "elif": {
-    "meta": {
-      "title": "else if <i>%condition%</i> then",
-      "description": "The content of an <b>else if</b> statement is executed it the previous condition wasn't true, but his is."
-    },
+    "title": "else if <i>%condition%</i> then",
+    "description": "The content of an <b>else if</b> statement is executed it the previous condition wasn't true, but his is.",
     "required_precursor": "if",
     "parts": [
       {
@@ -92,10 +84,8 @@
     ]
   },
   "else": {
-    "meta": {
-      "title": "else",
-      "description": "The content of an <b>else</b> is executed if all the other conditions are false."
-    },
+    "title": "else",
+    "description": "The content of an <b>else</b> is executed if all the other conditions are false.",
     "required_precursor": [
       "if",
       "elif"
@@ -113,10 +103,8 @@
     ]
   },
   "def": {
-    "meta": {
-      "title": "define function <i>%function_name%</i> (<i>%parameters%</i>)",
-      "description": "Creates a function that with the functionality contained in the block."
-    },
+    "title": "define function <i>%function_name%</i> (<i>%parameters%</i>)",
+    "description": "Creates a function that with the functionality contained in the block.",
     "is_definition": true,
     "parts": [
       {
@@ -139,10 +127,8 @@
     ]
   },
   "try": {
-    "meta": {
-      "title": "<img class='try_except_icons' width='15px' height='15px' src='process/images/try_mid_mid.png'></img>",
-      "description": "Tries to execute its content and passes any errors to the following <b>except</b>-statement.<br /><div class='alert alert-danger'>Warning: If there is no following <b>except</b>-statement, the errors will be suppressed.</div>"
-    },
+    "title": "<img class='try_except_icons' width='15px' height='15px' src='process/images/try_mid_mid.png'></img>",
+    "description": "Tries to execute its content and passes any errors to the following <b>except</b>-statement.<br /><div class='alert alert-danger'>Warning: If there is no following <b>except</b>-statement, the errors will be suppressed.</div>",
     "expanded": true,
     "parts": [
       {
@@ -157,10 +143,8 @@
     ]
   },
   "except": {
-    "meta": {
-      "title": "<img class='try_except_icons' width='15px' height='15px' src='/images/except_mid_mid.png'></img>",
-      "description": "If an error occured in the previous <b>try</b>-statement, the content will be executed."
-    },
+    "title": "<img class='try_except_icons' width='15px' height='15px' src='/images/except_mid_mid.png'></img>",
+    "description": "If an error occured in the previous <b>try</b>-statement, the content will be executed.",
     "required_precursor": "try",
     "expanded": true,
     "parts": [
@@ -190,10 +174,8 @@
     ]
   },
   "for": {
-    "meta": {
-      "title": "for each <i>%item%</i> in <i>%collection%</i>",
-      "description": "Executes it content once for each item in the collection."
-    },
+    "title": "for each <i>%item%</i> in <i>%collection%</i>",
+    "description": "Executes it content once for each item in the collection.",
     "parts": [
       {
         "kind": "keyword",
@@ -221,10 +203,8 @@
     ]
   },
   "while": {
-    "meta": {
-      "title": "while <i>%condition%</i>",
-      "description": "Executes its content as long as the condition is true.<br /><div class='alert alert-danger'> <b>Warning</b>, this can cause the process to go into an infinite loop and hang.</div>"
-    },
+    "title": "while <i>%condition%</i>",
+    "description": "Executes its content as long as the condition is true.<br /><div class='alert alert-danger'> <b>Warning</b>, this can cause the process to go into an infinite loop and hang.</div>",
     "parts": [
       {
         "kind": "keyword",
@@ -242,16 +222,12 @@
     ]
   },
   "@assign": {
-    "meta": {
-      "title": "<i>%assignments%</i>=<b>%parameters%</b>",
-      "description": "Assigns a value to the specified variable."
-    }
+    "title": "<i>%assignments%</i>=<b>%parameters%</b>",
+    "description": "Assigns a value to the specified variable."
   },
   "@call": {
-    "meta": {
-      "title": "Call <i>%functionName%</i><br /> with <i>%parameters%</i>",
-      "description": "Call a function with the provided parameters"
-    },
+    "title": "Call <i>%functionName%</i><br /> with <i>%parameters%</i>",
+    "description": "Call a function with the provided parameters",
     "parts": [
       {
         "kind": "python-reference",

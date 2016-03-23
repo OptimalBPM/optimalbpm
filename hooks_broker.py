@@ -13,8 +13,8 @@ def cherrypy_admin(main_object):
 def cherrypy_root(main_object):
     pass
 
-def init_admin_ui(_root_object, _definitions):
-    _root_object.process = CherryPyProcess(_definitions)
+def init_admin_ui(_root_object, _namespaces):
+    _root_object.process = CherryPyProcess(_namespaces)
     _root_object.control = CherryPyControl(_root_object)
 
 def messaging_init(socket):
