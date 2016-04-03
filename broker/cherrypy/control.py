@@ -120,8 +120,8 @@ class CherryPyControl(object):
     @cherrypy.expose
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out(content_type='application/json')
-    @aop_has_right([id_right_admin_everything])
     @aop_check_session
+    @aop_has_right([id_right_admin_everything])
     def get_process_history(self, **kwargs):
         _process_id = cherrypy.request.json["process_id"]
         return self._control.get_process_history(_process_id, kwargs["_user"])
