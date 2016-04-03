@@ -97,7 +97,7 @@ export class ControlController {
         // See schema/constants.py
         return this.$http.post("node/lookup", {
                 "collection": "node", "conditions": {
-                    "schemaRef": "bpm: //node_agent.json",
+                    "schemaRef": "bpm://node_agent.json",
                     "parent_id": "ObjectId(000000010000010002e64d03)"
                 }
             })
