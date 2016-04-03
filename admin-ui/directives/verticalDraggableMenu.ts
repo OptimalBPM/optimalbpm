@@ -4,7 +4,7 @@
 /// <reference path="../typings/angularjs/angular.d.ts" />
 /// <reference path="../typings/jquery/jquery.d.ts" />
 
-'use strict';
+"use strict";
 
 import "angular";
 
@@ -13,20 +13,20 @@ import "angular-ui-tree";
 
 import {VerticalDraggableMenuScope} from "../controllers/verticalDraggableMenuController";
 
-export function verticalDraggableMenu():ng.IDirective {
+export function verticalDraggableMenu(): ng.IDirective {
     return {
-        restrict: 'E',
+        restrict: "E",
         scope: {
             columns: "=",
             treeOptions: "="
         },
         controller: "VerticalDraggableMenuController",
-        link: ($scope:VerticalDraggableMenuScope, element:JQuery) => {
+        link: ($scope: VerticalDraggableMenuScope, element: JQuery) => {
             console.log("link function in VerticalDraggableMenu directive called ");
 
         },
-        templateUrl: 'process/views/VerticalDraggableMenu/menu.html'
-    }
+        templateUrl: "process/views/VerticalDraggableMenu/menu.html"
+    };
 
 }
 

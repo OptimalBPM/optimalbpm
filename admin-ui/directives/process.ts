@@ -4,7 +4,7 @@
 /// <reference path="../typings/angularjs/angular.d.ts" />
 /// <reference path="../typings/jquery/jquery.d.ts" />
 
-'use strict';
+"use strict";
 
 import "angular";
 
@@ -13,17 +13,17 @@ import "angular-ui-select";
 
 
 
-export function process():ng.IDirective {
+export function process(): ng.IDirective {
     return {
-        restrict: 'E',
+        restrict: "E",
         scope: {
         },
         controller: "ProcessController",
-        link: ($scope:any, element:JQuery) => {
+        link: ($scope: any, element: JQuery) => {
             console.log("link function in process directive called ");
         },
-        templateUrl: 'process/views/process/process.html'
-    }
+        templateUrl: "process/views/process/process.html"
+    };
 
 }
 

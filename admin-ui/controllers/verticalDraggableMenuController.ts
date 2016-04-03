@@ -2,27 +2,27 @@
 
 
 interface VerticalDraggableMenuScope extends ng.IScope  {
-    columns : any[];
-    menuManager : VerticalDraggableMenuController;
-    treeOptions : any;
+    columns: any[];
+    menuManager: VerticalDraggableMenuController;
+    treeOptions: any;
 }
 
 export class VerticalDraggableMenuController {
-    $scope:VerticalDraggableMenuScope;
-    $timeout:ng.ITimeoutService;
+    $scope: VerticalDraggableMenuScope;
+    $timeout: ng.ITimeoutService;
 
     initPopovers = () => {
         this.$timeout(function() {
-            var _temp : any = $('[data-toggle="popover"]');
+            let _temp: any = $("[data-toggle=\"popover\"]");
             _temp.popover();
         });
     };
     fixPopoverTitle = (value: string) => {
-        return value.replace(/%/g, '');
+        return value.replace(/%/g, "");
     };
 
 
-    constructor(private $scope:VerticalDraggableMenuScope, $timeout:ng.ITimeoutService) {
+    constructor(private $scope: VerticalDraggableMenuScope, $timeout: ng.ITimeoutService) {
 
         console.log("Initiating VerticalDraggableMenuController" + $scope.toString());
 

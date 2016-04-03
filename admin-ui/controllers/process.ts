@@ -1,3 +1,4 @@
+/// <reference path="../typings/tsd.d.ts" />
 
 /**
  * Module that implements a tree using schemaTree, a schema validated form and ui layout
@@ -7,7 +8,7 @@
  * @author Nicklas Börjesson
  * @link https://www.github.com/OptimalBPM/
  */
-'use strict';
+"use strict";
 import "angular";
 import "angular-strap";
 import "angular-schema-form";
@@ -25,9 +26,9 @@ import "OptimalBPM/angular-schema-form-complex-ui";
 import "angular-schema-form-dynamic-select";
 import {NodeManager, NodeManagement} from "types/nodeManager";
 import {SchemaTreeController} from "controllers/schemaTreeController";
-import {TreeNode, NodesScope, Dict, TreeScope} from "types/schemaTreeTypes"
+import {TreeNode, NodesScope, Dict, TreeScope} from "types/schemaTreeTypes";
 
-import {Verb} from "../lib/tokens"
+import {Verb} from "../lib/tokens";
 import "../css/process.css!";
 import "../scripts/utils";
 
@@ -42,18 +43,18 @@ Array.prototype.equals = function (array) {
         return false;
 
     // compare lengths - can save a lot of time
-    if (this.length != array.length)
+    if (this.length !== array.length)
         return false;
 
-    for (var i = 0, l = this.length; i < l; i++) {
+    for (let i = 0, l = this.length; i < l; i++) {
         // Check if we have nested arrays
         if (this[i] instanceof Array && array[i] instanceof Array) {
             // recurse into the nested arrays
             if (!this[i].equals(array[i]))
                 return false;
         }
-        else if (this[i] != array[i]) {
-            // Warning - two different object instances will never be equal: {x:20} != {x:20}
+        else if (this[i] !== array[i]) {
+            // Warning - two different object instances will never be equal: {x:20} !== {x:20}
             return false;
         }
     }
@@ -61,14 +62,14 @@ Array.prototype.equals = function (array) {
 };
 
 class ProcessNode extends TreeNode {
-    identifier:string = "";
+    identifier: string = "";
 
 }
 class MenuNode extends ProcessNode {
-    description:string = "";
+    description: string = "";
     // The data of the menu node holds the default values of the node
-    data :any;
-    menuTitle : string;
+    data: any;
+    menuTitle: string;
 
 }
 
@@ -78,20 +79,20 @@ export interface ProcessScope extends NodesScope {
 
 export class ProcessController extends NodeManager implements NodeManagement {
 
-    $timeout:ng.ITimeoutService;
+    $timeout: ng.ITimeoutService;
 
     /** The groups variable holds a list of all the groups. */
-    groups:any[] = [];
+    groups: any[] = [];
 
 
     // Lookup lists
-    lists:Dict = {};
+    lists: Dict = {};
 
     // Processes
-    processes : any[] = [];
+    processes: any[] = [];
 
     // Current process
-    currProcess : any;
+    currProcess: any;
 
     // The descriptive text of the process
     documentation = null;
@@ -102,87 +103,87 @@ export class ProcessController extends NodeManager implements NodeManagement {
     namespaces = {};
 
     // The menu columns
-    menuColumns : any[];
+    menuColumns: any[];
 
     // The options for the menu tree
-    menuTreeOptions : any;
+    menuTreeOptions: any;
     // The menu columns
-    keywords : any[];
+    keywords: any[];
 
     // Externally stored parameter data
-    paramData : any;
+    paramData: any;
 
     // The scope
-    nodeScope : ProcessScope;
+    nodeScope: ProcessScope;
     // A List of ids that have been changed.
-    changedIds : string[] = [];
+    changedIds: string[] = [];
 
     // TODO: Create a directive for the top menu items (ORG-107)
-    availableItems:ng.IScope;
+    availableItems: ng.IScope;
 
     // The list of verbs
-    verbs:Verb[];
+    verbs: Verb[];
 
     schemas: any[];
 
     process_data = {};
 
     // The currently highest id, used when adding new nodes
-    maxId : number;
+    maxId: number;
 
     // A helper for supporting drag'n drop to the tree.
-    //uiTreeHelper : any;
+    // uiTreeHelper : any;
 
     //  Access from template..
     objectKeys = function (obj) {
         return Object.keys(obj);
     };
     bootstrapAlert = (message: string): void => {
-        this.nodeScope.$root.BootstrapDialog.alert(message)
+        this.nodeScope.$root.BootstrapDialog.alert(message);
     };
-    
-    
+
+
     /**
      * Returns a CSS base class given a tree item
      * @param {string} item - the tree item.
      * @returns {string}
      */
-    getClassFromItem = (node:ProcessNode):string => {
-        if (node.identifier == "while") {
-            return "loop"
-        } else if (node.identifier == "for") {
-            return "loop"
-        } else if (node.identifier == "try") {
-            return "try"
-        } else if (node.identifier == "except") {
-            return "except"
-        } else if (node.identifier == "if") {
-            return "if"
-        } else if ((node.identifier == "else") || (node.identifier ==  "elif")) {
-            return "else"
+    getClassFromItem = (node: ProcessNode): string => {
+        if (node.identifier === "while") {
+            return "loop";
+        } else if (node.identifier === "for") {
+            return "loop";
+        } else if (node.identifier === "try") {
+            return "try";
+        } else if (node.identifier === "except") {
+            return "except";
+        } else if (node.identifier === "if") {
+            return "if";
+        } else if ((node.identifier === "else") || (node.identifier === "elif")) {
+            return "else";
         }
 
         return "blank";
-        /*        if (node.type != null) {
+        /*        if (node.type !== null) {
          return node.type;
          } else {
          return "blank";
          }*/
     };
 
-    getIconClass = (nodeType:string):string => {
+    getIconClass = (nodeType: string): string => {
         return "";
-        if (nodeType == "def") {
+        if (nodeType === "def") {
             return "glyphicon glyphicon-pushpin";
-        } else if (nodeType == "print") {
+        } else if (nodeType === "print") {
             return "glyphicon glyphicon-text-background";
-        } else if (nodeType == "import" || nodeType == "from") {
+        } else if (nodeType === "import" || nodeType === "from") {
             return "glyphicon glyphicon-log-in";
-        } else if (nodeType == "@assign") {
+        } else if (nodeType === "@assign") {
             return "glyphicon glyphicon-pencil";
-        } else if (nodeType == "@call") {
+        } else if (nodeType === "@call") {
             return "glyphicon glyphicon-cog";
-        } else if (nodeType == "send_message") {
+        } else if (nodeType === "send_message") {
             return "glyphicon glyphicon-envelope";
         } else {
             return "";
@@ -197,11 +198,11 @@ export class ProcessController extends NodeManager implements NodeManagement {
     /**
      * Load all schemas
      */
-    onInitSchemas = ():ng.IHttpPromise<any> => {
-        return this.$http.get('process/views/process/schemas.json')
-            .success((data):any => {
+    onInitSchemas = (): ng.IHttpPromise<any> => {
+        return this.$http.get("process/views/process/schemas.json")
+            .success((data): any => {
                 this.tree.schemas = data;
-                this.$http.get('node/get_schemas')
+                this.$http.get("node/get_schemas")
                     .success((data: any) => {
                         this.schemas = data;
                     })
@@ -209,16 +210,16 @@ export class ProcessController extends NodeManager implements NodeManagement {
                         this.bootstrapAlert.alert("Loading schemas failed: " + status);
                     });
             })
-            .error((data, status, headers, config):any => {
+            .error((data, status, headers, config): any => {
 
                 this.bootstrapAlert("Loading step typ schemas failed: " + status);
             });
     };
 
 
-    addToList = (listName, value):void => {
+    addToList = (listName, value): void => {
         if (!(listName in this.lists)) {
-            this.lists[listName] = [value]
+            this.lists[listName] = [value];
         }
         else {
             this.lists[listName].push(value);
@@ -227,20 +228,20 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
     };
 
-    generateObjectId = () : string => {
-        var increment: string = Math.floor(Math.random() * (16777216)).toString(16);
-        var pid: string = Math.floor(Math.random() * (65536)).toString(16);
-        var machine: string = Math.floor(Math.random() * (16777216)).toString(16);
-        var timestamp: string = Math.floor(new Date().valueOf() / 1000).toString(16);
+    generateObjectId = (): string => {
+        let increment: string = Math.floor(Math.random() * (16777216)).toString(16);
+        let pid: string = Math.floor(Math.random() * (65536)).toString(16);
+        let machine: string = Math.floor(Math.random() * (16777216)).toString(16);
+        let timestamp: string = Math.floor(new Date().valueOf() / 1000).toString(16);
 
-        return '00000000'.substr(0, 8 - timestamp.length) + timestamp +
-               '000000'.substr(0, 6 - machine.length) + machine +
-               '0000'.substr(0, 4 - pid.length) + pid +
-               '000000'.substr(0, 6 - increment.length) + increment;
+        return "00000000".substr(0, 8 - timestamp.length) + timestamp +
+            "000000".substr(0, 6 - machine.length) + machine +
+            "0000".substr(0, 4 - pid.length) + pid +
+            "000000".substr(0, 6 - increment.length) + increment;
     };
 
 
-    copyDoc = (docObj):void => {
+    copyDoc = (docObj): void => {
         if (docObj) {
             return Object.create(docObj);
         }
@@ -250,8 +251,9 @@ export class ProcessController extends NodeManager implements NodeManagement {
     };
 
     makeParameterList = (parameters) => {
-        var list:string[] = [];
-        for (var key in parameters) {
+        let list: string[] = [];
+        let key: string;
+        for (key in parameters) {
             if (parameters.hasOwnProperty(key)) {
                 list.push(parameters[key]);
             }
@@ -259,18 +261,19 @@ export class ProcessController extends NodeManager implements NodeManagement {
         return list.join(",");
     };
 
-    makeTitle = (item):string => {
-        if (("documentation" in item) && (item["documentation"] != "")) {
+    makeTitle = (item): string => {
+        if (("documentation" in item) && (item["documentation"] !== "")) {
             return item["documentation"].replace("\\\\n", "<br />");
-        } else if (item["type"] == "keyword") {
-            var title:string = item["type_title"];
-            var parameters = item["parameters"];
-            if (item["identifier"] == "@assign") {
+        } else if (item["type"] === "keyword") {
+            let title: string = item["type_title"];
+            let parameters: any = item["parameters"];
+            if (item["identifier"] === "@assign") {
                 title = title.replace("%parameters%", this.makeParameterList(parameters));
                 title = title.replace("%assignments%", this.makeParameterList(item["assignments"]));
             }
             else {
-                for (var key in parameters) {
+                let key: string;
+                for (key in parameters) {
                     if (parameters.hasOwnProperty(key)) {
                         title = title.replace("%" + key + "%", parameters[key]);
                     }
@@ -282,9 +285,9 @@ export class ProcessController extends NodeManager implements NodeManagement {
         else {
             if (!item["type_title"]) {
                 if (item["identifier"]) {
-                    return item["identifier"] + "(" + this.makeParameterList(item["parameters"]) + ")"
+                    return item["identifier"] + "(" + this.makeParameterList(item["parameters"]) + ")";
                 } else {
-                    return item["type"]
+                    return item["type"];
                 }
             }
             else {
@@ -293,15 +296,15 @@ export class ProcessController extends NodeManager implements NodeManagement {
         }
     };
 
-    recurseVerbs = (parent, items):ProcessNode[] => {
+    recurseVerbs = (parent, items): ProcessNode[] => {
 
-        var result:ProcessNode[] = [];
+        let result: ProcessNode[] = [];
 
         items.forEach((item) => {
-            var currItem:ProcessNode = new ProcessNode();
-            var currId = Number(item["id"]);
+            let currItem: ProcessNode = new ProcessNode();
+            let currId: Number = Number(item["id"]);
             if (currId > this.maxId) {
-                this.maxId = currId
+                this.maxId = currId;
             }
             currItem.id = currId.toString();
             currItem.title = this.makeTitle(item);
@@ -311,7 +314,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
             currItem.parentItem = parent;
             this.tree.data[item["id"]] = item;
             currItem.children = this.recurseVerbs(currItem, item.children);
-            result.push(currItem)
+            result.push(currItem);
         });
 
         return result;
@@ -320,23 +323,22 @@ export class ProcessController extends NodeManager implements NodeManagement {
     /**
      * Load process data
      */
-    loadProcess = (processId : string):ng.IPromise<any> => {
+    loadProcess = (processId: string): ng.IPromise<any> => {
 
         return this.$q((resolve, reject) => {
-                return this.$http.post('process/load_process', {"processId": processId})
-                    .success((data):any => {
+                return this.$http.post("process/load_process", {"processId": processId})
+                    .success((data): any => {
                         this.process_data = data;
-                        var _curr_parent = null;
                         this.maxId = 0;
                         this.paramData = data.paramData;
                         this.tree.children = this.recurseVerbs(null, data.verbs);
 
-                        resolve()
+                        resolve();
                     })
-                    .error((data, status, headers, config):any => {
+                    .error((data, status, headers, config): any => {
 
                         this.bootstrapAlert("Loading schemas failed: " + status);
-                    })
+                    });
             }
         );
     };
@@ -346,15 +348,15 @@ export class ProcessController extends NodeManager implements NodeManagement {
     populateMenuColumns = (data) => {
 
         // Creates a new menu node
-        var createDefinition = (id, currDefinition, expanded, identifier, allowedChildTypes, type, menuTitle) => {
-            var new_node:MenuNode = new MenuNode();
+        let createDefinition: any = (id, currDefinition, expanded, identifier, allowedChildTypes, type, menuTitle) => {
+            let new_node: MenuNode = new MenuNode();
             new_node.id = id;
             new_node.title = currDefinition["title"];
             new_node.menuTitle = menuTitle;
             new_node.description = currDefinition["description"];
             new_node.type = type;
             new_node.parentItem = null;
-            new_node.expanded= expanded;
+            new_node.expanded = expanded;
             new_node.identifier = identifier;
             new_node.allowedChildTypes = allowedChildTypes;
             new_node.children = [];
@@ -367,7 +369,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
                 "type_description": new_node.description,
                 "row": null,
                 "children": [],
-                "expanded":expanded,
+                "expanded": expanded,
                 "lead_in_whitespace": [],
                 "token_begin": null,
                 "token_end": null,
@@ -378,39 +380,39 @@ export class ProcessController extends NodeManager implements NodeManagement {
                 "assignment_operator": null,
                 "assignment_order": null
             };
-            return  new_node;
+            return new_node;
 
         };
 
         this.menuColumns = [];
-        var new_definition:MenuNode = new MenuNode();
-        var keywords = data["keywords"];
-        var new_column = {"title": "Keywords", "children": []};
-        for (var keyword in keywords) {
+        let new_definition: MenuNode = new MenuNode();
+        let keywords: string[] = data["keywords"];
+        let new_column: Dict = {"title": "Keywords", "children": []};
+        for (let keyword: string in keywords) {
             new_column.children.push(createDefinition(
-                "new_keyword_"+ keyword, keywords[keyword], true , keyword,
-                ["keyword","call", "documentation", "assign"], "keyword", keyword))
+                "new_keyword_" + keyword, keywords[keyword], true, keyword,
+                ["keyword", "call", "documentation", "assign"], "keyword", keyword));
         }
         this.menuColumns.push(new_column);
-
-        for (var namespace in data["namespaces"]) {
-            var curr_definition = data["namespaces"][namespace];
+        let namespace: string;
+        for (namespace in data["namespaces"]) {
+            let curr_definition: any = data["namespaces"][namespace];
             if ("functions" in curr_definition) {
-                var new_column = {"title": curr_definition["description"], "children": []};
+                let new_column: any = {"title": curr_definition["description"], "children": []};
+                let functionName: string;
+                for (functionName in curr_definition["functions"]) {
 
-                for (var functionName in curr_definition["functions"]) {
-
-                    if (namespace != "") {
-                        var _identifier:string = namespace + "." + functionName;
+                    if (namespace !== "") {
+                        let _identifier: string = namespace + "." + functionName;
                     } else {
-                        var _identifier:string = functionName;
+                        let _identifier: string = functionName;
                     }
 
                     new_column.children.push(createDefinition("new_" + namespace + "_" + functionName
                         , curr_definition["functions"][functionName], true, _identifier, [], "call", functionName));
 
                 }
-                this.menuColumns.push(new_column)
+                this.menuColumns.push(new_column);
             }
         }
 
@@ -419,19 +421,19 @@ export class ProcessController extends NodeManager implements NodeManagement {
     /**
      * Load namespaces array
      */
-    loadDefinitions = ():ng.IPromise<any> => {
+    loadDefinitions = (): ng.IPromise<any> => {
         return this.$q((resolve, reject) => {
-            return this.$http.get('process/load_definitions')
-                .success((data):any => {
-                    this.populateMenuColumns(data);
-                    this.namespaces =  data["namespaces"];
-                    this.keywords = data["keywords"];
-                    resolve()
-                })
-                .error((data, status, headers, config):any => {
+                return this.$http.get("process/load_definitions")
+                    .success((data): any => {
+                        this.populateMenuColumns(data);
+                        this.namespaces = data["namespaces"];
+                        this.keywords = data["keywords"];
+                        resolve();
+                    })
+                    .error((data, status, headers, config): any => {
 
-                    this.bootstrapAlert("Loading namespaces failed: " + status);
-                })
+                        this.bootstrapAlert("Loading namespaces failed: " + status);
+                    });
             }
         );
     };
@@ -439,27 +441,30 @@ export class ProcessController extends NodeManager implements NodeManagement {
     /**
      * Load processes array
      */
-    loadProcesses = ():ng.IPromise<any> => {
+    loadProcesses = (): ng.IPromise<any> => {
 
         return this.$q((resolve, reject) => {
-            // See schema/constants.py
-            return this.$http.post('node/lookup', {"collection": "node", "conditions": {"parent_id": "ObjectId(000000010000010002e64d02)"}})
-                .success((data):any => {
-                    this.processes =  data;
-                    resolve()
-                })
-                .error((data, status, headers, config):any => {
+                // See schema/constants.py
+                return this.$http.post("node/lookup", {
+                        "collection": "node",
+                        "conditions": {"parent_id": "ObjectId(000000010000010002e64d02)"}
+                    })
+                    .success((data): any => {
+                        this.processes = data;
+                        resolve();
+                    })
+                    .error((data, status, headers, config): any => {
 
-                    this.bootstrapAlert("Loading processes failed: " + status);
-                })
+                        this.bootstrapAlert("Loading processes failed: " + status);
+                    });
             }
         );
     };
 
 
     parseNamespace = (identifier) => {
-        var parts:string[] = identifier.split(".");
-        if (parts.length == 1) {
+        let parts: string[] = identifier.split(".");
+        if (parts.length === 1) {
             return ["", identifier];
         }
         else {
@@ -467,33 +472,31 @@ export class ProcessController extends NodeManager implements NodeManagement {
         }
     };
 
-    getDefinition = (uri:string) : any => {
-        var parser = document.createElement("a");
+    getDefinition = (uri: string): any => {
+        let parser: HTMLElement = document.createElement("a");
         parser.href = uri;
-        var schema: any = _this.schemas[parser.protocol + parser.pathname];
-        if (parser.hash != "") {
-            var parts = parser.hash.substr(2).split("/");
-            var subattr = schema;
+        let schema: any = _this.schemas[parser.protocol + parser.pathname];
+        if (parser.hash !== "") {
+            let parts: any[] = parser.hash.substr(2).split("/");
+            let subattr: string = schema;
             // Drill down the schema
             parts.forEach(function (part) {
-                subattr = subattr[part]
+                subattr = subattr[part];
             });
-            schema = subattr
+            schema = subattr;
         }
 
-        return {"schema" : schema, "form": ["*"]}
+        return {"schema": schema, "form": ["*"]};
     };
 
-
     // Generate a form and a schema
-    generateForm = (node:ProcessNode, data: any) => {
-        var type:string = node.type;
-        var schema = clone(this.tree.schemas[type]);
-        var form: any[] = [];
+    generateForm = (node: ProcessNode, data: any) => {
+        let type: string = node.type;
+        let schema: any = clone(this.tree.schemas[type]);
+        let form: any[] = [];
 
-
-        var makeField = (type: string, key: string, title: string, description?: string, titleMap? : any, options?: string) => {
-            var field = {};
+        let makeField: Function = (type: string, key: string, title: string, description?: string, titleMap?: any, options?: string): any => {
+            let field = {};
             field["type"] = type;
             field["key"] = key;
             field["title"] = title;
@@ -504,21 +507,18 @@ export class ProcessController extends NodeManager implements NodeManagement {
             if (titleMap !== undefined) {
                 field["titleMap"] = titleMap;
             }
-
             field["onChange"] = this.onChange;
-
             if (options) {
                 field["options"] = options;
-                if (field["type"] == "complex-ui") {
+                if (field["type"] === "complex-ui") {
                     // Options will always be set in these cases, Handle complex parameters
-                    field["options"]["definitionsCallback"] =this.getDefinition;
+                    field["options"]["definitionsCallback"] = this.getDefinition;
                 }
             }
-
-            return field
+            return field;
         };
 
-        var addDocumentation = () => {
+        let addDocumentation: Function = (): void => {
             if ("documentation" in node) {
                 schema["properties"]["documentation"] = {"type": "string"};
                 form.push(makeField("textarea", "documentation", "Documentation"));
@@ -526,25 +526,28 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
         };
 
-        var prettyfyKey = (string : string) => {
-            string = string.replace("_", " ");
-            return string.charAt(0).toUpperCase() + string.slice(1);
+        let prettyfyKey: Function = (aString: string): string => {
+            aString = aString.replace("_", " ");
+            return aString.charAt(0).toUpperCase() + aString.slice(1);
         };
 
         // START GENERATION
 
         // New nodes doesn't have any orders yet.
-        var add_assignment_order = !(data.assignment_order);
-        if (add_assignment_order) {data.assignment_order = []}
-        var add_parameter_order = !(data.parameter_order);
-        if (add_parameter_order) {data.parameter_order = []}
+        let add_assignment_order: string[] = !(data.assignment_order);
+        if (add_assignment_order) {
+            data.assignment_order = [];
+        }
+        let add_parameter_order: string[] = !(data.parameter_order);
+        if (add_parameter_order) {
+            data.parameter_order = [];
+        }
 
-        if (type == "documentation") {
+        if (type === "documentation") {
             // Do nothing at all.
 
-        } else
-        if (type == "keyword") {
-            var keyword_definition = this.keywords[node["identifier"]];
+        } else if (type === "keyword") {
+            let keyword_definition: any = this.keywords[node["identifier"]];
             keyword_definition["parts"].forEach((item) => {
                 if (["expression", "python-reference"].indexOf(item["kind"]) > -1) {
                     schema["properties"]["parameters." + item["key"]] = {"type": "string"};
@@ -553,18 +556,18 @@ export class ProcessController extends NodeManager implements NodeManagement {
             });
 
 
-        } else if (type == "call") {
-            var refs:string[] = this.parseNamespace(node["identifier"]);
-            var _parameters = this.namespaces[refs[0]]["functions"][refs[1]]["parameters"];
+        } else if (type === "call") {
+            let refs: string[] = this.parseNamespace(node["identifier"]);
+            let _parameters: any[] = this.namespaces[refs[0]]["functions"][refs[1]]["parameters"];
 
             // Loop assignments
-
+            let key: string;
             for (key in node["assignments"]) {
                 schema["properties"]["assignments." + key] = {"type": "string"};
 
                 form.push(makeField("string", "assignments." + key, prettyfyKey(key)));
                 if (add_assignment_order) {
-                    data.assignment_order.push(key)
+                    data.assignment_order.push(key);
                 }
             }
 
@@ -572,18 +575,18 @@ export class ProcessController extends NodeManager implements NodeManagement {
                 // A definition is available, use that
                 _parameters.forEach((parameter) => {
                     if ("options" in parameter) {
-                        var options: any = parameter["options"]
+                        let options: any = parameter["options"];
                     }
                     else {
-                        var options: any = {}
+                        let options: any = {};
                     }
-                    if (parameter["type"] == "complex-ui") {
+                    if (parameter["type"] === "complex-ui") {
                         // Handle complex parameters
                         schema["properties"]["parameters." + parameter["key"]] = {"type": "object"};
 
                         // If a call has a complex parameter, it needs to have a resolution map for later use
                         if (!("dataRefs" in data)) {
-                            data.dataRefs = {}
+                            data.dataRefs = {};
                         }
                         // TODO: Parts of this handling is somewhat bit hacky, investigate if setDetails couldn't do some of this
                         // Check if the data hasn't been replaced already
@@ -593,24 +596,22 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
                             // If initialized, Complex ui always have a get_data("00000000000000000")-call, parse that objectId.
                             if (parameter["key"] in data.parameters) {
-                                var dataRef: string = data.parameters[parameter["key"]].substr(10, 24);
+                                let dataRef: string = data.parameters[parameter["key"]].substr(10, 24);
                                 // Store the reference so this can be changed back later on
                                 data.dataRefs[parameter["key"]] = dataRef;
 
                                 if (dataRef in this.paramData) {
                                     data.parameters[parameter["key"]] = this.paramData[dataRef];
                                 } else {
-                                } else {
                                     // No data in paramData, initialize empty
                                     data.parameters[parameter["key"]] = {};
                                 }
 
 
-
                             }
                             else {
                                 // Initialize the parameter
-                                var dataRef = this.generateObjectId();
+                                dataRef = this.generateObjectId();
                                 data.dataRefs[parameter["key"]] = dataRef;
                                 this.paramData[dataRef] = {};
                                 // Complex ui needs to have some kind of value
@@ -623,20 +624,20 @@ export class ProcessController extends NodeManager implements NodeManagement {
                         schema["properties"]["parameters." + parameter["key"]] = {"type": parameter["type"]};
 
                     }
-                    form.push(makeField(parameter["type"], "parameters." + parameter["key"], prettyfyKey(parameter["key"]), parameter["description"], parameter["titleMap"], options=options));
+                    form.push(makeField(parameter["type"], "parameters." + parameter["key"], prettyfyKey(parameter["key"]), parameter["description"], parameter["titleMap"], options = options));
 
                     if (add_parameter_order) {
-                        data.parameter_order.push(parameter["key"])
+                        data.parameter_order.push(parameter["key"]);
                     }
                 });
             }
             else {
                 // No definition is available
-                for (var key in node["parameters"]) {
+                for (key in node["parameters"]) {
                     schema["properties"]["parameters." + key] = {"type": "string"};
                     form.push(makeField("string", "parameters." + key, prettyfyKey(key)));
                     if (add_parameter_order) {
-                        data.parameter_order.push(node["key"])
+                        data.parameter_order.push(node["key"]);
                     }
                 }
 
@@ -651,7 +652,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
             }
 
 
-        } else if (type == "assign") {
+        } else if (type === "assign") {
 
             form.push(
                 {
@@ -667,7 +668,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
                 schema["properties"][key] = {"type": "string"};
                 form.push(makeField("string", "assignments." + key, prettyfyKey(key)));
                 if (add_assignment_order) {
-                    data.assignment_order.push(node["key"])
+                    data.assignment_order.push(node["key"]);
                 }
             }
 
@@ -678,25 +679,28 @@ export class ProcessController extends NodeManager implements NodeManagement {
                 });
 
             // Loop parameters
-            for (var key in node["parameters"]) {
-                schema["properties"]["parameters." + key] = {"type": "string"}
+            for (key in node["parameters"]) {
+                schema["properties"]["parameters." + key] = {"type": "string"};
                 form.push(makeField("string", "parameters." + key, prettyfyKey(key)));
                 if (add_parameter_order) {
-                    data.parameter_order.push(node["key"])
+                    data.parameter_order.push(node["key"]);
                 }
             }
 
         }
 
-        if (node.identifier != "Newline") {
+        if (node.identifier !== "Newline") {
             addDocumentation();
             this.nodeScope.selected_schema = schema;
             this.nodeScope.selected_form = form;
             this.nodeScope.selected_data = data;
         } else {
             console.log("Handling newline");
-            this.nodeScope.selected_schema = {type: "object", properties : {"dummy": {type: "string"}}};
-            this.nodeScope.selected_form = [{type : "help", helpvalue: "<i>This item can not have any documentation</i>"}];
+            this.nodeScope.selected_schema = {type: "object", properties: {"dummy": {type: "string"}}};
+            this.nodeScope.selected_form = [{
+                type: "help",
+                helpvalue: "<i>This item can not have any documentation</i>"
+            }];
             this.nodeScope.selected_data = {};
         }
 
@@ -706,8 +710,8 @@ export class ProcessController extends NodeManager implements NodeManagement {
      * Set the currently edited schema form
      * @param node
      */
-    setDetails = (node):void => {
-        var data = this.tree.data[node.id]
+    setDetails = (node): void => {
+        let data: any = this.tree.data[node.id];
         this.generateForm(node, data);
 
 
@@ -717,15 +721,11 @@ export class ProcessController extends NodeManager implements NodeManagement {
      * Select the provided node
      * @param treeNode
      */
-    onSelectNode = (treeNode):void => {
+    onSelectNode = (treeNode): void => {
 
         this.setDetails(this.tree.data[treeNode.id]);
         this.tree.selectedItem = treeNode;
     };
-
-
-
-
 
 
     /**
@@ -735,7 +735,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
 
     // *********************** Initialization *************************
-    onAsyncInitTree = ():ng.IPromise<any> => {
+    onAsyncInitTree = (): ng.IPromise<any> => {
         return new this.$q((resolve, reject) => {
             this.onInitSchemas().then(() => {
                 this.loadDefinitions().then(() => {
@@ -757,29 +757,29 @@ export class ProcessController extends NodeManager implements NodeManagement {
      * Initialize the node controller
      * @param schemaTreeController
      */
-    onInit = (schemaTreeController):void => {
+    onInit = (schemaTreeController): void => {
         console.log("In NodesController.onInit");
         this.tree = schemaTreeController;
         this.tree.treeScope.nodeManager = this;
     };
 
     resizeProcess = () => {
-        $("#processContainer").height($(window).height() - $("#footerDiv").height() - $("#menuDiv").height() - 170)
+        $("#processContainer").height($(window).height() - $("#footerDiv").height() - $("#menuDiv").height() - 170);
     };
 
 
-    recurseData = ( items):ProcessNode[] => {
+    recurseData = (items): ProcessNode[] => {
 
-        var result = [];
+        let result: any[] = [];
 
         items.forEach((item) => {
-            var curr_data = this.tree.data[item["id"]]
+            let curr_data: any = this.tree.data[item["id"]];
             if ("dataRefs" in curr_data) {
                 // Loop all parameters, save data and create calls if they are complex
-                for (var paramId in curr_data.dataRefs) {
+                let paramid: string;
+                for (paramId in curr_data.dataRefs) {
                     this.paramData[curr_data.dataRefs[paramId]] = curr_data.parameters[paramId];
                     curr_data.parameters[paramId] = "get_data(\"" + curr_data.dataRefs[paramId] + "\")";
-
                 }
                 // Remove the dataRefs, it will be recreated next time the item is edited.
                 delete curr_data.dataRefs;
@@ -790,7 +790,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
                 curr_data.children = this.recurseData(item.children);
             }
 
-            result.push(curr_data)
+            result.push(curr_data);
         });
 
 
@@ -801,16 +801,15 @@ export class ProcessController extends NodeManager implements NodeManagement {
     /**
      * Save process
      */
-    saveProcess = (savedata):ng.IPromise<any> => {
-        return this.$http.post('process/save_process', savedata)
-            .success((data):any => {
-                console.log("Successfully saved process to server.")
+    saveProcess = (savedata): ng.IPromise<any> => {
+        return this.$http.post("process/save_process", savedata)
+            .success((data): any => {
+                console.log("Successfully saved process to server.");
             })
-            .error((data, status, headers, config):any => {
+            .error((data, status, headers, config): any => {
 
                 this.bootstrapAlert("Saving process failed: " + status);
-            })
-
+            });
 
     };
 
@@ -822,19 +821,23 @@ export class ProcessController extends NodeManager implements NodeManagement {
     };
 
     onChange = (modelValue, key) => {
-        declare var _this :any;
-        var _curr_item : TreeNode = _this.tree.selectedItem;
-        _curr_item.title = _this.makeTitle(_this.nodeScope.selected_data);
-
+        if (typeof(_this) !== "undefined") {
+            let scope: any = _this;
+        }
+        else {
+            let scope: any = this;
+        }
+        let _curr_item: TreeNode = scope.tree.selectedItem;
+        _curr_item.title = scope.makeTitle(scope.nodeScope.selected_data);
         while (_curr_item.parentItem) {
             _curr_item = _curr_item.parentItem;
         }
     };
 
-    onBeforeDrop = function(event) {
+    onBeforeDrop = (event: any) => {
         // When an external object is dropped, it must be assigned a "real" id.
-        declare var _this :any;
-        var new_id : string = (_this.maxId + 1).toString();
+
+        let new_id: string = (_this.maxId + 1).toString();
         _this.tree.data[new_id] = event.source.cloneModel.data;
         event.source.cloneModel.id = new_id;
         event.source.cloneModel.data.id = new_id;
@@ -843,7 +846,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
         // console.log("In onDropped" + JSON.stringify(_this.tree.data))
     };
 
-    constructor(private $scope:ProcessScope, $http:ng.IHttpService, $q:ng.IQService, $timeout:ng.ITimeoutService/*, UiTreeHelper: any*/) {
+    constructor(private $scope: ProcessScope, $http: ng.IHttpService, $q: ng.IQService, $timeout: ng.ITimeoutService/*, UiTreeHelper: any*/) {
         console.log("Initiating the process controller" + $scope.toString());
         super($scope, $http, $q);
 
@@ -857,7 +860,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
                 this.resizeProcess();
             });
         });
-        this.menuTreeOptions= {
+        this.menuTreeOptions = {
             beforeDrop: this.onBeforeDrop
         };
 
@@ -865,7 +868,6 @@ export class ProcessController extends NodeManager implements NodeManagement {
         console.log("Initiated the process controller");
 
     }
-
 
 
 }
