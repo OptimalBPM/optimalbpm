@@ -34,6 +34,12 @@ export class ControlController {
     // Processes
     agents: any[] = [];
 
+    // The currently selected agent
+    currAgent: string;
+
+    // The callback to the rootscope's bootstrapAlert function
+    bootstrapAlert: Function;
+
     // Starts a process
     start_process = (process_definition_id: string) => {
         let _process_data: StartProcessMessage = new StartProcessMessage();

@@ -24,9 +24,15 @@ import "networknt/angular-schema-form-ui-ace";
 import "OptimalBPM/angular-schema-form-complex-ui";
 
 import "angular-schema-form-dynamic-select";
-import {NodeManager, NodeManagement} from "types/nodeManager";
-import {SchemaTreeController} from "controllers/schemaTreeController";
-import {TreeNode, NodesScope, Dict, TreeScope} from "types/schemaTreeTypes";
+
+// These are not available in design time, TODO: Remove these when paths it implemented in Typescripts
+
+//noinspection TypeScriptCheckImport
+import {NodeManager, NodeManagement} from "../../types/nodeManager";
+//noinspection TypeScriptCheckImport
+import {SchemaTreeController} from "../../controllers/schemaTreeController";
+//noinspection TypeScriptCheckImport
+import {TreeNode, NodesScope, Dict, TreeScope} from "../../types/schemaTreeTypes";
 
 import {Verb} from "../lib/tokens";
 import "../css/process.css!";
@@ -37,7 +43,7 @@ import "../scripts/utils";
 
 /* SPECIAL STUFF */
 // attach the .equals method to Array's prototype to call it on any array
-Array.prototype.equals = function (array) {
+(Array.prototype as any).equals = function (array) {
     // if the other array is a falsy value, return
     if (!array)
         return false;
@@ -63,21 +69,20 @@ Array.prototype.equals = function (array) {
 
 class ProcessNode extends TreeNode {
     identifier: string = "";
-
 }
+
 class MenuNode extends ProcessNode {
     description: string = "";
     // The data of the menu node holds the default values of the node
     data: any;
     menuTitle: string;
-
 }
 
 export interface ProcessScope extends NodesScope {
 
 }
 
-export class ProcessController extends NodeManager implements NodeManagement {
+export class ProcessController extends NodeManager implements NodeManagement  {
 
     $timeout: ng.ITimeoutService;
 
@@ -130,6 +135,9 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
     // The currently highest id, used when adding new nodes
     maxId: number;
+
+    // The tree. TODO: This should obviously be typed
+    tree: any;
 
     // A helper for supporting drag'n drop to the tree.
     // uiTreeHelper : any;
@@ -207,7 +215,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
                         this.schemas = data;
                     })
                     .error((data: any, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) => {
-                        this.bootstrapAlert.alert("Loading schemas failed: " + status);
+                        this.bootstrapAlert("Loading schemas failed: " + status);
                     });
             })
             .error((data, status, headers, config): any => {
@@ -299,20 +307,27 @@ export class ProcessController extends NodeManager implements NodeManagement {
     recurseVerbs = (parent, items): ProcessNode[] => {
 
         let result: ProcessNode[] = [];
-
+        let scope: any;
+        if (typeof(this) === "undefined") {
+            scope = _this;
+        }
+        else {
+            scope = this;
+        }
         items.forEach((item) => {
+
             let currItem: ProcessNode = new ProcessNode();
             let currId: Number = Number(item["id"]);
-            if (currId > this.maxId) {
-                this.maxId = currId;
+            if (currId > scope.maxId) {
+                scope.maxId = currId;
             }
             currItem.id = currId.toString();
-            currItem.title = this.makeTitle(item);
+            currItem.title = scope.makeTitle(item);
             currItem.type = item["type"];
             currItem.identifier = item["identifier"];
             currItem.allowedChildTypes = item["allowedChildTypes"];
             currItem.parentItem = parent;
-            this.tree.data[item["id"]] = item;
+            scope.tree.data[item["id"]] = item;
             currItem.children = this.recurseVerbs(currItem, item.children);
             result.push(currItem);
         });
@@ -324,20 +339,26 @@ export class ProcessController extends NodeManager implements NodeManagement {
      * Load process data
      */
     loadProcess = (processId: string): ng.IPromise<any> => {
-
-        return this.$q((resolve, reject) => {
-                return this.$http.post("process/load_process", {"processId": processId})
+        let scope: any;
+        if (typeof(this) === "undefined") {
+            scope = _this;
+        }
+        else {
+            scope = this;
+        }
+        return scope.$q((resolve, reject) => {
+                return scope.$http.post("process/load_process", {"processId": processId})
                     .success((data): any => {
-                        this.process_data = data;
-                        this.maxId = 0;
-                        this.paramData = data.paramData;
-                        this.tree.children = this.recurseVerbs(null, data.verbs);
+                        scope.process_data = data;
+                        scope.maxId = 0;
+                        scope.paramData = data.paramData;
+                        scope.tree.children = scope.recurseVerbs(null, data.verbs);
 
                         resolve();
                     })
                     .error((data, status, headers, config): any => {
 
-                        this.bootstrapAlert("Loading schemas failed: " + status);
+                        scope.bootstrapAlert("Loading schemas failed: " + status);
                     });
             }
         );
@@ -389,7 +410,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
         let keywords: string[] = data["keywords"];
         let new_column: Dict = {"title": "Keywords", "children": []};
         for (let keyword: string in keywords) {
-            new_column.children.push(createDefinition(
+            new_column["children"].push(createDefinition(
                 "new_keyword_" + keyword, keywords[keyword], true, keyword,
                 ["keyword", "call", "documentation", "assign"], "keyword", keyword));
         }
@@ -400,12 +421,13 @@ export class ProcessController extends NodeManager implements NodeManagement {
             if ("functions" in curr_definition) {
                 let new_column: any = {"title": curr_definition["description"], "children": []};
                 let functionName: string;
+                let _identifier: string;
                 for (functionName in curr_definition["functions"]) {
 
                     if (namespace !== "") {
-                        let _identifier: string = namespace + "." + functionName;
+                        _identifier = namespace + "." + functionName;
                     } else {
-                        let _identifier: string = functionName;
+                        _identifier = functionName;
                     }
 
                     new_column.children.push(createDefinition("new_" + namespace + "_" + functionName
@@ -473,9 +495,17 @@ export class ProcessController extends NodeManager implements NodeManagement {
     };
 
     getDefinition = (uri: string): any => {
-        let parser: HTMLElement = document.createElement("a");
+        let parser: HTMLAnchorElement = document.createElement("a");
         parser.href = uri;
-        let schema: any = _this.schemas[parser.protocol + parser.pathname];
+        let scope: any;
+        if (typeof(this) === "undefined") {
+
+            scope = _this;
+        }
+        else {
+             scope = this;
+        }
+        let schema: any = scope.schemas[parser.protocol + parser.pathname];
         if (parser.hash !== "") {
             let parts: any[] = parser.hash.substr(2).split("/");
             let subattr: string = schema;
@@ -534,11 +564,11 @@ export class ProcessController extends NodeManager implements NodeManagement {
         // START GENERATION
 
         // New nodes doesn't have any orders yet.
-        let add_assignment_order: string[] = !(data.assignment_order);
+        let add_assignment_order: boolean = !(data.assignment_order);
         if (add_assignment_order) {
             data.assignment_order = [];
         }
-        let add_parameter_order: string[] = !(data.parameter_order);
+        let add_parameter_order: boolean = !(data.parameter_order);
         if (add_parameter_order) {
             data.parameter_order = [];
         }
@@ -574,11 +604,12 @@ export class ProcessController extends NodeManager implements NodeManagement {
             if (_parameters) {
                 // A definition is available, use that
                 _parameters.forEach((parameter) => {
+                    let options: any;
                     if ("options" in parameter) {
-                        let options: any = parameter["options"];
+                        options = parameter["options"];
                     }
                     else {
-                        let options: any = {};
+                        options = {};
                     }
                     if (parameter["type"] === "complex-ui") {
                         // Handle complex parameters
@@ -611,7 +642,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
                             }
                             else {
                                 // Initialize the parameter
-                                dataRef = this.generateObjectId();
+                                let dataRef: string = this.generateObjectId();
                                 data.dataRefs[parameter["key"]] = dataRef;
                                 this.paramData[dataRef] = {};
                                 // Complex ui needs to have some kind of value
@@ -664,6 +695,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
             // TODO: Add new input type for identifiers. (PROD-31)
 
             // Loop assignments
+            let key: string;
             for (key in node["assignments"]) {
                 schema["properties"][key] = {"type": "string"};
                 form.push(makeField("string", "assignments." + key, prettyfyKey(key)));
@@ -736,7 +768,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
     // *********************** Initialization *************************
     onAsyncInitTree = (): ng.IPromise<any> => {
-        return new this.$q((resolve, reject) => {
+        return new (this as any).$q((resolve, reject) => {
             this.onInitSchemas().then(() => {
                 this.loadDefinitions().then(() => {
                     resolve();
@@ -776,7 +808,7 @@ export class ProcessController extends NodeManager implements NodeManagement {
             let curr_data: any = this.tree.data[item["id"]];
             if ("dataRefs" in curr_data) {
                 // Loop all parameters, save data and create calls if they are complex
-                let paramid: string;
+                let paramId: string;
                 for (paramId in curr_data.dataRefs) {
                     this.paramData[curr_data.dataRefs[paramId]] = curr_data.parameters[paramId];
                     curr_data.parameters[paramId] = "get_data(\"" + curr_data.dataRefs[paramId] + "\")";
@@ -821,11 +853,13 @@ export class ProcessController extends NodeManager implements NodeManagement {
     };
 
     onChange = (modelValue, key) => {
-        if (typeof(_this) !== "undefined") {
-            let scope: any = _this;
+        let scope: any;
+        if (typeof(this) === "undefined") {
+
+            scope = _this;
         }
         else {
-            let scope: any = this;
+             scope = this;
         }
         let _curr_item: TreeNode = scope.tree.selectedItem;
         _curr_item.title = scope.makeTitle(scope.nodeScope.selected_data);
@@ -836,19 +870,25 @@ export class ProcessController extends NodeManager implements NodeManagement {
 
     onBeforeDrop = (event: any) => {
         // When an external object is dropped, it must be assigned a "real" id.
-
-        let new_id: string = (_this.maxId + 1).toString();
-        _this.tree.data[new_id] = event.source.cloneModel.data;
+        let scope: any;
+        if (typeof(this) === "undefined") {
+            scope = _this;
+        }
+        else {
+            scope = this;
+        }
+        let new_id: string = (scope.maxId + 1).toString();
+        scope.tree.data[new_id] = event.source.cloneModel.data;
         event.source.cloneModel.id = new_id;
         event.source.cloneModel.data.id = new_id;
         delete event.source.cloneModel.data;
-        _this.maxId = _this.maxId + 1;
+        scope.maxId = scope.maxId + 1;
         // console.log("In onDropped" + JSON.stringify(_this.tree.data))
     };
 
     constructor(private $scope: ProcessScope, $http: ng.IHttpService, $q: ng.IQService, $timeout: ng.ITimeoutService/*, UiTreeHelper: any*/) {
-        console.log("Initiating the process controller" + $scope.toString());
         super($scope, $http, $q);
+        console.log("Initiating the process controller" + $scope.toString());
 
         /*this.uiTreeHelper = UiTreeHelper;*/
         this.$timeout = $timeout;
