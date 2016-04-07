@@ -1,7 +1,7 @@
 Optimal BPM
 ========
 
-*This application is free for non-commercial and educational use with a few exceptions, see [license](./LICENSE.md).*
+*This is a commercial application, and is free to use ONLY for non-commercial, educational and academic purposes. See [license](./LICENSE.md).*
 
 Optimal BPM is a Business Process Management System in development.
 
