@@ -2,6 +2,11 @@
 The init_env module/script initializes an OptimalBPM testing environment.
 """
 import os
+import sys
+script_dir = os.path.dirname(__file__)
+# Add relative optimal bpm path to be able to load the modules of this repository properly
+sys.path.append(os.path.join(script_dir, "../../../"))
+
 
 from of.broker.testing.init_env import init_env
 from plugins.optimalbpm.schemas.validation import bpm_uri_handler
@@ -12,7 +17,7 @@ import plugins.optimalbpm.schemas.constants
 plugins.optimalbpm.schemas.constants.init()
 
 
-script_dir = os.path.dirname(__file__)
+
 
 
 def init_bpm_env(_context=None):
