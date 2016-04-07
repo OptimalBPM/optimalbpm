@@ -7,6 +7,9 @@ script_dir = os.path.dirname(__file__)
 # Add relative optimal bpm path to be able to load the modules of this repository properly
 sys.path.append(os.path.join(script_dir, "../../../"))
 
+# Standalone Workaround until of pip package is done.
+sys.path.append(os.path.join(script_dir, "../../../../"))
+
 
 from of.broker.testing.init_env import init_env
 from plugins.optimalbpm.schemas.validation import bpm_uri_handler
