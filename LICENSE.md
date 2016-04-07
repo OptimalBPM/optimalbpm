@@ -1,13 +1,13 @@
 OPTIMAL BPM LICENSE
 =======
 
-This application and plugin is free to use ONLY for non-commercial, educational and academic purposes.
-For all other purposes, commercial licenses are available for purchase at the [Optimal BPM web site](https://www.optimalbpm.se).
+This application is free to use ONLY for non-commercial, educational and academic purposes.
+For all other purposes, commercial licenses will be available for purchase at the [Optimal BPM web site](https://www.optimalbpm.se).
 
-Redistribution or "forking" in source and binary forms, with or without modification, is generally NOT permitted.
+Unlicensed redistribution or "forking" in source and binary forms, with or without modification, is NOT permitted.
 The following are exceptions:
 
-* "Forking" is allowed temporarily, for the purpose of proposing or contributing bug fixes.
+* "Forking" is allowed temporarily, for the purpose of contributing pull requests or contributing bug fixes.
 * Redistribution is allowed for educational and academic purposes.
 
 

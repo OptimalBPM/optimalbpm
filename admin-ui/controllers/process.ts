@@ -871,6 +871,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
     onBeforeDrop = (event: any) => {
         // When an external object is dropped, it must be assigned a "real" id.
         let scope: any;
+        // TODO: All the handling of this and _this *should* not be necessary at some point.
         if (typeof(this) === "undefined") {
             scope = _this;
         }
