@@ -81,9 +81,7 @@
           }
         ]
       },
-      "hooks": {
-        "hooks_module": "hooks_broker"
-      }
+      "hooks_module": "hooks_broker"
     }
   },
   "namespaces": {

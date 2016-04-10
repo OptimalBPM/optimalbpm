@@ -20,9 +20,6 @@ import plugins.optimalbpm.schemas.constants
 plugins.optimalbpm.schemas.constants.init()
 
 
-
-
-
 def init_bpm_env(_context=None):
 
     init_env(_context, _data_files=[os.path.join(script_dir, "data_struct.json"),os.path.join(script_dir, "data_test.json")],

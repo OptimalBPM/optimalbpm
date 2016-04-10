@@ -62,12 +62,12 @@ Global variables
 """
 
 #: The processId of the agent itself, the system pid
-_process_id = None
+process_id = None
 #: The monitor of the control queue, the control queue gets commands on an agent level.
 _control_monitor = None
 #: While true, run.
 _terminated = None
-#: The peer address of the agent
+#: The peer _address of the agent
 _address = "Not set"
 
 # Verify broker ssl certificate on connect if true. Always install a proper certificate on the broker.
@@ -94,15 +94,15 @@ _log_to_database_severity = None
 
 
 def write_srvc_dbg(_data):
-    global _process_id
-    write_to_log(_data, _category=EC_SERVICE, _severity=SEV_DEBUG, _process_id=_process_id)
+    global process_id
+    write_to_log(_data, _category=EC_SERVICE, _severity=SEV_DEBUG, _process_id=process_id)
 
 
 def log_locally(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid):
-    global _log_to_database_severity, _process_id, _broker_url, _address
+    global _log_to_database_severity, process_id, _broker_url, _address
 
     if _process_id_param is None:
-        _process_id_param = _process_id
+        _process_id_param = process_id
 
 
     if os.name == "nt":
@@ -111,7 +111,7 @@ def log_locally(_data, _category, _severity, _process_id_param, _user_id, _occur
                            "Application", _category, _severity)
     else:
         print(
-            make_sparse_log_message(_data, _category, _severity, _process_id, _user_id, _occurred_when, _address,
+            make_sparse_log_message(_data, _category, _severity, process_id, _user_id, _occurred_when, _address,
                                     _node_id, _uid,
                                      _pid))
         # TODO: Add support for /var/log/message
@@ -119,10 +119,10 @@ def log_locally(_data, _category, _severity, _process_id_param, _user_id, _occur
 
 def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param,
                     _node_id, _uid, _pid):
-    global _log_to_database_severity, _process_id, _broker_url, _peers, _verify_SSL, _address
+    global _log_to_database_severity, process_id, _broker_url, _peers, _verify_SSL, _address
 
     if _process_id_param is None:
-        _process_id_param = _process_id
+        _process_id_param = process_id
 
     if _severity < _log_to_database_severity:
         log_locally(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address, _node_id, _uid, _pid)
@@ -139,9 +139,9 @@ def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _o
 
                 except Exception as e:
                     log_locally("Failed to send to broker, error: " + str(e) + "\nEvent:" + str(_event), EC_UNCATEGORIZED, SEV_ERROR,
-                                _process_id_param, _user_id, _occurred_when, _address, _node_id, _uid, _pid)
+                                _process_id_param, _user_id, _occurred_when,_address, _node_id, _uid, _pid)
 
-        log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _address, _node_id, _uid, _pid)
+        log_locally(_data, _category, _severity, process_id, _user_id, _occurred_when,_address, _node_id, _uid, _pid)
 
 
 def register_agent(_retries, _connect=False):
@@ -150,7 +150,7 @@ def register_agent(_retries, _connect=False):
     _retry_count = _retries + 1
 
     write_srvc_dbg("Register agent session (adress : " + _address + ") at broker(URL: https://" +
-        _broker_url + ")")
+                   _broker_url + ")")
 
     # Register session at the broker
     _data = None
@@ -217,7 +217,7 @@ def start_agent():
     Starts the agent; Loads settings, connects to database, registers process and starts the web server.
     """
 
-    global _process_id, _control_monitor, _terminated, _address, _process_queue_manager, _broker_url, \
+    global process_id, _control_monitor, _terminated, _address, _process_queue_manager, _broker_url, \
         _username, _password, _peers, _log_to_database_severity, _verify_SSL
 
     _process_id = str(ObjectId())
@@ -243,13 +243,13 @@ def start_agent():
     write_srvc_dbg("===register signal handlers===")
     register_signals(stop_agent)
 
-    # An address is completely necessary.
+    # An _address is completely necessary.
     _address = _settings.get("agent/address", _default=None)
     if not _address or _address == "":
         raise Exception(write_to_log(
-            "Fatal error: Agent cannot start, missing [agent] address setting in configuration file.",
+            "Fatal error: Agent cannot start, missing [agent] _address setting in configuration file.",
             _category=EC_SERVICE, _severity=SEV_FATAL))
-    # An address is completely necessary.
+    # An _address is completely necessary.
     _verify_SSL = _settings.get("agent/verifySSL", _default=True)
     # Gather credentials
     _broker_url = _settings.get("agent/brokerUrl", _default="127.0.0.1:8080")
@@ -352,7 +352,7 @@ def start_agent():
             call_api("https://"+ _broker_url + "/status", _data={}, _session_id= _session_id, _verify_SSL=True)
         except SSLError as e:
                 write_to_log("There is a problem with the security certificate:\n" + str(e) + "\n"
-                             "This is a security risk, and and important thing to address.",
+                             "This is a security risk, and and important thing to _address.",
                              _category=EC_NOTIFICATION, _severity=SEV_WARNING)
         except Exception as e:
             write_to_log("An error occured while checking status of broker and SSL certificate:" + str(e),
@@ -384,14 +384,14 @@ def stop_agent(_reason, _restart=False):
         write_srvc_dbg( "--------------AGENT WAS TERMINATED, shutting down orderly------------")
 
     write_srvc_dbg( "Reason:" + str(_reason))
-    write_srvc_dbg("Process Id: " + str(_process_id))
+    write_srvc_dbg("Process Id: " + str(process_id))
 
     try:
         write_srvc_dbg("try and tell the broker about shutting down")
         _control_monitor.handler.message_monitor.queue.put([None,
                                                             log_process_state_message(_changed_by=zero_object_id,
                                                                                       _state="stopped",
-                                                                                      _process_id=_process_id,
+                                                                                      _process_id=process_id,
                                                                                       _reason="Agent stopped at " +
                                                                                               _address)])
         # Give some time for it to get there

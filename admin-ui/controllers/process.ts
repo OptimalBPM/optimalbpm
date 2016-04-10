@@ -363,6 +363,11 @@ export class ProcessController extends NodeManager implements NodeManagement  {
             }
         );
     };
+
+    onSubmit = () => {
+
+    }
+
     /**
      * Populate the available commands menu
      */
