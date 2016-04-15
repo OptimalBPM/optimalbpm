@@ -79,6 +79,7 @@ class MenuNode extends ProcessNode {
 }
 
 export interface ProcessScope extends NodesScope {
+    definitionsCallback?: Function;
 
 }
 
@@ -352,6 +353,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                         scope.process_data = data;
                         scope.maxId = 0;
                         scope.paramData = data.paramData;
+                        scope.paramData = data.paramData;
                         scope.tree.children = scope.recurseVerbs(null, data.verbs);
 
                         resolve();
@@ -524,13 +526,14 @@ export class ProcessController extends NodeManager implements NodeManagement  {
         return {"schema": schema, "form": ["*"]};
     };
 
+    
     // Generate a form and a schema
     generateForm = (node: ProcessNode, data: any) => {
         let type: string = node.type;
         let schema: any = clone(this.tree.schemas[type]);
         let form: any[] = [];
 
-        let makeField: Function = (type: string, key: string, title: string, description?: string, titleMap?: any, options?: string): any => {
+        let makeField: Function = (type: string, key: string, title: string, description?: string, titleMap?: any, parameter?: string): any => {
             let field = {};
             field["type"] = type;
             field["key"] = key;
@@ -543,13 +546,24 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                 field["titleMap"] = titleMap;
             }
             field["onChange"] = this.onChange;
-            if (options) {
-                field["options"] = options;
-                if (field["type"] === "complex-ui") {
-                    // Options will always be set in these cases, Handle complex parameters
-                    field["options"]["definitionsCallback"] = this.getDefinition;
+
+            if (parameter) {
+                if ("htmlClass" in parameter) {
+                    field["htmlClass"] = parameter["htmlClass"];
+                }
+                if ("htmlFieldClass" in parameter) {
+                    field["fieldHtmlClass"] = parameter["fieldHtmlClass"];
+                }
+
+                if ("options" in parameter) {
+                    field["options"] = (parameter as any).options;
+                    if (field["type"] === "complex-ui") {
+                        // Options will always be set in these cases, Handle complex parameters
+                        field["options"]["definitionsCallback"] = this.getDefinition;
+                    }
                 }
             }
+
             return field;
         };
 
@@ -557,7 +571,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
             if ("documentation" in node) {
                 schema["properties"]["documentation"] = {"type": "string"};
                 form.push(makeField("textarea", "documentation", "Documentation"));
-            };
+            }
 
         };
 
@@ -609,13 +623,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
             if (_parameters) {
                 // A definition is available, use that
                 _parameters.forEach((parameter) => {
-                    let options: any;
-                    if ("options" in parameter) {
-                        options = parameter["options"];
-                    }
-                    else {
-                        options = {};
-                    }
+
                     if (parameter["type"] === "complex-ui") {
                         // Handle complex parameters
                         schema["properties"]["parameters." + parameter["key"]] = {"type": "object"};
@@ -660,7 +668,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                         schema["properties"]["parameters." + parameter["key"]] = {"type": parameter["type"]};
 
                     }
-                    form.push(makeField(parameter["type"], "parameters." + parameter["key"], prettyfyKey(parameter["key"]), parameter["description"], parameter["titleMap"], options = options));
+                    form.push(makeField(parameter["type"], "parameters." + parameter["key"], prettyfyKey(parameter["key"]), parameter["description"], parameter["titleMap"], parameter = parameter));
 
                     if (add_parameter_order) {
                         data.parameter_order.push(parameter["key"]);
@@ -892,6 +900,10 @@ export class ProcessController extends NodeManager implements NodeManagement  {
         // console.log("In onDropped" + JSON.stringify(_this.tree.data))
     };
 
+    getDefinitions = (schemaRef) => {
+        return {"schema": this.tree.schemas[schemaRef]};
+    };
+    
     constructor(private $scope: ProcessScope, $http: ng.IHttpService, $q: ng.IQService, $timeout: ng.ITimeoutService/*, UiTreeHelper: any*/) {
         super($scope, $http, $q);
         console.log("Initiating the process controller" + $scope.toString());
