@@ -546,7 +546,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                 field["titleMap"] = titleMap;
             }
             field["onChange"] = this.onChange;
-
+            
             if (parameter) {
                 if ("htmlClass" in parameter) {
                     field["htmlClass"] = parameter["htmlClass"];
