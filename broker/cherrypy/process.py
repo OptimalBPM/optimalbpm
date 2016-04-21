@@ -10,7 +10,7 @@ import sys
 import os
 import json
 
-from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG
+from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, EC_INTERNAL, SEV_ERROR
 
 sys.path.append(os.path.dirname(__file__))
 
@@ -73,7 +73,8 @@ class CherryPyProcess(object):
         if os.path.exists(_filename_process):
             _verbs = _tokens.parse_file(_filename_process)
         else:
-            _verbs = []
+            raise Exception(write_to_log("load_process from " + _filename_process + ", failed", _category=EC_INTERNAL, _severity=SEV_ERROR))
+
         _result = dict()
         _result["processId"] = _process_id
         _result["verbs"] = _tokens.verbs_to_json(_verbs)
