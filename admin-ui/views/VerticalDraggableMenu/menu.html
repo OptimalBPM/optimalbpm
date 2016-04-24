@@ -10,7 +10,7 @@
             </button>
             <ul ui-tree-nodes="" style="position: absolute" class="dropdown-menu .dropdown-menu-right" ng-model="currColumn.children">
                 <li ng-repeat='currentChild in currColumn.children' after-repeat="menuManager.initPopovers();" ui-tree-node>
-                    <a  ui-tree-handle data-html="true" data-toggle="popover" data-trigger="hover"
+                    <a ui-tree-handle data-html="true" data-toggle="popover" data-trigger="hover"
                        title="{{menuManager.fixPopoverTitle(currentChild['title'])}}"
                        data-placement="auto right"
                        data-content="{{currentChild['description']}}<br /><span class='small'><i class='fa fa-hand-rock-o'><i>&nbsp;Drag and drop the item into the process</i>">

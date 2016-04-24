@@ -353,7 +353,6 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                         scope.process_data = data;
                         scope.maxId = 0;
                         scope.paramData = data.paramData;
-                        scope.paramData = data.paramData;
                         scope.tree.children = scope.recurseVerbs(null, data.verbs);
 
                         resolve();
@@ -883,22 +882,16 @@ export class ProcessController extends NodeManager implements NodeManagement  {
 
     onBeforeDrop = (event: any) => {
         // When an external object is dropped, it must be assigned a "real" id.
-        let scope: any;
-        // TODO: All the handling of this and _this *should* not be necessary at some point.
-        if (typeof(this) === "undefined") {
-            scope = _this;
-        }
-        else {
-            scope = this;
-        }
-        let new_id: string = (scope.maxId + 1).toString();
-        scope.tree.data[new_id] = event.source.cloneModel.data;
+
+        let new_id: string = (this.maxId + 1).toString();
+        this.tree.data[new_id] = event.source.cloneModel.data;
         event.source.cloneModel.id = new_id;
         event.source.cloneModel.data.id = new_id;
         delete event.source.cloneModel.data;
-        scope.maxId = scope.maxId + 1;
+        this.maxId = this.maxId + 1;
         // console.log("In onDropped" + JSON.stringify(_this.tree.data))
     };
+    
 
     getDefinitions = (schemaRef) => {
         return {"schema": this.tree.schemas[schemaRef]};

@@ -38,15 +38,19 @@ class CherryPyProcess(object):
     # The root CherryPy object
     root_object = None
 
+    # The root repository folder
+    repository_parent_folder = None
+
     # Reference to the central namespaces instance
     namespaces = None
-    def __init__(self, _namespaces):
+    def __init__(self, _namespaces, _repository_parent_folder):
         """
         Initiates the class, loads keywords and namespaces for the translation
         """
         self.keywords = ProcessTokens.load_keywords()
         # Load all of BPAL
         self.namespaces = _namespaces
+        self.repository_parent_folder = _repository_parent_folder
         self.namespaces.load_dicts(
             core_language + [os.path.join(script_dir, "../translation/features/fake_bpm_lib.json")],
             _top_attribute="namespaces")
@@ -68,20 +72,23 @@ class CherryPyProcess(object):
 
         _process_id = cherrypy.request.json["processId"]
         _tokens = ProcessTokens(_keywords=self.keywords, _namespaces=self.namespaces)
-        _repo_path = os.path.expanduser("~/optimalframework/agent_repositories/" + _process_id)
-        _filename_process = _repo_path +"/main.py"
+        _repo_path = os.path.join(os.path.expanduser(self.repository_parent_folder), _process_id)
+        _filename_process = os.path.join(_repo_path, "main.py")
         if os.path.exists(_filename_process):
-            _verbs = _tokens.parse_file(_filename_process)
-        else:
-            raise Exception(write_to_log("load_process from " + _filename_process + ", failed", _category=EC_INTERNAL, _severity=SEV_ERROR))
+            # No process definition, it is a new process, create a main file.
+            if not os.path.exists(_repo_path):
+                os.makedirs(_repo_path)
+            with open(_filename_process, "w") as f:
+               pass
 
+        _verbs = _tokens.parse_file(_filename_process)
         _result = dict()
         _result["processId"] = _process_id
         _result["verbs"] = _tokens.verbs_to_json(_verbs)
         _result["encoding"] = _tokens.encoding
         _result["name"] = "source.py"
         _result["documentation"] = _tokens.documentation
-        _filename_data = _repo_path+"/data.json"
+        _filename_data = os.path.join(_repo_path,"data.json")
 
         if os.path.exists(_filename_data):
             with open(_filename_data, "r") as f:
@@ -106,7 +113,7 @@ class CherryPyProcess(object):
         _tokens.documentation = cherrypy.request.json["documentation"]
 
         _process_id = cherrypy.request.json["processId"]
-        _repo_path = os.path.expanduser("~/optimalframework/agent_repositories/" + _process_id)
+        _repo_path = os.path.join(os.path.expanduser(self.repository_parent_folder) + _process_id)
         if not os.path.exists(_repo_path):
             os.makedirs(_repo_path)
 

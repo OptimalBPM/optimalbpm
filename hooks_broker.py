@@ -1,24 +1,17 @@
 from plugins.optimalbpm.broker.cherrypy.control import CherryPyControl
 from plugins.optimalbpm.broker.cherrypy.process import CherryPyProcess
 
+
 import plugins.optimalbpm.schemas.constants
-plugins.optimalbpm.schemas.constants.init()
+
 __author__ = 'nibo'
 
 
-def cherrypy_admin(main_object):
-    pass
+def init_globals(_broker_scope):
+    # Add our constants to the global scope
+    plugins.optimalbpm.schemas.constants.init()
 
 
-def cherrypy_root(main_object):
-    pass
-
-def init_admin_ui(_root_object, _namespaces):
-    _root_object.process = CherryPyProcess(_namespaces)
-    _root_object.control = CherryPyControl(_root_object)
-
-def messaging_init(socket):
-    pass
-
-def schema_init(schema_tools):
-    pass
+def after_admin_ui(_broker_scope, _admin_object):
+    _admin_object.process = CherryPyProcess(_broker_scope["namespaces"], _broker_scope["repository_parent_folder"])
+    _admin_object.control = CherryPyControl(_broker_scope)

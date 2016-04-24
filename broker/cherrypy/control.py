@@ -11,7 +11,7 @@ from of.schemas.constants import id_right_admin_everything
 from of.common.security.groups import aop_has_right
 from plugins.optimalbpm.broker.control import Control
 from plugins.optimalbpm.broker.messaging.factory import start_process_message
-
+import of.common.messaging.websocket
 from of.broker.globals import states
 
 __author__ = 'Nicklas Borjesson'
@@ -29,8 +29,8 @@ class CherryPyControl(object):
     states = None
 
     def __init__(self, _root_object):
-        self._control = Control(_root_object.database_access, _root_object.node._node, _root_object.monitor.queue, _root_object.stop_broker,
-                                _root_object.address, _root_object.process_id)
+        self._control = Control(_root_object["database_access"], _root_object["web_root"].node._node, of.common.messaging.websocket.monitor.queue, _root_object["stop_broker"],
+                                _root_object["address"], _root_object["process_id"])
 
 
     @cherrypy.expose

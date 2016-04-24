@@ -41,7 +41,7 @@ def init():
         # Control category - Control messages for runtime entities
         "bpm://message_agent_control.json": "control"
     })
-    # TODO: These should really be in some hook
+
     of.schemas.constants.intercept_schema_ids = ["bpm://message_bpm_process_result.json"]
 
     of.schemas.constants.peer_type__schema_id.update({"agent": "bpm://node_agent.json"})
