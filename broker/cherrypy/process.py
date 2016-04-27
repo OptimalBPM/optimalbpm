@@ -10,7 +10,7 @@ import sys
 import os
 import json
 
-from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, EC_INTERNAL, SEV_ERROR
+from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, EC_INTERNAL, SEV_ERROR, SEV_INFO
 
 sys.path.append(os.path.dirname(__file__))
 
@@ -74,12 +74,13 @@ class CherryPyProcess(object):
         _tokens = ProcessTokens(_keywords=self.keywords, _namespaces=self.namespaces)
         _repo_path = os.path.join(os.path.expanduser(self.repository_parent_folder), _process_id)
         _filename_process = os.path.join(_repo_path, "main.py")
-        if os.path.exists(_filename_process):
+        if not os.path.exists(_filename_process):
             # No process definition, it is a new process, create a main file.
             if not os.path.exists(_repo_path):
                 os.makedirs(_repo_path)
             with open(_filename_process, "w") as f:
                pass
+            write_to_log("New repository created at " + _repo_path, EC_NOTIFICATION, SEV_INFO)
 
         _verbs = _tokens.parse_file(_filename_process)
         _result = dict()
