@@ -112,15 +112,19 @@ class ProcessTokens(object):
             _file.write(tokenize.untokenize(self._items))
         raise Exception("ProcessTokens.save is not yet implemented")
 
-    def parse_file(self, _filename):
+    def parse(self, _filename = None, _string = None ):
         """
         Parse a file into verbs
         :param _filename:
         :return:
         """
         # Load all tokens
-        with open(_filename, "r", encoding="utf-8") as _file:
-            _tokens = tokenize.tokenize(BytesIO(_file.read().encode('utf-8')).readline)
+        if _filename is not None:
+            with open(_filename, "r", encoding="utf-8") as _file:
+                _tokens = tokenize.tokenize(BytesIO(_file.read().encode('utf-8')).readline)
+        else:
+            _tokens = tokenize.tokenize(BytesIO(_string.encode('utf-8')).readline);
+
         self._items = []
 
         for _token in _tokens:

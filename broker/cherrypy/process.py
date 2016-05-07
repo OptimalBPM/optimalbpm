@@ -72,30 +72,31 @@ class CherryPyProcess(object):
 
         _process_id = cherrypy.request.json["processId"]
         _tokens = ProcessTokens(_keywords=self.keywords, _namespaces=self.namespaces)
-        _repo_path = os.path.join(os.path.expanduser(self.repository_parent_folder), _process_id)
-        _filename_process = os.path.join(_repo_path, "main.py")
-        if not os.path.exists(_filename_process):
-            # No process definition, it is a new process, create a main file.
-            if not os.path.exists(_repo_path):
-                os.makedirs(_repo_path)
-            with open(_filename_process, "w") as f:
-               pass
-            write_to_log("New repository created at " + _repo_path, EC_NOTIFICATION, SEV_INFO)
 
-        _verbs = _tokens.parse_file(_filename_process)
         _result = dict()
         _result["processId"] = _process_id
-        _result["verbs"] = _tokens.verbs_to_json(_verbs)
+
         _result["encoding"] = _tokens.encoding
         _result["name"] = "source.py"
         _result["documentation"] = _tokens.documentation
-        _filename_data = os.path.join(_repo_path,"data.json")
 
-        if os.path.exists(_filename_data):
-            with open(_filename_data, "r") as f:
-                _result["paramData"] = json.load(f)
-        else:
+        _repo_path = os.path.join(os.path.expanduser(self.repository_parent_folder), _process_id)
+        _filename_data = os.path.join(_repo_path, "data.json")
+        _filename_process = os.path.join(_repo_path, "main.py")
+        if not os.path.exists(_filename_process):
+            # No process definition exists
+            _verbs = _tokens.parse(_string="pass")
+            _result["verbs"] = _tokens.verbs_to_json(_verbs)
             _result["paramData"] = {}
+        else:
+            _verbs = _tokens.parse(_filename=_filename_process)
+            _result["verbs"] = _tokens.verbs_to_json(_verbs)
+
+            if os.path.exists(_filename_data):
+                with open(_filename_data, "r") as f:
+                    _result["paramData"] = json.load(f)
+            else:
+                _result["paramData"] = {}
 
         return _result
 
@@ -113,24 +114,30 @@ class CherryPyProcess(object):
         _tokens = ProcessTokens(_keywords=self.keywords, _namespaces=self.namespaces)
         _tokens.documentation = cherrypy.request.json["documentation"]
 
-        _process_id = cherrypy.request.json["processId"]
-        _repo_path = os.path.join(os.path.expanduser(self.repository_parent_folder) + _process_id)
-        if not os.path.exists(_repo_path):
-            os.makedirs(_repo_path)
-
-        _filename = os.path.join(_repo_path,"main.py")
         _verbs = _tokens.json_to_verbs(_json= cherrypy.request.json["verbs"])
         if "documentation" in cherrypy.request.json:
             _tokens.documentation = cherrypy.request.json["documentation"]
-        _namespaces, _map = _tokens.encode_process(_verbs = _verbs, _filename=_filename)
 
-        _filename_namespaces = os.path.join(_repo_path,"namespaces.json")
+        _process_id = cherrypy.request.json["processId"]
+        _repo_path = os.path.join(os.path.expanduser(self.repository_parent_folder), _process_id)
+        _filename = os.path.join(_repo_path, "main.py")
+
+        _namespaces, _map = _tokens.encode_process(_verbs = _verbs, _filename= _filename)
+
+
+        # Store in repository
+        if not os.path.exists(_repo_path):
+            # No process definition, it is a new process, create a folder.
+            write_to_log("Initating ner repo at " + _repo_path, EC_NOTIFICATION, SEV_INFO)
+            os.makedirs(_repo_path)
+            # TODO: Init git repo (PROD-11)
+
+        _filename_namespaces = os.path.join(_repo_path, "namespaces.json")
         with open(_filename_namespaces, "w") as f:
             json.dump(_namespaces, f)
         _filename_map = os.path.join(_repo_path,"map.json")
         with open(_filename_map, "w") as f:
             json.dump(_map, f)
-
         _filename_data = os.path.join(_repo_path,"data.json")
         with open(_filename_data, "w") as f:
             json.dump(cherrypy.request.json["paramData"], f)

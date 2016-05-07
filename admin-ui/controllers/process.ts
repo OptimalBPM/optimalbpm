@@ -1,5 +1,4 @@
 /// <reference path="../typings/tsd.d.ts" />
-
 /**
  * Module that implements a tree using schemaTree, a schema validated form and ui layout
 
@@ -27,11 +26,11 @@ import "angular-schema-form-dynamic-select";
 
 // These are not available in design time, TODO: Remove these when paths it implemented in Typescripts
 
-//noinspection TypeScriptCheckImport
+// noinspection TypeScriptCheckImport
 import {NodeManager, NodeManagement} from "../../types/nodeManager";
-//noinspection TypeScriptCheckImport
+// noinspection TypeScriptCheckImport
 import {SchemaTreeController} from "../../controllers/schemaTreeController";
-//noinspection TypeScriptCheckImport
+// noinspection TypeScriptCheckImport
 import {TreeNode, NodesScope, Dict, TreeScope} from "../../types/schemaTreeTypes";
 
 import {Verb} from "../lib/tokens";
@@ -802,7 +801,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
      * @param schemaTreeController
      */
     onInit = (schemaTreeController): void => {
-        console.log("In NodesController.onInit");
+        console.log("In ProcessController.onInit");
         this.tree = schemaTreeController;
         this.tree.treeScope.nodeManager = this;
     };
