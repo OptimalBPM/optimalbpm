@@ -54,6 +54,21 @@ class Control:
         self.process_id = _process_id
         self.stop_broker = _stop_broker
 
+    def load_process_definition(self, _process_definition_id, _user):
+        """
+        Loads a the process definition defined by _process_definition_id.
+
+        :param _process_definition_id: A process definition Id
+        :param _user: A user instance
+        :return: a Process definition document identified by _process_definition_id .
+        """
+        # TODO: This manually converts it into an ObjectId instance, likely not needed in later MBE versions(OB1-44)
+        _result = self.node.find({"_id": ObjectId(_process_definition_id)}, _user)
+
+        if len(_result) != 1:
+            return None
+        else:
+            return _result[0]
 
     def start_process(self, _start_process_message, _user):
         """

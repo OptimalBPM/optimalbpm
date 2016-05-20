@@ -329,7 +329,7 @@ class ProcessTokens(object):
         """
         _identifier_parts = _identifier.split(".")
         if len(_identifier_parts) > 1:
-            if _identifier_parts[0] not in self.namespaces:
+            if _identifier_parts[0] not in self.local_namespaces:
                 self.local_namespaces.append(_identifier_parts[0])
 
 

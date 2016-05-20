@@ -38,38 +38,6 @@ class CherryPyControl(object):
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
     @aop_has_right([id_right_admin_everything])
-    def save_process_definition(self, **kwargs):
-        return self._control.save_process_definition(cherrypy.request.json, kwargs["_user"])
-
-    @cherrypy.expose
-    @cherrypy.tools.json_in()
-    @cherrypy.tools.json_out(content_type='application/json')
-    @aop_check_session
-    @aop_has_right([id_right_admin_everything])
-    def load_process_definition(self, **kwargs):
-        return self._control.load_process_definition(cherrypy.request.json, kwargs["_user"])
-
-    @cherrypy.expose
-    @cherrypy.tools.json_in()
-    @cherrypy.tools.json_out(content_type='application/json')
-    @aop_check_session
-    @aop_has_right([id_right_admin_everything])
-    def remove_process_definition(self, **kwargs):
-        return self._control.remove_process_definition(cherrypy.request.json, kwargs["_user"])
-
-    @cherrypy.expose
-    @cherrypy.tools.json_in()
-    @cherrypy.tools.json_out(content_type='application/json')
-    @aop_check_session
-    @aop_has_right([id_right_admin_everything])
-    def get_process_definition_hash(self, **kwargs):
-        return self._control.get_process_definition_hash(cherrypy.request.json, kwargs["_user"])
-
-    @cherrypy.expose
-    @cherrypy.tools.json_in()
-    @cherrypy.tools.json_out(content_type='application/json')
-    @aop_check_session
-    @aop_has_right([id_right_admin_everything])
     def agent_control(self, **kwargs):
         write_to_log("Got an agent control call, command "+ cherrypy.request.json["command"] +
                      ", reason: " + cherrypy.request.json["reason"] +
