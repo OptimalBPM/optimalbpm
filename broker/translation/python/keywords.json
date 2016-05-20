@@ -221,6 +221,18 @@
       }
     ]
   },
+  "pass": {
+    "title": "pass",
+    "description": "Does nothing",
+    "parts": [
+      {
+        "kind": "keyword",
+        "values": [
+          "pass"
+        ]
+      }
+    ]
+  },
   "@assign": {
     "title": "<i>%assignments%</i>=<b>%parameters%</b>",
     "description": "Assigns a value to the specified variable."

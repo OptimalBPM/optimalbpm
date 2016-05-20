@@ -697,6 +697,8 @@ class Verb(object):
         # Add mapping
         _process_tokens.add_verb_to_position_map(self)
         # Handle by type (function map)
-        self.to_shortcuts[self.type](_process_tokens)
-
+        try:
+            self.to_shortcuts[self.type](_process_tokens)
+        except KeyError as e:
+            raise KeyError("Invalid key, \"" + str(e) + "\" at " + str(self.identifier))
 

@@ -21,7 +21,6 @@ from of.schemas.constants import id_right_admin_everything
 from of.common.security.groups import has_right
 from plugins.optimalbpm.broker.translation.python.translator import ProcessTokens, core_language
 
-
 # TODO: Consider what the documentation in the top of each module should look like (PROD-40)
 
 __author__ = 'Nicklas Borjesson'
@@ -43,6 +42,7 @@ class CherryPyProcess(object):
 
     # Reference to the central namespaces instance
     namespaces = None
+
     def __init__(self, _namespaces, _repository_parent_folder):
         """
         Initiates the class, loads keywords and namespaces for the translation
@@ -54,7 +54,6 @@ class CherryPyProcess(object):
         self.namespaces.load_dicts(
             core_language + [os.path.join(script_dir, "../translation/features/fake_bpm_lib.json")],
             _top_attribute="namespaces")
-
 
     # TODO: There should exist some special right for this like object_id_admin_process(ORG-110)
 
@@ -114,7 +113,7 @@ class CherryPyProcess(object):
         _tokens = ProcessTokens(_keywords=self.keywords, _namespaces=self.namespaces)
         _tokens.documentation = cherrypy.request.json["documentation"]
 
-        _verbs = _tokens.json_to_verbs(_json= cherrypy.request.json["verbs"])
+        _verbs = _tokens.json_to_verbs(_json=cherrypy.request.json["verbs"])
         if "documentation" in cherrypy.request.json:
             _tokens.documentation = cherrypy.request.json["documentation"]
 
@@ -122,23 +121,22 @@ class CherryPyProcess(object):
         _repo_path = os.path.join(os.path.expanduser(self.repository_parent_folder), _process_id)
         _filename = os.path.join(_repo_path, "main.py")
 
-        _namespaces, _map = _tokens.encode_process(_verbs = _verbs, _filename= _filename)
-
-
         # Store in repository
         if not os.path.exists(_repo_path):
             # No process definition, it is a new process, create a folder.
-            write_to_log("Initating ner repo at " + _repo_path, EC_NOTIFICATION, SEV_INFO)
+            write_to_log("Initating new repo at " + _repo_path, EC_NOTIFICATION, SEV_INFO)
             os.makedirs(_repo_path)
             # TODO: Init git repo (PROD-11)
+
+        _namespaces, _map = _tokens.encode_process(_verbs=_verbs, _filename=_filename)
 
         _filename_namespaces = os.path.join(_repo_path, "namespaces.json")
         with open(_filename_namespaces, "w") as f:
             json.dump(_namespaces, f)
-        _filename_map = os.path.join(_repo_path,"map.json")
+        _filename_map = os.path.join(_repo_path, "map.json")
         with open(_filename_map, "w") as f:
             json.dump(_map, f)
-        _filename_data = os.path.join(_repo_path,"data.json")
+        _filename_data = os.path.join(_repo_path, "data.json")
         with open(_filename_data, "w") as f:
             json.dump(cherrypy.request.json["paramData"], f)
 
