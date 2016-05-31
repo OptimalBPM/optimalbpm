@@ -101,7 +101,7 @@ export class ControlController {
     loadAgents = (): ng.IPromise<any> => {
 
         // See schema/constants.py
-        return this.$http.post("node/lookup", {
+        return this.$http.post("/node/lookup", {
                 "collection": "node", "conditions": {
                     "schemaRef": "bpm://node_agent.json",
                     "parent_id": "ObjectId(000000010000010002e64d03)"
@@ -118,7 +118,7 @@ export class ControlController {
     loadProcesses = (): ng.IPromise<any> => {
 
         // See schema/constants.py
-        return this.$http.post("node/lookup", {
+        return this.$http.post("/node/lookup", {
                 "collection": "node", "conditions": {
                     "parent_id": "ObjectId(000000010000010002e64d02)"
                 }

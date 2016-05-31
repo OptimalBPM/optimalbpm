@@ -6,64 +6,7 @@
       "failOnError": true,
       "admin-ui": {
         "mountpoint": "process",
-        "controllers": [
-          {
-            "name": "ProcessController",
-            "module": "process/controllers/process",
-            "dependencies": [
-              "$scope",
-              "$http",
-              "$q",
-              "$timeout"
-            ]
-          },
-          {
-            "name": "ControlController",
-            "module": "process/controllers/control",
-            "dependencies": [
-              "$scope",
-              "$http",
-              "$cookies",
-              "$interval"
-            ]
-          },
-          {
-            "name": "VerticalDraggableMenuController",
-            "module": "process/controllers/verticalDraggableMenuController",
-            "dependencies": [
-              "$scope",
-              "$timeout"
-            ]
-          }
-        ],
-        "directives": [
-          {
-            "name": "process",
-            "module": "process/directives/process"
-          },
-          {
-            "name": "control",
-            "module": "process/directives/control"
-          },
-          {
-            "name": "verticalDraggableMenu",
-            "module": "process/directives/verticalDraggableMenu"
-          }
-        ],
-        "routes": [
-          {
-            "path": "/process",
-            "route": {
-              "templateUrl": "process/views/process.html"
-            }
-          },
-          {
-            "path": "/control",
-            "route": {
-              "templateUrl": "process/views/control.html"
-            }
-          }
-        ],
+        "mountfolder": "process",
         "menus": [
           {
             "caption": "CONTROL",

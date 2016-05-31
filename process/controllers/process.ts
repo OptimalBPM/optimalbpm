@@ -210,7 +210,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
         return this.$http.get("process/views/process/schemas.json")
             .success((data): any => {
                 this.tree.schemas = data;
-                this.$http.get("node/get_schemas")
+                this.$http.get("/node/get_schemas")
                     .success((data: any) => {
                         this.schemas = data;
                     })
@@ -472,7 +472,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
 
         return this.$q((resolve, reject) => {
                 // See schema/constants.py
-                return this.$http.post("node/lookup", {
+                return this.$http.post("/node/lookup", {
                         "collection": "node",
                         "conditions": {"parent_id": "ObjectId(000000010000010002e64d02)"}
                     })
@@ -921,3 +921,4 @@ export class ProcessController extends NodeManager implements NodeManagement  {
 
 
 }
+
