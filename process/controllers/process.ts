@@ -11,8 +11,6 @@
 import "angular";
 import "angular-strap";
 import "angular-schema-form";
-import "angular-ui-layout";
-import "angular-ui-layout/ui-layout.css!";
 import "angular-animate";
 
 import "ace";
