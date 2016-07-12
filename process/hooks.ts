@@ -1,10 +1,9 @@
 import { ProcessRoutes } from "./directives/process.routes";
 import { ControlRoutes } from "./directives/control.routes";
-import { VerticalDraggableMenuRoutes } from "./directives/verticalDraggableMenu.route";
 
 //Angular 1 directives import
-import { processDirective, ProcessComponent } from "./directives/process";
-import { controlDirective, ControlComponent } from "./directives/control";
+import { processDirective } from "./directives/process";
+import { controlDirective } from "./directives/control";
 import { verticalDraggableMenuDirective, VerticalDraggableMenuComponent } from "./directives/verticalDraggableMenu";
 
 /*
@@ -13,9 +12,7 @@ import { verticalDraggableMenuDirective, VerticalDraggableMenuComponent } from "
  * and are going to be available in global scope of the app.
  */
 export const pluginStructure = [
-    ControlComponent,
-    ProcessComponent,
-    VerticalDraggableMenuComponent,
+    VerticalDraggableMenuComponent
 ];
 
 /*
@@ -24,8 +21,7 @@ export const pluginStructure = [
  */
 export const pluginRoutes = [
     ...ProcessRoutes,
-    ...ControlRoutes,
-    ...VerticalDraggableMenuRoutes
+    ...ControlRoutes
 ];
 
 /*
@@ -45,11 +41,6 @@ export const pluginMenus = [
         display: 'Process',
         path: '/process',
         type: 'left'
-    },
-    {
-        display: 'Vertical Draggable Menu',
-        path: '/vertical-draggable-menu',
-        type: 'left'
     }
 ];
 
@@ -59,12 +50,4 @@ export function initFramework(app) {
     app.component('vertical-draggable-menu', verticalDraggableMenuDirective);
 
     console.log("initFramework for Optimal BPM was run");
-}
-
-
-export function initRoutes($routeProvider) {
-    // Configure all routes
-    $routeProvider.when("/process", {"templateUrl": "process/views/process.html"});
-    
-    console.log("initRoutes for Optimal BPM was run");
 }
