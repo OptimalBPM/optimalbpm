@@ -1,19 +1,20 @@
-/**
- * Created by nibo on 2015-09-05.
- */
-/// <reference path="../typings/angularjs/angular.d.ts" />
-/// <reference path="../typings/jquery/jquery.d.ts" />
-
-"use strict";
-
 import "angular";
 
 import "jquery";
 import "angular-ui-select";
 
+import { upgradeAdapter } from "/admin/upgrade.adapter";
+import { ProcessController } from "../controllers/process";
+
+export const processDirective = {
+    templateUrl: "process/views/process/process.html",
+    controller: ProcessController
+};
 
 
-export function process(): ng.IDirective {
+export const ProcessComponent = upgradeAdapter.upgradeNg1Component('process');
+
+/*export function process(): ng.IDirective {
     return {
         restrict: "E",
         scope: {
@@ -25,6 +26,6 @@ export function process(): ng.IDirective {
         templateUrl: "process/views/process/process.html"
     };
 
-}
+}*/
 
 

@@ -1,9 +1,0 @@
-{
-  "files": [
-    "../../../of/of/broker/ui/admin/types/nodeManager.ts",
-    "../../../of/of/broker/ui/admin/types/schemaTreeTypes.ts",
-    "../../../of/of/broker/ui/admin/controllers/schemaTreeController.ts",
-    "./typings/tsd.d.ts"
-  ]
-
-}

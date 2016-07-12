@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "typings": "typings"
+  }
+}
