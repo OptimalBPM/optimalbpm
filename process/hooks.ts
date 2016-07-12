@@ -1,11 +1,12 @@
 import {ProcessController} from "./controllers/process";
 import {VerticalDraggableMenuController} from "./controllers/verticalDraggableMenuController";
-import {process} from "./directives/process";
 import {verticalDraggableMenu} from "./directives/verticalDraggableMenu";
 
+import {ProcessRoutes} from "./directives/process.routes";
 import {ControlRoutes} from "./directives/control.routes";
 
 //Angular 1 directives import
+import {processDirective, ProcessComponent} from "./directives/process";
 import {controlDirective, ControlComponent} from "./directives/control";
 
 /*
@@ -14,6 +15,7 @@ import {controlDirective, ControlComponent} from "./directives/control";
  * and are going to be available in global scope of the app.
  */
 export const pluginStructure = [
+    ProcessComponent,
     ControlComponent
 ];
 
@@ -22,6 +24,7 @@ export const pluginStructure = [
  * Angular2 uses a component router hence this components will already be imported when defining routes
  */
 export const pluginRoutes = [
+    ...ProcessRoutes,
     ...ControlRoutes
 ];
 
@@ -37,17 +40,19 @@ export const pluginMenus = [
         display: 'Control',
         path: '/control',
         type: 'left'
+    },
+    {
+        display: 'Process',
+        path: '/process',
+        type: 'left'
     }
 ];
 
 export function initFramework(app) {
-
-    app.controller("ProcessController", ["$scope", "$http", "$q", "$timeout", ProcessController]);
     app.controller("VerticalDraggableMenuController", ["$scope", "$timeout", VerticalDraggableMenuController]);
 
-    app.directive("process", process);
     app.directive("verticalDraggableMenu", verticalDraggableMenu);
-
+    app.directive("process", processDirective);
     app.component('control', controlDirective);
     
     console.log("initFramework for Optimal BPM was run");
