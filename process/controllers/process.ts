@@ -1,13 +1,3 @@
-/// <reference path="../typings/tsd.d.ts" />
-/**
- * Module that implements a tree using schemaTree, a schema validated form and ui layout
-
- * @module nodes
- * @service Nodes
- * @author Nicklas Börjesson
- * @link https://www.github.com/OptimalBPM/
- */
-"use strict";
 import "angular";
 import "angular-strap";
 import "angular-schema-form";

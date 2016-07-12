@@ -1,13 +1,4 @@
-/**
- * Created by nibo on 2015-10-18.
- */
-/// <reference path="../typings/angularjs/angular.d.ts" />
-/// <reference path="../typings/jquery/jquery.d.ts" />
-
-"use strict";
-
 import "angular";
-
 import "jquery";
 import "angular-ui-tree";
 
