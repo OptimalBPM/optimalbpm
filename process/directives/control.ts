@@ -1,31 +1,21 @@
-/**
- * Created by nibo on 2015-09-05.
- */
-/// <reference path="../typings/angularjs/angular.d.ts" />
-/// <reference path="../typings/jquery/jquery.d.ts" />
-
-"use strict";
+console.log("Before control definition");
 
 import "angular";
-
-import "jquery";
 import "angular-ui-select";
+import { ControlScope } from "../controllers/control";
+import { ControlController } from "../controllers/control";
+import { upgradeAdapter } from "/optimalbpm/upgrade.adapter";
 
-import {ControlScope} from "../controllers/control";
+export const controlDirective = {
+    templateUrl: "process/views/control/control.html",
+    controller: ControlController,
+    link: ($scope: ControlScope, element: JQuery) => {
+        console.log("link function in control directive called ");
+    }
+};
 
-export function control(): ng.IDirective {
-    return {
-        restrict: "E",
-        scope: {
-        },
-        controller: "ControlController",
-        link: ($scope: ControlScope, element: JQuery) => {
-            console.log("link function in process directive called ");
+console.log("After control definition");
 
-        },
-        templateUrl: "process/views/control/control.html"
-    };
-
-}
+export const ControlComponent = upgradeAdapter.upgradeNg1Component('control');
 
 

@@ -1,3 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
 typings
 node_modules
+*.js
+*.js.map

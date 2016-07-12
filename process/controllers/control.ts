@@ -1,7 +1,4 @@
-///<reference path="../typings/tsd.d.ts" />
-
-
-interface ControlScope extends ng.IScope {
+export interface ControlScope extends ng.IScope {
     startedProcesses: string[];
     states: {};
     controller: ControlController;
