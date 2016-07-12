@@ -1,7 +1,4 @@
-///<reference path="../typings/angularjs/angular.d.ts" />
-
-
-interface VerticalDraggableMenuScope extends ng.IScope  {
+export interface VerticalDraggableMenuScope extends ng.IScope  {
     columns: any[];
     menuManager: VerticalDraggableMenuController;
     treeOptions: any;

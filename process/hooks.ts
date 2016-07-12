@@ -1,13 +1,11 @@
-import {ProcessController} from "./controllers/process";
-import {VerticalDraggableMenuController} from "./controllers/verticalDraggableMenuController";
-import {verticalDraggableMenu} from "./directives/verticalDraggableMenu";
-
-import {ProcessRoutes} from "./directives/process.routes";
-import {ControlRoutes} from "./directives/control.routes";
+import { ProcessRoutes } from "./directives/process.routes";
+import { ControlRoutes } from "./directives/control.routes";
+import { VerticalDraggableMenuRoutes } from "./directives/verticalDraggableMenu.route";
 
 //Angular 1 directives import
-import {processDirective, ProcessComponent} from "./directives/process";
-import {controlDirective, ControlComponent} from "./directives/control";
+import { processDirective, ProcessComponent } from "./directives/process";
+import { controlDirective, ControlComponent } from "./directives/control";
+import { verticalDraggableMenuDirective, VerticalDraggableMenuComponent } from "./directives/verticalDraggableMenu";
 
 /*
  * Export angular functionality directives,components, services e.t.c
@@ -15,8 +13,9 @@ import {controlDirective, ControlComponent} from "./directives/control";
  * and are going to be available in global scope of the app.
  */
 export const pluginStructure = [
+    ControlComponent,
     ProcessComponent,
-    ControlComponent
+    VerticalDraggableMenuComponent,
 ];
 
 /*
@@ -25,7 +24,8 @@ export const pluginStructure = [
  */
 export const pluginRoutes = [
     ...ProcessRoutes,
-    ...ControlRoutes
+    ...ControlRoutes,
+    ...VerticalDraggableMenuRoutes
 ];
 
 /*
@@ -45,16 +45,19 @@ export const pluginMenus = [
         display: 'Process',
         path: '/process',
         type: 'left'
+    },
+    {
+        display: 'Vertical Draggable Menu',
+        path: '/vertical-draggable-menu',
+        type: 'left'
     }
 ];
 
 export function initFramework(app) {
-    app.controller("VerticalDraggableMenuController", ["$scope", "$timeout", VerticalDraggableMenuController]);
-
-    app.directive("verticalDraggableMenu", verticalDraggableMenu);
-    app.directive("process", processDirective);
     app.component('control', controlDirective);
-    
+    app.component('process', processDirective);
+    app.component('vertical-draggable-menu', verticalDraggableMenuDirective);
+
     console.log("initFramework for Optimal BPM was run");
 }
 
