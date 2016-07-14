@@ -1,5 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 typings
+typings.json
 node_modules
 *.js
 *.js.map

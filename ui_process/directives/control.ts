@@ -4,10 +4,12 @@ import "angular";
 import "angular-ui-select";
 import { ControlScope } from "../controllers/control";
 import { ControlController } from "../controllers/control";
-import { upgradeAdapter } from "/optimalbpm/upgrade.adapter";
+import { upgradeAdapter } from "/admin/upgrade.adapter";
+
+let __moduleName: any; // fully resolved filename; defined at module load time  
 
 export const controlDirective = {
-    templateUrl: "process/views/control/control.html",
+    templateUrl: "admin/ui_process/views/control/control.html",
     controller: ControlController,
     link: ($scope: ControlScope, element: JQuery) => {
         console.log("link function in control directive called ");
@@ -15,7 +17,5 @@ export const controlDirective = {
 };
 
 console.log("After control definition");
-
-export const ControlComponent = upgradeAdapter.upgradeNg1Component('control');
 
 

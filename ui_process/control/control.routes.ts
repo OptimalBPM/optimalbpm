@@ -1,4 +1,4 @@
-import {ControlComponent} from "./control";
+import { ControlComponent } from "./control.component";
 
 export const ControlRoutes = [
     {

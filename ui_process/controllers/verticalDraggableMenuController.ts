@@ -5,8 +5,6 @@ export interface VerticalDraggableMenuScope extends ng.IScope  {
 }
 
 export class VerticalDraggableMenuController {
-    $scope: VerticalDraggableMenuScope;
-    $timeout: ng.ITimeoutService;
 
     initPopovers = () => {
         this.$timeout(function() {
@@ -18,15 +16,13 @@ export class VerticalDraggableMenuController {
         return value.replace(/%/g, "");
     };
 
+    static $inject = ["$scope", "$timeout"];
 
-    constructor(private $scope: VerticalDraggableMenuScope, $timeout: ng.ITimeoutService) {
+    constructor(public $scope: VerticalDraggableMenuScope, public $timeout: ng.ITimeoutService) {
 
         console.log("Initiating VerticalDraggableMenuController" + $scope.toString());
 
-
-        this.$scope = $scope;
         this.$scope.menuManager = this;
-        this.$timeout = $timeout;
         console.log(this.$scope.columns);
 
         console.log("Initiated VerticalDraggableMenuController");

@@ -1,5 +1,5 @@
-import { ProcessRoutes } from "./directives/process.routes";
-import { ControlRoutes } from "./directives/control.routes";
+import { ProcessRoutes } from "./process/process.routes";
+import { ControlRoutes } from "./control/control.routes";
 
 //Angular 1 directives import
 import { processDirective } from "./directives/process";
@@ -45,9 +45,9 @@ export const pluginMenus = [
 ];
 
 export function initFramework(app) {
-    app.component('control', controlDirective);
-    app.component('process', processDirective);
-    app.component('vertical-draggable-menu', verticalDraggableMenuDirective);
+    app.component('uControl', controlDirective);
+    app.component('uProcess', processDirective);
+    app.component('bpmVerticalDraggableMenu', verticalDraggableMenuDirective);
 
-    console.log("initFramework for Optimal BPM was run");
+    console.log("initFramework for Optimal BPM  plugin was run");
 }

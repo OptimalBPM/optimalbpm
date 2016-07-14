@@ -15,11 +15,9 @@ import "angular-schema-form-dynamic-select";
 // These are not available in design time, TODO: Remove these when paths it implemented in Typescripts
 
 // noinspection TypeScriptCheckImport
-import {NodeManager, NodeManagement} from "../../types/nodeManager";
+import {NodeManager, NodeManagement, TreeNode, INodesScope, IDict, TreeScope} from "../../types/index";
 // noinspection TypeScriptCheckImport
-import {SchemaTreeController} from "../../controllers/schemaTreeController";
-// noinspection TypeScriptCheckImport
-import {TreeNode, NodesScope, Dict, TreeScope} from "../../types/schemaTreeTypes";
+import { SchemaTreeController } from "../../controllers/index";
 
 import {Verb} from "../lib/tokens";
 import "../css/process.css!";
@@ -65,24 +63,22 @@ class MenuNode extends ProcessNode {
     menuTitle: string;
 }
 
-export interface ProcessScope extends NodesScope {
+export interface ProcessScope extends INodesScope {
     definitionsCallback?: Function;
 
 }
 
 export class ProcessController extends NodeManager implements NodeManagement  {
 
-    $timeout: ng.ITimeoutService;
-
     /** The groups variable holds a list of all the groups. */
-    groups: any[] = [];
+    groups: any;
 
 
     // Lookup lists
-    lists: Dict = {};
+    lists: IDict = {};
 
     // Processes
-    processes: any[] = [];
+    processes: any;
 
     // Current process
     currProcess: any;
@@ -169,21 +165,21 @@ export class ProcessController extends NodeManager implements NodeManagement  {
 
     getIconClass = (nodeType: string): string => {
         return "";
-        if (nodeType === "def") {
-            return "glyphicon glyphicon-pushpin";
-        } else if (nodeType === "print") {
-            return "glyphicon glyphicon-text-background";
-        } else if (nodeType === "import" || nodeType === "from") {
-            return "glyphicon glyphicon-log-in";
-        } else if (nodeType === "@assign") {
-            return "glyphicon glyphicon-pencil";
-        } else if (nodeType === "@call") {
-            return "glyphicon glyphicon-cog";
-        } else if (nodeType === "send_message") {
-            return "glyphicon glyphicon-envelope";
-        } else {
-            return "";
-        }
+        // if (nodeType === "def") {
+        //     return "glyphicon glyphicon-pushpin";
+        // } else if (nodeType === "print") {
+        //     return "glyphicon glyphicon-text-background";
+        // } else if (nodeType === "import" || nodeType === "from") {
+        //     return "glyphicon glyphicon-log-in";
+        // } else if (nodeType === "@assign") {
+        //     return "glyphicon glyphicon-pencil";
+        // } else if (nodeType === "@call") {
+        //     return "glyphicon glyphicon-cog";
+        // } else if (nodeType === "send_message") {
+        //     return "glyphicon glyphicon-envelope";
+        // } else {
+        //     return "";
+        // }
     };
 
     /**
@@ -295,15 +291,12 @@ export class ProcessController extends NodeManager implements NodeManagement  {
     recurseVerbs = (parent, items): ProcessNode[] => {
 
         let result: ProcessNode[] = [];
-        let scope: any;
-        if (typeof(this) === "undefined") {
-            scope = _this;
-        }
-        else {
+        let scope: any = {};
+        if (typeof(this) !== "undefined") {
             scope = this;
         }
-        items.forEach((item) => {
 
+        items.forEach((item) => {
             let currItem: ProcessNode = new ProcessNode();
             let currId: Number = Number(item["id"]);
             if (currId > scope.maxId) {
@@ -327,11 +320,8 @@ export class ProcessController extends NodeManager implements NodeManagement  {
      * Load process data
      */
     loadProcess = (processId: string): ng.IPromise<any> => {
-        let scope: any;
-        if (typeof(this) === "undefined") {
-            scope = _this;
-        }
-        else {
+        let scope: any = {};
+        if (typeof(this) !== "undefined") {
             scope = this;
         }
         return scope.$q((resolve, reject) => {
@@ -401,8 +391,8 @@ export class ProcessController extends NodeManager implements NodeManagement  {
         this.menuColumns = [];
         let new_definition: MenuNode = new MenuNode();
         let keywords: string[] = data["keywords"];
-        let new_column: Dict = {"title": "Keywords", "children": []};
-        for (let keyword: string in keywords) {
+        let new_column: IDict = {"title": "Keywords", "children": []};
+        for (let keyword in keywords) {
             new_column["children"].push(createDefinition(
                 "new_keyword_" + keyword, keywords[keyword], true, keyword,
                 ["keyword", "call", "documentation", "assign"], "keyword", keyword));
@@ -464,7 +454,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                         "collection": "node",
                         "conditions": {"parent_id": "ObjectId(000000010000010002e64d02)"}
                     })
-                    .success((data): any => {
+                    .success((data) => {
                         this.processes = data;
                         resolve();
                     })
@@ -490,13 +480,9 @@ export class ProcessController extends NodeManager implements NodeManagement  {
     getDefinition = (uri: string): any => {
         let parser: HTMLAnchorElement = document.createElement("a");
         parser.href = uri;
-        let scope: any;
-        if (typeof(this) === "undefined") {
-
-            scope = _this;
-        }
-        else {
-             scope = this;
+        let scope: any = {};
+        if (typeof(this) !== "undefined") {
+            scope = this;
         }
         let schema: any = scope.schemas[parser.protocol + parser.pathname];
         if (parser.hash !== "") {
@@ -519,7 +505,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
         let schema: any = clone(this.tree.schemas[type]);
         let form: any[] = [];
 
-        let makeField: Function = (type: string, key: string, title: string, description?: string, titleMap?: any, parameter?: string): any => {
+        let makeField: Function = (type: string, key: string, title: string, description?: string, titleMap?: any, parameter?: any): any => {
             let field = {};
             field["type"] = type;
             field["key"] = key;
@@ -852,13 +838,9 @@ export class ProcessController extends NodeManager implements NodeManagement  {
     };
 
     onChange = (modelValue, key) => {
-        let scope: any;
-        if (typeof(this) === "undefined") {
-
-            scope = _this;
-        }
-        else {
-             scope = this;
+        let scope: any = {};
+        if (typeof(this) !== "undefined") {
+            scope = this;
         }
         let _curr_item: TreeNode = scope.tree.selectedItem;
         _curr_item.title = scope.makeTitle(scope.nodeScope.selected_data);
@@ -884,12 +866,12 @@ export class ProcessController extends NodeManager implements NodeManagement  {
         return {"schema": this.tree.schemas[schemaRef]};
     };
     
-    constructor(private $scope: ProcessScope, $http: ng.IHttpService, $q: ng.IQService, $timeout: ng.ITimeoutService/*, UiTreeHelper: any*/) {
+
+    static $inject = ["$scope", "$http", "$q", "$timeout"];
+
+    constructor(public $scope: ProcessScope, public $http: ng.IHttpService, public $q: ng.IQService, public $timeout: ng.ITimeoutService/*, UiTreeHelper: any*/) {
         super($scope, $http, $q);
         console.log("Initiating the process controller" + $scope.toString());
-
-        /*this.uiTreeHelper = UiTreeHelper;*/
-        this.$timeout = $timeout;
 
         $timeout(() => {
             // Set height

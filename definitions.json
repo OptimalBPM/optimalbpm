@@ -5,24 +5,8 @@
       "dependencies": {},
       "failOnError": true,
       "admin-ui": {
-        "mountpoint": "process",
-        "mountfolder": "process",
-        "menus": [
-          {
-            "caption": "CONTROL",
-            "weight": 0.4,
-            "path": "control",
-            "items": [],
-            "right": "Administer"
-          },
-          {
-            "caption": "DESIGN",
-            "weight": 0.5,
-            "path": "process",
-            "items": [],
-            "right": "Administer"
-          }
-        ]
+        "mountpoint": "ui_process",
+        "mountfolder": "ui_process"
       },
       "hooks_module": "hooks_broker"
     }

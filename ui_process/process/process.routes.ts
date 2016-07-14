@@ -1,4 +1,4 @@
-import {ProcessComponent} from "./process";
+import { ProcessComponent } from "./process.component";
 
 export const ProcessRoutes = [
     {

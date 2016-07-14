@@ -2,7 +2,7 @@ export interface ControlScope extends ng.IScope {
     startedProcesses: string[];
     states: {};
     controller: ControlController;
-    current_process_history: any[];
+    current_process_history: any;
 
 }
 
@@ -18,18 +18,11 @@ class StartProcessMessage {
 }
 
 export class ControlController {
-
-    $http: ng.IHttpService;
-    $scope: ControlScope;
-    $cookies: angular.cookies.ICookiesService;
-    $interval: ng.IIntervalService;
-    $q: ng.IQService;
+    // Processes
+    processes: any;
 
     // Processes
-    processes: any[] = [];
-
-    // Processes
-    agents: any[] = [];
+    agents: any;
 
     // The currently selected agent
     currAgent: string;
@@ -49,8 +42,7 @@ export class ControlController {
         _process_data.message_id = 1;
 
         this.$http.post("control/start_process", _process_data).success((data, status, headers, config) => {
-            this.$scope.startedProcesses.push(data);
-
+            this.$scope.startedProcesses.push(data.toString());
         }).error((data, status, headers, config) => {
             console.log("Failed to start process, error: " + status);
         });
@@ -77,7 +69,7 @@ export class ControlController {
     };
 
     attack = (process_definition_id: string) => {
-        for (i = 0; i < 100; i++) {
+        for (var i = 0; i < 100; i++) {
             this.start_process(process_definition_id);
         }
         this.get_process_states();
@@ -128,18 +120,15 @@ export class ControlController {
             });
     };
 
-    constructor(private $scope: ControlScope, $http: ng.IHttpService, $cookies: angular.cookies.ICookiesService, $interval: ng.IIntervalService) {
+    // Inject all necessary dependencies
+    static $inject = ["$scope", "$http", "$cookies", "$interval"];
+
+    constructor(public $scope: ControlScope, public $http: ng.IHttpService, public $cookies: angular.cookies.ICookiesService, public $interval: ng.IIntervalService) {
 
         console.log("Initiating ControlController" + $scope.toString());
 
-
-        this.$scope = $scope;
         this.$scope.controller = this;
-        this.$cookies = $cookies;
-        this.$interval = $interval;
-
         this.$interval(this.get_process_states, 2000);
-        this.$http = $http;
         this.loadAgents();
         this.loadProcesses();
 
