@@ -71,14 +71,14 @@ export interface ProcessScope extends INodesScope {
 export class ProcessController extends NodeManager implements NodeManagement  {
 
     /** The groups variable holds a list of all the groups. */
-    groups: any;
+    groups:any[] = [];
 
 
     // Lookup lists
     lists: IDict = {};
 
     // Processes
-    processes: any;
+    processes:any[] = [];
 
     // Current process
     currProcess: any;
@@ -455,7 +455,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                         "conditions": {"parent_id": "ObjectId(000000010000010002e64d02)"}
                     })
                     .success((data) => {
-                        this.processes = data;
+                        this.processes = <Array<any>>data;
                         resolve();
                     })
                     .error((data, status, headers, config): any => {
@@ -833,6 +833,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
 
     save = () => {
         // TODO: Add resetting of token lists for changed items. (PROD-31)
+        
         this.process_data["verbs"] = this.recurseData(this.tree.children)
         this.saveProcess(this.process_data);
     };

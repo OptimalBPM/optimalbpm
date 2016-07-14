@@ -10,7 +10,7 @@ let __moduleName: any; // fully resolved filename; defined at module load time
 @Component({
     moduleId: __moduleName,  
     selector: 'bpmProcess',
-    template: '<uProcess></uProcess>',
+    template: '<u-process></u-process>',
     directives: [ CORE_DIRECTIVES, UpgradedComponent]
 })
 export class ProcessComponent {}

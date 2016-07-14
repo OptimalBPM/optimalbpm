@@ -24,12 +24,12 @@
     </div>
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-7 design_panel">
         <div id="processContainer" class="process-steps">
-            <schema-tree
-                    item-renderer='process/views/process/process_renderer.html'
+            <bpm-schema-tree
+                    item-renderer='admin/process/views/process/process_renderer.html'
                     new-node-object-id="000000010000010001e64bff"
                     node-manager="nodeManager"
                     expander-position="right">
-            </schema-tree>
+            </bpm-schema-tree>
 
         </div>
         <button type="button" class="btn btn-success" ng-click="nodeManager.save()">Write</button>
