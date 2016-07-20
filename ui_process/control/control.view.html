@@ -17,7 +17,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="value in states| orderBy:['state', 'changedWhen']" ng-click="controller.get_process_history(value['processId'])" >
+        
+                <!--|TODO: Add in the ng-repeat: orderBy: ['state', 'changedWhen']-->
+                <tr ng-repeat="value in states" ng-click="controller.get_process_history(value['processId'])" >
                     <td>{{value["processId"]}}</td>
                     <td ng-show="value['state'] == 'running'"><b>RUNNING</b>
                     <td ng-show="value['state'] != 'running'">{{value["state"]}}</td>
@@ -51,7 +53,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="value in current_process_history| orderBy:['state', 'changedWhen']">
+                <tr ng-repeat="value in current_process_history">
                     <td>{{value["state"]}}</td>
                     <td>{{value["reason"]}}</td>
                     <td>{{value["changedWhen"]}}</td>
