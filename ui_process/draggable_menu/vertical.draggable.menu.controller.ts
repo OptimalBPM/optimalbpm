@@ -1,31 +1,37 @@
-export interface VerticalDraggableMenuScope extends ng.IScope  {
+import "jquery";
+declare var $:JQueryStatic;
+
+interface IVerticalDraggableMenu {
     columns: any[];
-    menuManager: VerticalDraggableMenuController;
     treeOptions: any;
 }
 
-export class VerticalDraggableMenuController {
+export class VerticalDraggableMenuController implements IVerticalDraggableMenu {
+    // Attribute passed to directive
+    columns: any[];
+
+    // Attribute passed to directive
+    treeOptions: any;
 
     initPopovers = () => {
-        this.$timeout(function() {
+        console.log('initPopovers');        
+        this.$timeout(() => {
             let _temp: any = $("[data-toggle=\"popover\"]");
+            console.log(_temp);
             _temp.popover();
         });
-    };
-    fixPopoverTitle = (value: string) => {
+    }
+
+    fixPopoverTitle(value: string) {
         return value.replace(/%/g, "");
-    };
+    }
 
     static $inject = ["$scope", "$timeout"];
 
-    constructor(public $scope: VerticalDraggableMenuScope, public $timeout: ng.ITimeoutService) {
-
+    constructor(public $scope: ng.IScope, public $timeout: ng.ITimeoutService) {
         console.log("Initiating VerticalDraggableMenuController" + $scope.toString());
-
-        this.$scope.menuManager = this;
-        console.log(this.$scope.columns);
-
+        console.log(this.columns);
+        console.log(this.treeOptions);
         console.log("Initiated VerticalDraggableMenuController");
-
     }
 }

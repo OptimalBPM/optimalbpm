@@ -12,16 +12,17 @@ import "OptimalBPM/angular-schema-form-complex-ui";
 
 import "angular-schema-form-dynamic-select";
 
-// These are not available in design time, TODO: Remove these when paths it implemented in Typescripts
+declare var $:JQueryStatic;
 
+// These are not available in design time, TODO: Remove these when paths it implemented in Typescripts
 // noinspection TypeScriptCheckImport
-import {NodeManager, NodeManagement, TreeNode, INodesScope, IDict, TreeScope} from "../../types/index";
+import {NodeManager, NodeManagement, TreeNode, INodesScope, IDict} from "../../types/index";
 // noinspection TypeScriptCheckImport
 import { SchemaTreeController } from "../../schema_tree/index";
 
 import {Verb} from "../lib/tokens";
-import "../css/process.css!";
-import "../scripts/utils";
+import "./process.css!";
+import {clone} from "../scripts/index";
 
 /* The SchemaTreeControl class is instantiated as a controller class in the typescript model */
 
@@ -127,13 +128,13 @@ export class ProcessController extends NodeManager implements NodeManagement  {
     // uiTreeHelper : any;
 
     //  Access from template..
-    objectKeys = function (obj) {
+    objectKeys(obj) {
         return Object.keys(obj);
-    };
+    }
+
     bootstrapAlert = (message: string): void => {
         this.nodeScope.$root.BootstrapDialog.alert(message);
-    };
-
+    }
 
     /**
      * Returns a CSS base class given a tree item
@@ -161,7 +162,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
          } else {
          return "blank";
          }*/
-    };
+    }
 
     getIconClass = (nodeType: string): string => {
         return "";
@@ -180,18 +181,18 @@ export class ProcessController extends NodeManager implements NodeManagement  {
         // } else {
         //     return "";
         // }
-    };
+    }
 
     /**
-     *********************** Refresh functions ******************************
-     */
+    *********************** Refresh functions ******************************
+    */
 
 
     /**
      * Load all schemas
      */
     onInitSchemas = (): ng.IHttpPromise<any> => {
-        return this.$http.get("admin/process/schemas.json")
+        return this.$http.get("admin/ui_process/process/schemas.json")
             .success((data): any => {
                 this.tree.schemas = data;
                 this.$http.get("/node/get_schemas")
@@ -206,7 +207,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
 
                 this.bootstrapAlert("Loading step typ schemas failed: " + status);
             });
-    };
+    }
 
 
     addToList = (listName, value): void => {
@@ -217,10 +218,9 @@ export class ProcessController extends NodeManager implements NodeManagement  {
             this.lists[listName].push(value);
         }
         console.log("added " + value + " to " + listName);
+    }
 
-    };
-
-    generateObjectId = (): string => {
+    generateObjectId(): string {
         let increment: string = Math.floor(Math.random() * (16777216)).toString(16);
         let pid: string = Math.floor(Math.random() * (65536)).toString(16);
         let machine: string = Math.floor(Math.random() * (16777216)).toString(16);
@@ -230,19 +230,18 @@ export class ProcessController extends NodeManager implements NodeManagement  {
             "000000".substr(0, 6 - machine.length) + machine +
             "0000".substr(0, 4 - pid.length) + pid +
             "000000".substr(0, 6 - increment.length) + increment;
-    };
+    }
 
-
-    copyDoc = (docObj): void => {
+    copyDoc(docObj): void {
         if (docObj) {
             return Object.create(docObj);
         }
         else {
             return null;
         }
-    };
+    }
 
-    makeParameterList = (parameters) => {
+    makeParameterList (parameters) {
         let list: string[] = [];
         let key: string;
         for (key in parameters) {
@@ -251,7 +250,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
             }
         }
         return list.join(",");
-    };
+    }
 
     makeTitle = (item): string => {
         if (("documentation" in item) && (item["documentation"] !== "")) {
@@ -286,16 +285,12 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                 return item["type_title"];
             }
         }
-    };
+    }
 
     recurseVerbs = (parent, items): ProcessNode[] => {
 
         let result: ProcessNode[] = [];
-        let scope: any = {};
-        if (typeof(this) !== "undefined") {
-            scope = this;
-        }
-
+        let scope: any = this;
         items.forEach((item) => {
             let currItem: ProcessNode = new ProcessNode();
             let currId: Number = Number(item["id"]);
@@ -314,18 +309,15 @@ export class ProcessController extends NodeManager implements NodeManagement  {
         });
 
         return result;
-    };
+    }
 
     /**
      * Load process data
      */
     loadProcess = (processId: string): ng.IPromise<any> => {
-        let scope: any = {};
-        if (typeof(this) !== "undefined") {
-            scope = this;
-        }
+        let scope: any = this;
         return scope.$q((resolve, reject) => {
-                return scope.$http.post("process/load_process", {"processId": processId})
+                return scope.$http.post("admin/process/load_process", {"processId": processId})
                     .success((data): any => {
                         scope.process_data = data;
                         scope.maxId = 0;
@@ -340,7 +332,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                     });
             }
         );
-    };
+    }
 
     onSubmit = () => {
 
@@ -421,8 +413,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                 this.menuColumns.push(new_column);
             }
         }
-
-    };
+    }
 
     /**
      * Load namespaces array
@@ -430,7 +421,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
     loadDefinitions = (): ng.IPromise<any> => {
         console.log('loading definitions');
         return this.$q((resolve, reject) => {
-                return this.$http.get("process/load_definitions")
+                return this.$http.get("admin/process/load_definitions")
                     .success((data): any => {
                         this.populateMenuColumns(data);
                         this.namespaces = data["namespaces"];
@@ -443,7 +434,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                     });
             }
         );
-    };
+    }
 
     /**
      * Load processes array
@@ -466,10 +457,10 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                     });
             }
         );
-    };
+    }
 
 
-    parseNamespace = (identifier) => {
+    parseNamespace(identifier) {
         let parts: string[] = identifier.split(".");
         if (parts.length === 1) {
             return ["", identifier];
@@ -477,15 +468,12 @@ export class ProcessController extends NodeManager implements NodeManagement  {
         else {
             return [parts.slice(0, parts.length - 1).join("."), parts[parts.length - 1]];
         }
-    };
+    }
 
     getDefinition = (uri: string): any => {
         let parser: HTMLAnchorElement = document.createElement("a");
         parser.href = uri;
-        let scope: any = {};
-        if (typeof(this) !== "undefined") {
-            scope = this;
-        }
+        let scope: any = this;
         let schema: any = scope.schemas[parser.protocol + parser.pathname];
         if (parser.hash !== "") {
             let parts: any[] = parser.hash.substr(2).split("/");
@@ -498,7 +486,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
         }
 
         return {"schema": schema, "form": ["*"]};
-    };
+    }
 
     
     // Generate a form and a schema
@@ -546,7 +534,6 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                 schema["properties"]["documentation"] = {"type": "string"};
                 form.push(makeField("textarea", "documentation", "Documentation"));
             }
-
         };
 
         let prettyfyKey: Function = (aString: string): string => {
@@ -732,8 +719,6 @@ export class ProcessController extends NodeManager implements NodeManagement  {
     setDetails = (node): void => {
         let data: any = this.tree.data[node.id];
         this.generateForm(node, data);
-
-
     };
 
     /**
@@ -779,7 +764,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
     onInit = (schemaTreeController): void => {
         console.log("In ProcessController.onInit");
         this.tree = schemaTreeController;
-        this.tree.treeScope.nodeManager = this;
+        this.tree.nodeManager = this;
     };
 
     resizeProcess = () => {
@@ -821,7 +806,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
      * Save process
      */
     saveProcess = (savedata): ng.IPromise<any> => {
-        return this.$http.post("process/save_process", savedata)
+        return this.$http.post("admin/process/save_process", savedata)
             .success((data): any => {
                 console.log("Successfully saved process to server.");
             })
@@ -883,15 +868,13 @@ export class ProcessController extends NodeManager implements NodeManagement  {
                 this.resizeProcess();
             });
         });
+
         this.menuTreeOptions = {
             beforeDrop: this.onBeforeDrop
         };
 
         this.loadProcesses();
         console.log("Initiated the process controller");
-
     }
-
-
 }
 

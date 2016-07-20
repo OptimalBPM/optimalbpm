@@ -2,7 +2,7 @@ console.log("Before control definition");
 
 import "angular";
 import "angular-ui-select";
-import { ControlScope, ControlController } from "./control.controller";
+import { ControlController } from "./control.controller";
 import { upgradeAdapter } from "/admin/upgrade.adapter";
 
 let __moduleName: any; // fully resolved filename; defined at module load time  

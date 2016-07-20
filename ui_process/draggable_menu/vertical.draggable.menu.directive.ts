@@ -2,11 +2,11 @@ console.log("Before verticalDraggableMenu definition");
 
 import "angular";
 import "angular-ui-tree";
-import { VerticalDraggableMenuScope, VerticalDraggableMenuController } from "./vertical.draggable.menu.controller";
+import { VerticalDraggableMenuController } from "./vertical.draggable.menu.controller";
 import { upgradeAdapter } from "/admin/upgrade.adapter";
 
 export const verticalDraggableMenuDirective = {
-    scope: {
+    bindings: {
         columns: "=",
         treeOptions: "="
     },

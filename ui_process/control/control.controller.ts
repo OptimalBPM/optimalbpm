@@ -1,12 +1,10 @@
-export interface ControlScope extends ng.IScope {
+interface IControl {
     startedProcesses: string[];
     states: {};
-    controller: ControlController;
     current_process_history: any[];
 }
 
 class StartProcessMessage {
-
     process_definition_id: string;
     destination: string;
     source: string;
@@ -16,7 +14,14 @@ class StartProcessMessage {
     message_id: number;
 }
 
-export class ControlController {
+export class ControlController implements IControl {
+
+    startedProcesses: string[];
+
+    states: {};
+
+    current_process_history: any[];
+
     // Processes
     processes: any[] = [];
 
@@ -41,7 +46,7 @@ export class ControlController {
         _process_data.message_id = 1;
 
         this.$http.post("admin/control/start_process", _process_data).success((data, status, headers, config) => {
-            this.$scope.startedProcesses.push(data.toString());
+            this.startedProcesses.push(data.toString());
         }).error((data, status, headers, config) => {
             console.log("Failed to start process, error: " + status);
         });
@@ -50,7 +55,7 @@ export class ControlController {
     get_process_states = () => {
 
         this.$http.get("admin/control/get_process_states").success((data, status, headers, config) => {
-            this.$scope.states = data;
+            this.states = data;
             
         }).error((data, status, headers, config) => {
             console.log("Failed to get states, error: " + status);
@@ -60,7 +65,7 @@ export class ControlController {
     get_process_history = (process_id: string) => {
 
         this.$http.post("admin/control/get_process_history", {"process_id": process_id}).success((data, status, headers, config) => {
-            this.$scope.current_process_history = <Array<any>>data;
+            this.current_process_history = <Array<any>>data;
 
         }).error((data, status, headers, config) => {
             console.log("Failed to get states, error: " + status);
@@ -80,7 +85,7 @@ export class ControlController {
             "command": "stop",
             "reason": "Testing to stop an Agent."
         }).success((data, status, headers, config) => {
-            this.$scope.current_process_history = <Array<any>>data;
+            this.current_process_history = <Array<any>>data;
 
         }).error((data, status, headers, config) => {
             console.log("Failed to get states, error: " + status);
@@ -120,19 +125,21 @@ export class ControlController {
             });
     };
 
+    //Called when view is loaded to initialize our variables.
+    $onInit() {
+        console.log('onInit', this);        
+        this.startedProcesses = [];
+        this.states = {};
+    }
     // Inject all necessary dependencies
     static $inject = ["$scope", "$http", "$cookies", "$interval"];
 
-    constructor(public $scope: ControlScope, public $http: ng.IHttpService, public $cookies: angular.cookies.ICookiesService, public $interval: ng.IIntervalService) {
+    constructor(public $scope: ng.IScope, public $http: ng.IHttpService, public $cookies: angular.cookies.ICookiesService, public $interval: ng.IIntervalService) {
 
-        console.log("Initiating ControlController" + $scope.toString());
-
-        this.$scope.controller = this;
+        console.log("Initiating ControlController");
         this.$interval(this.get_process_states, 2000);
         this.loadAgents();
         this.loadProcesses();
-
         console.log("Initiated ControlController");
-
     }
 }

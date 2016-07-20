@@ -1,5 +1,5 @@
-<div ng-init="states={}" class="panel panel-default">
-
+<!-- List of states of running processes -->
+<div class="panel panel-default">
     <div class="panel-heading">Process instances</div>
     <div class="panel-body">
         <p>This is a list of the states of all running processes</p>
@@ -16,26 +16,27 @@
                     <th data-field="changeBy" data-align="right"  data-sortable="true">Actions</th>
                 </tr>
             </thead>
-            <tbody>
-        
-                <!--|TODO: Add in the ng-repeat: orderBy: ['state', 'changedWhen']-->
-                <tr ng-repeat="value in states" ng-click="controller.get_process_history(value['processId'])" >
+            <tbody>        
+                <!-- TODO: Add in the ng-repeat: the filter | orderBy: ['state', 'changedWhen'] -->
+                <tr ng-repeat="value in $ctrl.states" ng-click="$ctrl.get_process_history(value['processId'])" >
                     <td>{{value["processId"]}}</td>
                     <td ng-show="value['state'] == 'running'"><b>RUNNING</b>
                     <td ng-show="value['state'] != 'running'">{{value["state"]}}</td>
                     <td>{{value["reason"]}}</td>
                     <td>{{value["changedWhen"]}}</td>
                     <td>{{value["changedBy"]}}</td>
-                    <td><button ng-show="value['state'] == 'running'" ng-click="controller.stop()" title="Stop process">Stop</button><button ng-show="value['state'] == 'running'" title="Kill worker process" ng-click="controller.kill()">Kill</button></td>
+                    <td>
+                        <button ng-show="value['state'] == 'running'" ng-click="$ctrl.stop()" title="Stop process">Stop</button>
+                        <button ng-show="value['state'] == 'running'" title="Kill worker process" ng-click="$ctrl.kill()">Kill</button>
+                    </td>
                 <tr/>
             </tbody>
-
         </table>
     </div>
 </div>
 
-<div ng-init="states={}" class="panel panel-default">
-
+<!-- List history of above states of running processes -->
+<div class="panel panel-default">
     <div class="panel-heading">Process history</div>
     <div class="panel-body">
         <p>This is the history of the above selected process</p>
@@ -44,7 +45,6 @@
         <table id="table-transform" data-toggle="table" class="table table-hover table-bordered table-striped">
             <thead>
                 <tr>
-
                     <th data-field="state" data-align="right"  data-sortable="true">State</th>
                     <th data-field="reason" data-align="right"  data-sortable="true">Reason</th>
                     <th data-field="changeWhen" data-align="right"  data-sortable="true">Changed when</th>
@@ -53,36 +53,41 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="value in current_process_history">
+                <tr ng-repeat="value in $ctrl.current_process_history">
                     <td>{{value["state"]}}</td>
                     <td>{{value["reason"]}}</td>
                     <td>{{value["changedWhen"]}}</td>
                     <td>{{value["changedBy"]}}</td>
-                    <td><button ng-show="value['state'] == 'running'" ng-click="controller.stop()" title="Stop process">Stop</button><button ng-show="value['state'] == 'running'" title="Kill worker process" ng-click="controller.kill()">Kill</button></td>
+                    <td>
+                        <button ng-show="value['state'] == 'running'" ng-click="$ctrl.stop()" title="Stop process">Stop</button>
+                        <button ng-show="value['state'] == 'running'" title="Kill worker process" ng-click="$ctrl.kill()">Kill</button>
+                    </td>
                 <tr/>
             </tbody>
-
         </table>
     </div>
 </div>
+
+<!-- Available actions for processes -->
 <div>
     <div class="float:left">
         <span class="left_row_headings"><br/>Select<br/>process</span>
     </div>
     <div class="float:right">
-        <select class="form-control" ng-model="controller.currProcess" ng-options="item.value as item.text for item in controller.processes"></select>
+        <select class="form-control" ng-model="$ctrl.currProcess" ng-options="item.value as item.text for item in $ctrl.processes"></select>
     </div>
 </div>
 <div>
     <span class="left_row_headings"><br/>Select<br/>agent</span>
-    <select class="form-control" ng-model="controller.currAgent" ng-options="item.text as item.text for item in controller.agents"></select>
+    <select class="form-control" ng-model="$ctrl.currAgent" ng-options="item.text as item.text for item in $ctrl.agents"></select>
 </div>
-<button ng-click="controller.start_process(controller.currProcess)">Start {{controller.currProcess}} </button>
-<button ng-click="controller.attack(controller.currProcess)">Start lots of processes</button>
-<button ng-click="controller.kill_agent(controller.currAgent)">Kill {{controller.currAgent}}</button>
+<button ng-click="$ctrl.start_process($ctrl.currProcess)">Start {{$ctrl.currProcess}} </button>
+<button ng-click="$ctrl.attack($ctrl.currProcess)">Start lots of processes</button>
+<button ng-click="$ctrl.kill_agent($ctrl.currAgent)">Kill {{$ctrl.currAgent}}</button>
 
-<div ng-init="startedProcesses=[]" class="panel panel-default">
 
+<!--List of Started Processes-->
+<div class="panel panel-default">
     <div class="panel-heading">Started process</div>
     <div class="panel-body">
         <p>This is a list of the process instances that has been started</p>
@@ -90,7 +95,7 @@
     <div style="height:200px;overflow: scroll">
         <table class="table">
             <th>Process Id</th>
-            <tr ng-repeat="curr_process in startedProcesses">
+            <tr ng-repeat="curr_process in $ctrl.startedProcesses">
                 <td>{{curr_process}}</td>
             <tr/>
         </table>
