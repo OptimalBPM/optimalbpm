@@ -17,7 +17,7 @@ import "angular-schema-form-dynamic-select";
 // noinspection TypeScriptCheckImport
 import {NodeManager, NodeManagement, TreeNode, INodesScope, IDict, TreeScope} from "../../types/index";
 // noinspection TypeScriptCheckImport
-import { SchemaTreeController } from "../../controllers/index";
+import { SchemaTreeController } from "../../schema_tree/index";
 
 import {Verb} from "../lib/tokens";
 import "../css/process.css!";
@@ -191,7 +191,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
      * Load all schemas
      */
     onInitSchemas = (): ng.IHttpPromise<any> => {
-        return this.$http.get("process/views/process/schemas.json")
+        return this.$http.get("admin/process/schemas.json")
             .success((data): any => {
                 this.tree.schemas = data;
                 this.$http.get("/node/get_schemas")
@@ -351,6 +351,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
      */
     populateMenuColumns = (data) => {
 
+        console.log('populating available menu columns');
         // Creates a new menu node
         let createDefinition: any = (id, currDefinition, expanded, identifier, allowedChildTypes, type, menuTitle) => {
             let new_node: MenuNode = new MenuNode();
@@ -427,6 +428,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
      * Load namespaces array
      */
     loadDefinitions = (): ng.IPromise<any> => {
+        console.log('loading definitions');
         return this.$q((resolve, reject) => {
                 return this.$http.get("process/load_definitions")
                     .success((data): any => {

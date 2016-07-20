@@ -1,10 +1,7 @@
-import { ProcessRoutes } from "./process/process.routes";
-import { ControlRoutes } from "./control/control.routes";
+import { ProcessRoutes, processDirective } from "./process/index";
+import { ControlRoutes, controlDirective } from "./control/index";
 
-//Angular 1 directives import
-import { processDirective } from "./directives/process";
-import { controlDirective } from "./directives/control";
-import { verticalDraggableMenuDirective, VerticalDraggableMenuComponent } from "./directives/verticalDraggableMenu";
+import { verticalDraggableMenuDirective } from "./draggable_menu/index";
 
 /*
  * Export angular functionality directives,components, services e.t.c
@@ -12,7 +9,7 @@ import { verticalDraggableMenuDirective, VerticalDraggableMenuComponent } from "
  * and are going to be available in global scope of the app.
  */
 export const pluginStructure = [
-    VerticalDraggableMenuComponent
+
 ];
 
 /*
@@ -33,12 +30,12 @@ export const pluginRoutes = [
  */
 export const pluginMenus = [
     {
-        display: 'Control',
+        display: 'CONTROL',
         path: '/control',
         type: 'left'
     },
     {
-        display: 'Process',
+        display: 'DESIGN',
         path: '/process',
         type: 'left'
     }
