@@ -5,21 +5,20 @@
 
 .blank-top {
     display: none;
-
 }
+
 .blank-bottom {
     display: none;
-
 }
 
 .blank-left {
     display: none;
-
 }
 
 .blank-indent {
     padding-left: 10px !important;
 }
+
 .blank-item {
     padding-top: 5px;
     padding-bottom: 5px;
@@ -34,6 +33,7 @@
 .loop-indent {
     padding-left: 5px !important;
 }
+
 .loop-top {
     width: 10px;
     background-image: url("../images/loop_top.png");
@@ -52,13 +52,12 @@
     background-size: 10px 100%;
     background-repeat: no-repeat;
     background-position-x: 0px;
-
     padding-left: 5px;
     margin-left: 0px;
     padding-top: 5px;
     padding-bottom: 5px;
-
 }
+
 .loop-bottom {
     width: 10px;
     background-image: url("../images/loop_bottom.png");
@@ -70,6 +69,7 @@
 .if-indent {
     padding-left: 5px !important;
 }
+
 .if-top {
     height: 1px;
 }
@@ -82,14 +82,13 @@
     background-size: 5px 100%;
     background-repeat: no-repeat;
     background-position-x: 0px;
-
     padding-left: 5px;
     margin-left: 0px;
     padding-top: 5px;
     padding-bottom: 5px;
-
     margin-top: 5px;
 }
+
 .if-bottom {
     height: 1px;
 }
