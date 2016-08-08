@@ -13,11 +13,9 @@ export class VerticalDraggableMenuController implements IVerticalDraggableMenu {
     // Attribute passed to directive
     treeOptions: any;
 
-    initPopovers = () => {
-        console.log('initPopovers');        
+    initPopovers = () => {      
         this.$timeout(() => {
             let _temp: any = $("[data-toggle=\"popover\"]");
-            console.log(_temp);
             _temp.popover();
         });
     }
