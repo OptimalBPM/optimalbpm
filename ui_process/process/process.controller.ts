@@ -16,7 +16,7 @@ declare var $:JQueryStatic;
 
 // These are not available in design time, TODO: Remove these when paths it implemented in Typescripts
 // noinspection TypeScriptCheckImport
-import {NodeManager, NodeManagement, TreeNode, INodesScope, IDict} from "../../types/index";
+import {NodeManager, ICustomOFScope, INodeManagement, TreeNode, INodes, IDict} from "../../types/index";
 // noinspection TypeScriptCheckImport
 import { SchemaTreeController } from "../../schema_tree/index";
 
@@ -64,16 +64,14 @@ class MenuNode extends ProcessNode {
     menuTitle: string;
 }
 
-export interface ProcessScope extends INodesScope {
+export interface IProcess extends INodes {
     definitionsCallback?: Function;
-
 }
 
-export class ProcessController extends NodeManager implements NodeManagement  {
+export class ProcessController extends NodeManager implements INodeManagement, IProcess  {
 
     /** The groups variable holds a list of all the groups. */
     groups:any[] = [];
-
 
     // Lookup lists
     lists: IDict = {};
@@ -103,8 +101,6 @@ export class ProcessController extends NodeManager implements NodeManagement  {
     // Externally stored parameter data
     paramData: any;
 
-    // The scope
-    nodeScope: ProcessScope;
     // A List of ids that have been changed.
     changedIds: string[] = [];
 
@@ -133,7 +129,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
     }
 
     bootstrapAlert = (message: string): void => {
-        this.nodeScope.$root.BootstrapDialog.alert(message);
+        this.$scope.$root.BootstrapDialog.alert(message);
     }
 
     /**
@@ -697,17 +693,17 @@ export class ProcessController extends NodeManager implements NodeManagement  {
 
         if (node.identifier !== "Newline") {
             addDocumentation();
-            this.nodeScope.selected_schema = schema;
-            this.nodeScope.selected_form = form;
-            this.nodeScope.selected_data = data;
+            this.selected_schema = schema;
+            this.selected_form = form;
+            this.selected_data = data;
         } else {
             console.log("Handling newline");
-            this.nodeScope.selected_schema = {type: "object", properties: {"dummy": {type: "string"}}};
-            this.nodeScope.selected_form = [{
+            this.selected_schema = {type: "object", properties: {"dummy": {type: "string"}}};
+            this.selected_form = [{
                 type: "help",
                 helpvalue: "<i>This item can not have any documentation</i>"
             }];
-            this.nodeScope.selected_data = {};
+            this.selected_data = {};
         }
 
 
@@ -826,12 +822,8 @@ export class ProcessController extends NodeManager implements NodeManagement  {
     };
 
     onChange = (modelValue, key) => {
-        let scope: any = {};
-        if (typeof(this) !== "undefined") {
-            scope = this;
-        }
-        let _curr_item: TreeNode = scope.tree.selectedItem;
-        _curr_item.title = scope.makeTitle(scope.nodeScope.selected_data);
+        let _curr_item: TreeNode = this.tree.selectedItem;
+        _curr_item.title = this.makeTitle(this.selected_data);
         while (_curr_item.parentItem) {
             _curr_item = _curr_item.parentItem;
         }
@@ -857,7 +849,7 @@ export class ProcessController extends NodeManager implements NodeManagement  {
 
     static $inject = ["$scope", "$http", "$q", "$timeout"];
 
-    constructor(public $scope: ProcessScope, public $http: ng.IHttpService, public $q: ng.IQService, public $timeout: ng.ITimeoutService/*, UiTreeHelper: any*/) {
+    constructor(public $scope: ICustomOFScope, public $http: ng.IHttpService, public $q: ng.IQService, public $timeout: ng.ITimeoutService/*, UiTreeHelper: any*/) {
         super($scope, $http, $q);
         console.log("Initiating the process controller" + $scope.toString());
 
