@@ -170,7 +170,7 @@ class WorkerHandler(Handler):
             else:
                 self.write_dbg_info("Unhandled command " + _message_data["command"])
 
-        elif _message_data["schemaRef"] == "of://message":
+        elif _message_data["schemaRef"] == "ref://of.message":
             #: TODO: Figure out if processes should just ever get general messages, and if so, how to handle?(PROD-30)
             self.message = _message_data
             self.write_dbg_info("Got a message:" + self.message)
@@ -616,6 +616,6 @@ class WorkerHandlerMockup(WorkerHandler):
         :param _message: A message
         """
         _message_data = _message
-        if _message_data["schemaRef"] == "of://message.json":
+        if _message_data["schemaRef"] == "ref://of.message.message.json":
             self.message = _message_data
             print(self.log_prefix + "Got this data:" + str(_message_data))

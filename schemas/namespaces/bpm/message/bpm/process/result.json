@@ -7,7 +7,7 @@
   "allOf": [
     {
       "properties": {
-        "$ref": "of://message.json#/properties"
+        "$ref": "ref://of.message.message.json#/properties"
       }
     },
     {
@@ -32,6 +32,5 @@
     "globals",
     "result"
   ],
-  "namespace": "bpm",
   "collection": "log"
 }

@@ -99,7 +99,7 @@ def log_progress_message(_process_id, _progression_id, _absolute, _change, _user
         "processId": _process_id,
         "progressionId": _progression_id,
         "userId": _user_id,
-        "schemaRef": "of://log_progression.json"
+        "schemaRef": "ref://of.log_progression.json"
     }
     if _absolute:
         _struct["absolute"] = _absolute

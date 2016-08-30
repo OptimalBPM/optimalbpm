@@ -17,7 +17,7 @@ def step_impl(context):
         "name": "Test_Process_definition",
         "runAs": "TestUser",
         "pipPackages": ["lxml"],
-        "schemaRef": "bpm://node_process.json",
+        "schemaRef": "ref://of.node.process.json",
         "createdWhen": "2014-11-13T01:00:00+00:00",
         "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],
         "canWrite": [
@@ -31,8 +31,7 @@ def step_impl(context):
         ]
     }
 
-    context.original_definition["_id"] = context.control.save_process_definition(
-        copy.deepcopy(context.original_definition),
+    context.original_definition["_id"] = context.db_access.save(copy.deepcopy(context.original_definition),
         context.user)
 
 

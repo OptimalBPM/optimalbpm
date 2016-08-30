@@ -22,18 +22,18 @@ def getNextMessageId():
 def on_blocking_message(_socket, _message):
     print("on_blocking_message : " + str(_message))
     _socket.context.schema_tools.validate(_message)
-    if _message["schemaRef"] == "of://log_progression.json" and \
+    if _message["schemaRef"] == "ref://of.log_progression.json" and \
                     _message["processId"] == _socket.context.blocking_process_id:
         _socket.context.test_blocking_bpm_process_progress = True
-    elif _message["schemaRef"] == "of://log_process_state.json" and \
+    elif _message["schemaRef"] == "ref://of.log_process_state.json" and \
                     _message["processId"] == _socket.context.blocking_process_id and \
                     _message["state"] == "running":
         _socket.context.test_blocking_bpm_log_process_state = True
-    elif _message["schemaRef"] == "of://log_process_state.json" and \
+    elif _message["schemaRef"] == "ref://of.log_process_state.json" and \
                     _message["processId"] == _socket.context.blocking_process_id and \
                     _message["state"] == "stopped":
         _socket.context.test_message_bpm_process_stop_success = True
-    elif _message["schemaRef"] == "of://log_process_state.json" and \
+    elif _message["schemaRef"] == "ref://of.log_process_state.json" and \
                     _message["processId"] == _socket.context.blocking_process_id and \
                     _message["state"] == "killed":
         _socket.context.test_message_bpm_process_kill_success = True
@@ -43,12 +43,12 @@ def on_message(_socket, _message):
     print("on_message : " + str(_message))
     _socket.context.schema_tools.validate(_message)
 
-    if _message["schemaRef"] == "of://process_system.json":
+    if _message["schemaRef"] == "ref://of.process_system.json":
         _socket.context.test_worker_process_instance = True
     elif _message["schemaRef"] == "bpm://process_bpm.json" and \
                     _message["_id"] == _socket.context.first_process_id:
         _socket.context.test_bpm_process_instance = True
-    elif _message["schemaRef"] == "of://log_process_state.json" and _message["state"] == "running" and \
+    elif _message["schemaRef"] == "ref://of.log_process_state.json" and _message["state"] == "running" and \
                     _message["processId"] == _socket.context.first_process_id:
         _socket.context.test_bpm_process_state_running = True
     elif _message["schemaRef"] == "bpm://log_process_message.json" and _message["message"] == "message from print_globals" \
@@ -110,7 +110,7 @@ def on_message(_socket, _message):
 
         _socket.received_message(json.dumps(_socket.context.message))
         _socket.context.test_message_bpm_process_second_stop = True
-    elif (_message["schemaRef"] == "of://log_process_state.json" and \
+    elif (_message["schemaRef"] == "ref://of.log_process_state.json" and \
                       _message["state"] == "stopped" and \
                       _message["processId"] == _socket.context.second_process_id):
         _socket.context.test_message_bpm_process_second_stopped = True

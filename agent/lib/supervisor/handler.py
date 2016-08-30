@@ -79,7 +79,7 @@ class WorkerSupervisor(Handler):
 
         self.job_queue = queue.Queue()
         self.schema_id__handler = {
-            "of://message_bpm_process_start.json": self.handle_bpm_process_start
+            "ref://of.message_bpm_process_start.json": self.handle_bpm_process_start
         }
         self.repo_base_folder = _repo_base_folder
 
@@ -133,7 +133,7 @@ class WorkerSupervisor(Handler):
             "systemPid": _new_process.pid,
             "spawnedWhen": _new_worker["spawnedWhen"],
             "name": "Worker process",
-            "schemaRef": "of://process_system.json"
+            "schemaRef": "ref://of.process_system.json"
         }])
 
         self.workers[_new_process_id] = _new_worker
@@ -244,7 +244,7 @@ class WorkerSupervisor(Handler):
                 # A process result message implies that the worker is done and available for new jobs
                 self.release_worker(_message_data["sourceProcessId"])
 
-            elif _message_data["schemaRef"] == "of://log_process_state.json" and \
+            elif _message_data["schemaRef"] == "ref://of.log_process_state.json" and \
                     _message_data["processId"] in self.workers and \
                     _message_data["state"] in ["killed"]:
                 # If a worker is logging that it is being killed, it should be remove from the workers
@@ -396,7 +396,7 @@ class MockupWorkerSupervisor(WorkerSupervisor):
     def forward_message(self, _message_data):
         print(self.log_prefix + str(self) + "Got a message:" + str(_message_data))
         self.message = _message_data
-        if _message_data["schemaRef"] == "of://message.json":
+        if _message_data["schemaRef"] == "ref://of.message.message.json":
             # This is almost a mock of code that should be tested...this must be kept matching the code.
             self.busy_workers[_message_data["destinationProcessId"]]["queue"].put(_message_data)
         if self.on_process_start:

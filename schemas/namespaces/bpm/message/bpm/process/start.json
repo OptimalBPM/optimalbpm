@@ -7,12 +7,12 @@
   "allOf": [
     {
       "properties": {
-        "$ref": "of://message.json#/properties"
+        "$ref": "ref://of.message.message.json#/properties"
       }
     },
     {
       "properties": {
-        "$ref": "bpm://bpm_process_parameters.json#/properties"
+        "$ref": "ref://bpm.process.parameters.json#/properties"
       }
     },
     {
@@ -22,13 +22,13 @@
           "description": "The reason the process was started."
         },
         "processDefinitionId": {
-          "$ref": "of://type.json#/properties/objectId",
+          "$ref": "ref://of.type.json#/properties/objectId",
           "description": "The objectId of the process definition of this instance.",
           "propertyId": "e9487ec8-dfce-440a-a5d5-e65e89bc84aa",
           "objectId": "true"
         },
         "processId": {
-          "$ref": "of://type.json#/properties/objectId",
+          "$ref": "ref://of.type.json#/properties/objectId",
           "description": "The object _id of the process, an object id.",
           "propertyId": "e9b714fa-9f9f-4bd0-9500-3638ba2154e2",
           "objectId": "true"
@@ -44,6 +44,5 @@
     }
   ],
   "required": ["processDefinitionId", "processId", "userId"],
-  "namespace": "bpm",
   "collection": "log"
 }

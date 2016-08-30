@@ -1,13 +1,13 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "BPM Agent control message",
-  "title": "BPM Agent Control",
+  "description": "BPM Workes Process command message",
+  "title": "BPM Worker Process Command",
   "type": "object",
   "version": "0.1",
   "allOf": [
     {
       "properties": {
-        "$ref": "of://message.json#/properties"
+        "$ref": "ref://of.message.message.json#/properties"
       }
     },
     {
@@ -15,7 +15,7 @@
         "command": {
           "description": "The command.",
           "type": "string",
-          "enum": ["stop", "restart"],
+          "enum": ["stop", "kill"],
           "propertyId": "780acb41-20b3-4641-994a-c2354b062fe5"
         },
         "reason": {
@@ -26,7 +26,15 @@
       }
     }
   ],
+  "required": [
+    "name",
+    "createdWhen",
+    "schemaRef",
+    "canRead",
+    "canWrite",
+    "command"
+  ],
   "namespace": "bpm",
-  "required": ["command"],
-  "collection": "log"
+  "collection": "log",
+  "schemaRef": "c1d71a36-2ac0-42fd-bca6-5cf0987a9f76"
 }
