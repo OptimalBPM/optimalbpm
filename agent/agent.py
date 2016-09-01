@@ -278,9 +278,10 @@ def start_agent():
 
     try:
         # Initiate a schema tools instance for validation other purposes.
-        _schema_tools = SchemaTools(_json_schema_folders=[os.path.abspath(os.path.join(script_dir, "..", "schemas")),
-                                                          of_schema_folder()],
-                                    _uri_handlers={"of": of_uri_handler, "bpm": bpm_uri_handler})
+        _schema_tools = SchemaTools(_json_schema_folders=[of_schema_folder(),
+                                                          os.path.abspath(os.path.join(script_dir, "..", "schemas", "namespaces"))
+                                                          ],
+                                    _uri_handlers={"ref": None})
     except Exception as e:
         raise Exception(write_to_log("An error occurred while loading schema tools:" + str(e),
                                      _category=EC_SERVICE, _severity=SEV_FATAL))
