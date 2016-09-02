@@ -124,7 +124,7 @@ class WorkerHandler(Handler):
         _message_data = _message
         self.write_dbg_info("Worker process got a message:" + str(_message_data))
 
-        if _message_data["schemaRef"] == "bpm://message_bpm_process_start.json":
+        if _message_data["schemaRef"] == "ref://bpm.message.bpm.process.start.json":
             # The message is a process start message,start a process.
             if self.job_running:
                 # If the worker has a job currently running, reply with an error message and do nothing
@@ -136,7 +136,7 @@ class WorkerHandler(Handler):
                 self.write_dbg_info("Starting BPM process")
                 self.start_bpm_process(_message=_message_data)
 
-        elif _message_data["schemaRef"] == "bpm://message_bpm_process_command.json":
+        elif _message_data["schemaRef"] == "ref://bpm.message.bpm.process.command.json":
             # The message is a command to the bpm process
             self.write_dbg_info("Got a BPM process control message:" + _message_data["command"])
             if _message_data["command"] == "stop":
@@ -148,7 +148,7 @@ class WorkerHandler(Handler):
                 self.bpm_process_thread.terminated = True
                 # TODO: Implement "pause" (PROD-29)
 
-        elif _message_data["schemaRef"] == "bpm://message_worker_process_command.json":
+        elif _message_data["schemaRef"] == "ref://bpm.message.worker.process_command.json":
             # The message is a command to the actual worker process
             if _message_data["command"] == "stop":
                 # Told to stop the worker. Stopping process.

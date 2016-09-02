@@ -41,7 +41,7 @@ class ControlHandler(Handler):
         super(ControlHandler, self).__init__(_process_id)
 
 
-        self.schema_id__handler = {"bpm://message_agent_control.json": self.handle_agent_control_message}
+        self.schema_id__handler = {"ref://bpm.message,agent.control.json": self.handle_agent_control_message}
         self.worker_monitor = _worker_monitor
         self.message_monitor = _message_monitor
         self.stop_agent = _stop_agent

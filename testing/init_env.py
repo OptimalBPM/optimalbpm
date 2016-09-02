@@ -13,6 +13,7 @@ sys.path.append(os.path.join(script_dir, "../../../../"))
 
 from of.broker.testing.init_env import init_env
 from plugins.optimalbpm.schemas.validation import bpm_uri_handler
+from of.schemas.validation import of_schema_folder
 
 __author__ = 'nibo'
 
@@ -25,7 +26,7 @@ plugins.optimalbpm.schemas.constants.init()
 def init_bpm_env(_context=None):
 
     init_env("test_bpm", _context, _data_files=[os.path.join(script_dir, "data_struct.json"),os.path.join(script_dir, "data_test.json")],
-             _json_schema_folders=[os.path.abspath(os.path.join(script_dir, "..", "schemas", "namespaces"))],
+             _json_schema_folders=[ os.path.abspath(os.path.join(script_dir, "..", "schemas", "namespaces"))],
              _uri_handlers={"ref": None})
 
 

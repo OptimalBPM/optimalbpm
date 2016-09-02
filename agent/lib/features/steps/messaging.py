@@ -119,7 +119,7 @@ def step_impl(context):
             "sourceProcessId": str(context.process_process_id),
             "messageId": getNextMessageId(),
             "source": "broker_peer",
-            "schemaRef": "bpm://message_bpm_process_start.json"
+            "schemaRef": "ref://bpm.message.bpm.process.start.json"
         }
 
     context.broker_socket.received_message(json.dumps(context.message))

@@ -23,7 +23,7 @@ def step_impl(context):
     _namespaces.load_dicts(_definition_files=core_language + [os.path.join(script_dir, "../fake_bpm_lib.json")],
                            _top_attribute="namespaces")
     context.tokens = ProcessTokens(_namespaces = _namespaces)
-    context.verbs = context.tokens.parse_file(os.path.join(script_dir, "../source.py"))
+    context.verbs = context.tokens.parse(_filename=os.path.join(script_dir, "../source.py"))
 
 
 @then("the output must match spot check verbs")

@@ -53,8 +53,7 @@ def before_feature(context, feature):
     """
     print(
         "\n" + _log_prefix + "Testing feature " + feature.name + "\n=========================================================================\n")
-    context.schema_tools = SchemaTools(_json_schema_folders=[os.path.abspath(os.path.join(script_dir, "..", "..", "..", "schemas")), of_schema_folder()],
-                _uri_handlers={"of": of_uri_handler, "bpm": bpm_uri_handler})
+
 
 
     # Fake a user (parts of data only)
@@ -95,7 +94,7 @@ def before_feature(context, feature):
 
     context.message_monitor = Monitor(
         _handler=AgentWebSocketHandler(_process_id=context.agent_process_id, _peers=_peers,
-                                       _schema_tools=context.schema_tools, _address="agent_peer",
+                                       _schema_tools=context.db_access.schema_tools, _address="agent_peer",
                                        _broker_address="broker_peer"))
 
     context.process_monitor = Monitor(

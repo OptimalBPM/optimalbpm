@@ -133,7 +133,7 @@ class WorkerSupervisor(Handler):
             "systemPid": _new_process.pid,
             "spawnedWhen": _new_worker["spawnedWhen"],
             "name": "Worker process",
-            "schemaRef": "ref://of.process_system.json"
+            "schemaRef": "ref://of.process.system.json"
         }])
 
         self.workers[_new_process_id] = _new_worker
@@ -240,11 +240,11 @@ class WorkerSupervisor(Handler):
             if "schemaRef" not in _message_data:
                 raise Exception(self.log_prefix + "Missing schemaRef: " + str(_message_data))
 
-            if _message_data["schemaRef"] == "bpm://message_bpm_process_result.json":
+            if _message_data["schemaRef"] == "ref://bpm.message.bpm.process.result.json":
                 # A process result message implies that the worker is done and available for new jobs
                 self.release_worker(_message_data["sourceProcessId"])
 
-            elif _message_data["schemaRef"] == "ref://of.log_process_state.json" and \
+            elif _message_data["schemaRef"] == "ref://of.log.process_state.json" and \
                     _message_data["processId"] in self.workers and \
                     _message_data["state"] in ["killed"]:
                 # If a worker is logging that it is being killed, it should be remove from the workers
@@ -260,10 +260,10 @@ class WorkerSupervisor(Handler):
         Forwards a incoming message to the proper worker process queue
         """
 
-        if _message_data["schemaRef"] == "bpm://message_bpm_process_start.json":
+        if _message_data["schemaRef"] == "ref://bpm.message.bpm.process.start.json":
             # It is a process start message, start a process
             self.handle_bpm_process_start(_message_data)
-        elif _message_data["schemaRef"] == "bpm://message_bpm_process_command.json" and \
+        elif _message_data["schemaRef"] == "ref://bpm.message.bpm.process.command.json" and \
                 _message_data["command"] == "kill":
             # It is a command to kill a worker, do so.
             # TODO: This part should be extracted into a function. (PROD-27)
