@@ -342,10 +342,9 @@ class WorkerHandler(Handler):
 
         """
         self.write_dbg_info("->>>>>>>>>>>> Running module " + _module_name + ", globals: " + str(_globals))
-
         try:
             # Call the run_module, it returns the globals after execution
-            _new_globals = runpy.run_module(mod_name=_module_name, init_globals=_globals)
+            _new_globals = runpy.run_path(os.path.join(self.source_path, _module_name + ".py"), init_globals=_globals)
         except TerminationException as e:
             write_to_log("TerminationException running the process:" + str(e),
                          _category=EC_NOTIFICATION, _severity=SEV_ERROR)
@@ -509,7 +508,7 @@ class WorkerHandler(Handler):
 
             # Add repository location to sys.path to be able to import
             _source_path = os.path.join(os.path.expanduser(self.repo_base_folder), _message["processDefinitionId"])
-            sys.path.append(_source_path)
+            self.source_path = _source_path
 
             self.write_dbg_info("Source path: " + _source_path)
 
