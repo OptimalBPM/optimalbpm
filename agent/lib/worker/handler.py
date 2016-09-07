@@ -475,7 +475,8 @@ class WorkerHandler(Handler):
                     "report_error": self.report_error,
                     "report_result": self.report_result,
                     "log_progress": self.log_progress,
-                    "log_message": self.log_message
+                    "log_message": self.log_message,
+                    "source_path": _source_path
                                         })
                 _dest_globals[_namespace] = _module
 
@@ -484,7 +485,10 @@ class WorkerHandler(Handler):
         _data_filename = os.path.join(_source_path, "data.json")
         if os.path.exists(_data_filename):
             with open(_data_filename) as f:
-                self.data = json.load(f)
+                try:
+                   self.data = json.load(f)
+                except Exception as e:
+                    raise  Exception("Error loading data from " + _data_filename + ": " + str(e))
         else:
             self.data = {}
 
@@ -543,7 +547,12 @@ class WorkerHandler(Handler):
                              ", Error: " + str(e)
             write_to_log(_error_message, _category=EC_NOTIFICATION, _severity=SEV_ERROR)
 
-            self.send_queue.put([None, reply_with_error_message(self, _message, _error_message)])
+            self.send_queue.put([None, log_process_state_message(
+                _changed_by=_message["userId"],
+                _state="failed",
+                _reason=_error_message,
+                _process_id=self.bpm_process_id)])
+
 
         else:
             try:
@@ -595,11 +604,21 @@ class WorkerHandler(Handler):
                 threading.settrace(self.trace_calls)
                 self.bpm_process_thread.start()
 
-            except Exception as e:
-                write_to_log(self.log_prefix + "error initiating module " +
-                                      self.script_path + '.run() - ' + str(e),
-                             _category=EC_NOTIFICATION, _severity=SEV_ERROR)
 
+            except Exception as e:
+
+
+                _error_message = self.log_prefix + "error initiating module " +  self.script_path + '.run() - ' + str(e) +\
+                                 " processDefinitionId: " + message_is_none(_message, "processDefinitionId", "not set") + \
+                             ", process_id: " + message_is_none(_message, "processId", "not set") + \
+                             ", Error: " + str(e)
+
+                write_to_log(_error_message, _category=EC_NOTIFICATION, _severity=SEV_ERROR)
+                self.send_queue.put([None, log_process_state_message(
+                    _changed_by= _message["userId"],
+                    _state="failed",
+                    _reason=_error_message,
+                    _process_id=self.bpm_process_id)])
 
 class WorkerHandlerMockup(WorkerHandler):
     """
