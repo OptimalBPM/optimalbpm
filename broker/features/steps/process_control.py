@@ -20,7 +20,7 @@ def getNextMessageId():
 
 def on_destination_process_control_message(web_socket, message):
     print("\non_destination_process_control_message: " + str(message))
-    if message['schemaRef'] == "ref://bpm.message.bpm.process.start.json":
+    if message['schemaRef'] == "ref://bpm.message.bpm.process.start":
         # This is the first start process, respond with process instance
         web_socket.context.process_id = message['processId']
         web_socket.received_message(json.dumps(
@@ -30,7 +30,7 @@ def on_destination_process_control_message(web_socket, message):
                 "spawnedWhen": str(datetime.datetime.utcnow()),
                 "name": "Test_process_name",
                 "processDefinitionId": message["processDefinitionId"],
-                "schemaRef": "ref://bpm.process.bpm.json"
+                "schemaRef": "ref://bpm.process.bpm"
             })
         )
 
@@ -45,7 +45,7 @@ def on_destination_process_control_message(web_socket, message):
             {
                 "destination": "source_peer" ,
                 "processId": web_socket.context.process_id,
-                "schemaRef": "ref://bpm.message.bpm.process.result.json",
+                "schemaRef": "ref://bpm.message.bpm.process.result",
                 "sourceProcessId": web_socket.context.process_id,
                 "messageId": getNextMessageId(),
                 "source": "destination_peer",
@@ -56,7 +56,7 @@ def on_destination_process_control_message(web_socket, message):
 
 def on_source_process_control_message(web_socket, message):
     print("\non_source_process_control_message: " + str(message))
-    if message['schemaRef'] == "ref://bpm.message.bpm.process.result.json":
+    if message['schemaRef'] == "ref://bpm.message.bpm.process.result":
         web_socket.context.tests_ended = time.perf_counter()
         web_socket.context.process_result = message
 

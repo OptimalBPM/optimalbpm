@@ -79,7 +79,7 @@ class WorkerSupervisor(Handler):
 
         self.job_queue = queue.Queue()
         self.schema_id__handler = {
-            "ref://of.message_bpm_process_start.json": self.handle_bpm_process_start
+            "ref://of.message_bpm_process_start": self.handle_bpm_process_start
         }
         self.repo_base_folder = _repo_base_folder
 
@@ -133,7 +133,7 @@ class WorkerSupervisor(Handler):
             "systemPid": _new_process.pid,
             "spawnedWhen": _new_worker["spawnedWhen"],
             "name": "Worker process",
-            "schemaRef": "ref://of.process.system.json"
+            "schemaRef": "ref://of.process.system"
         }])
 
         self.workers[_new_process_id] = _new_worker
@@ -240,11 +240,11 @@ class WorkerSupervisor(Handler):
             if "schemaRef" not in _message_data:
                 raise Exception(self.log_prefix + "Missing schemaRef: " + str(_message_data))
 
-            if _message_data["schemaRef"] == "ref://bpm.message.bpm.process.result.json":
+            if _message_data["schemaRef"] == "ref://bpm.message.bpm.process.result":
                 # A process result message implies that the worker is done and available for new jobs
                 self.release_worker(_message_data["sourceProcessId"])
 
-            elif _message_data["schemaRef"] == "ref://of.log.process_state.json" and \
+            elif _message_data["schemaRef"] == "ref://of.log.process_state" and \
                     _message_data["processId"] in self.workers and \
                     _message_data["state"] in ["killed"]:
                 # If a worker is logging that it is being killed, it should be remove from the workers
@@ -260,10 +260,10 @@ class WorkerSupervisor(Handler):
         Forwards a incoming message to the proper worker process queue
         """
 
-        if _message_data["schemaRef"] == "ref://bpm.message.bpm.process.start.json":
+        if _message_data["schemaRef"] == "ref://bpm.message.bpm.process.start":
             # It is a process start message, start a process
             self.handle_bpm_process_start(_message_data)
-        elif _message_data["schemaRef"] == "ref://bpm.message.bpm.process.command.json" and \
+        elif _message_data["schemaRef"] == "ref://bpm.message.bpm.process.command" and \
                 _message_data["command"] == "kill":
             # It is a command to kill a worker, do so.
             # TODO: This part should be extracted into a function. (PROD-27)
@@ -396,7 +396,7 @@ class MockupWorkerSupervisor(WorkerSupervisor):
     def forward_message(self, _message_data):
         print(self.log_prefix + str(self) + "Got a message:" + str(_message_data))
         self.message = _message_data
-        if _message_data["schemaRef"] == "ref://of.message.message.json":
+        if _message_data["schemaRef"] == "ref://of.message.message":
             # This is almost a mock of code that should be tested...this must be kept matching the code.
             self.busy_workers[_message_data["destinationProcessId"]]["queue"].put(_message_data)
         if self.on_process_start:

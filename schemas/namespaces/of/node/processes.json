@@ -8,7 +8,7 @@
   "allOf": [
     {
       "properties": {
-        "$ref": "ref://of.node.node.json#/properties"
+        "$ref": "ref://of.node.node#/properties"
       }
     },
 

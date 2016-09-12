@@ -38,7 +38,7 @@ def start_process_message(_user_id, _process_definition_id, _destination, _globa
         "processId": str(ObjectId()),
         "reason": _reason,
         "messageId": _message_id,
-        "schemaRef": "ref://bpm.message.bpm.process.start.json"
+        "schemaRef": "ref://bpm.message.bpm.process.start"
     }
     if _source_process_id:
         _process_message["sourceProcessId"] = _source_process_id
@@ -58,7 +58,7 @@ def store_bpm_process_instance_message(_start_message, _worker_process_id):
         "spawnedBy": _start_message["userId"],
         "spawnedWhen": str(datetime.datetime.utcnow()),
         "processDefinitionId": _start_message["processDefinitionId"],
-        "schemaRef": "ref://bpm.process.bpm.json"
+        "schemaRef": "ref://bpm.process.bpm"
     }
 
     if "entryPoint" in _start_message:
@@ -81,7 +81,7 @@ def log_process_message(_message, _process_id, _kind):
         "kind": _kind,
         "processId": _process_id,
         "createdWhen": str(datetime.datetime.utcnow()),
-        "schemaRef": "ref://bpm.log.process.json"
+        "schemaRef": "ref://bpm.log.process"
     }
 
 
@@ -99,7 +99,7 @@ def log_progress_message(_process_id, _progression_id, _absolute, _change, _user
         "processId": _process_id,
         "progressionId": _progression_id,
         "userId": _user_id,
-        "schemaRef": "ref://of.log.progression.json"
+        "schemaRef": "ref://of.log.progression"
     }
     if _absolute:
         _struct["absolute"] = _absolute
@@ -122,7 +122,7 @@ def message_bpm_process_result(_start_message, _globals, _process_id, _result):
         "sourceProcessId": _process_id,
         "source": _start_message["destination"],
         "createdWhen": str(datetime.datetime.utcnow()),
-        "schemaRef": "ref://bpm.message.bpm.process.result.json"
+        "schemaRef": "ref://bpm.message.bpm.process.result"
     }
     if "sourceProcessId" in _start_message:
         _result["destinationProcessId"] = _start_message["sourceProcessId"]
@@ -144,7 +144,7 @@ def bpm_process_control(_destination, _destination_process_id, _command, _reason
         "source": _source,
         "sourceProcessId": _source_process_id,
         "userId": _user_id,
-        "schemaRef": "ref://bpm.message.bpm.process.command.json"
+        "schemaRef": "ref://bpm.message.bpm.process.command"
     }
 
 
@@ -162,7 +162,7 @@ def worker_process_control(_destination, _destination_process_id, _command, _rea
         "source": _source,
         "sourceProcessId": _source_process_id,
         "userId": _user_id,
-        "schemaRef": "ref://bpm.message.worker.process.command.json"
+        "schemaRef": "ref://bpm.message.worker.process.command"
     }
 
 
@@ -180,5 +180,5 @@ def agent_control(_destination, _destination_process_id, _command, _reason, _mes
         "source": _source,
         "sourceProcessId": _source_process_id,
         "userId": _user_id,
-        "schemaRef": "ref://bpm.message.agent.control.json"
+        "schemaRef": "ref://bpm.message.agent.control"
     }

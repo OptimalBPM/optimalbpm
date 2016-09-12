@@ -17,7 +17,7 @@ def step_impl(context):
         "name": "Test_Process_definition",
         "runAs": "TestUser",
         "pipPackages": ["lxml"],
-        "schemaRef": "ref://of.node.process.json",
+        "schemaRef": "ref://of.node.process",
         "createdWhen": "2014-11-13T01:00:00+00:00",
         "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],
         "canWrite": [

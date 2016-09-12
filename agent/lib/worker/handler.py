@@ -124,7 +124,7 @@ class WorkerHandler(Handler):
         _message_data = _message
         self.write_dbg_info("Worker process got a message:" + str(_message_data))
 
-        if _message_data["schemaRef"] == "ref://bpm.message.bpm.process.start.json":
+        if _message_data["schemaRef"] == "ref://bpm.message.bpm.process.start":
             # The message is a process start message,start a process.
             if self.job_running:
                 # If the worker has a job currently running, reply with an error message and do nothing
@@ -136,7 +136,7 @@ class WorkerHandler(Handler):
                 self.write_dbg_info("Starting BPM process")
                 self.start_bpm_process(_message=_message_data)
 
-        elif _message_data["schemaRef"] == "ref://bpm.message.bpm.process.command.json":
+        elif _message_data["schemaRef"] == "ref://bpm.message.bpm.process.command":
             # The message is a command to the bpm process
             self.write_dbg_info("Got a BPM process control message:" + _message_data["command"])
             if _message_data["command"] == "stop":
@@ -148,7 +148,7 @@ class WorkerHandler(Handler):
                 self.bpm_process_thread.terminated = True
                 # TODO: Implement "pause" (PROD-29)
 
-        elif _message_data["schemaRef"] == "ref://bpm.message.worker.process_command.json":
+        elif _message_data["schemaRef"] == "ref://bpm.message.worker.process_command":
             # The message is a command to the actual worker process
             if _message_data["command"] == "stop":
                 # Told to stop the worker. Stopping process.
@@ -510,7 +510,7 @@ class WorkerHandler(Handler):
             _entry_point = message_is_none(_message, "entryPoint", None)
             _globals = message_is_none(_message, "globals", {})
 
-            # Add repository location to sys.path to be able to import
+            # Create the source path to the module
             _source_path = os.path.join(os.path.expanduser(self.repo_base_folder), _message["processDefinitionId"])
             self.source_path = _source_path
 
@@ -520,6 +520,8 @@ class WorkerHandler(Handler):
                 # If there is an entry point, it is a function call
                 _module_name = _entry_point["moduleName"]
                 if "functionName" in _entry_point:
+                    # Add repository location to sys.path to be able to import
+                    sys.path.append(self.source_path)
                     _module = importlib.import_module(_module_name)
                     _function_name = _entry_point["functionName"]
                     self.write_dbg_info("In start_bpm_process, initializing: " + str(_message))
@@ -634,6 +636,6 @@ class WorkerHandlerMockup(WorkerHandler):
         :param _message: A message
         """
         _message_data = _message
-        if _message_data["schemaRef"] == "ref://of.message.message.json":
+        if _message_data["schemaRef"] == "ref://of.message.message":
             self.message = _message_data
             print(self.log_prefix + "Got this data:" + str(_message_data))

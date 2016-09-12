@@ -6,7 +6,7 @@
     "description": "Test process 1",
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "folder": "{test_processes_folder}/optimalbpm/processes/test_process_1",
-    "schemaRef": "ref://of.node.process.json",
+    "schemaRef": "ref://of.node.process",
     "canRead": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
@@ -22,7 +22,7 @@
       "000000010000010001e64c28"
     ],
     "allowedChildTypes": [
-      "ref://of.node.process.json"
+      "ref://of.node.process"
     ]
   },
   {
@@ -31,7 +31,7 @@
     "canStart": [
       "000000010000010001e64c28"
     ],
-    "schemaRef": "ref://of.node.process.json",
+    "schemaRef": "ref://of.node.process",
     "createdWhen": "2016-02-04T00:10:27.926Z",
     "canWrite": [
       "000000010000010001e64c28"
@@ -45,7 +45,7 @@
     ],
     "description": "A process for testing a QAL request",
     "allowedChildTypes": [
-      "ref://of.node.process.json"
+      "ref://of.node.process"
     ]
   }
 ]

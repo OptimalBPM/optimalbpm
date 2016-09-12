@@ -96,7 +96,7 @@ export class ControlController implements IControl {
         // See schema/constants.py
         return this.$http.post("/node/lookup", {
                 "collection": "node", "conditions": {
-                    "schemaRef": "ref://of.node.agent.json",
+                    "schemaRef": "ref://of.node.agent",
                     "parent_id": "ObjectId(000000010000010002e64d03)"
                 }
             })

@@ -22,7 +22,7 @@ def getNextMessageId():
 
 def on_broker_message(web_socket, message):
     print("\non_broker_message: " + str(message))
-    if message['schemaRef'] == "ref://of.message.message.json":
+    if message['schemaRef'] == "ref://of.message.message":
         # This is the first start process, respond with process instance
         web_socket.context.process_id = str(ObjectId())
         web_socket.received_message(json.dumps(
@@ -32,7 +32,7 @@ def on_broker_message(web_socket, message):
             "destinationProcessId": message['sourceProcessId'],
             "sourceProcessId": message['destinationProcessId'],
             "data": "The_Response_Data_åäö",
-            "schemaRef": "ref://of.message.message.json",
+            "schemaRef": "ref://of.message.message",
             "source": "broker_peer"
             }))
 
@@ -57,7 +57,7 @@ def step_impl(context):
         "destinationProcessId": destination_process_id,
         "data": "The_Data_åäö",
         "source": "agent_peer",
-        "schemaRef": "ref://of.message.message.json"
+        "schemaRef": "ref://of.message.message"
     }
     context.message_monitor.queue.put([None, context.message])
 
@@ -68,7 +68,7 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     time.sleep(0.01)
-    ok_(context.broker_socket.message['schemaRef'] == "ref://of.message.message.json")
+    ok_(context.broker_socket.message['schemaRef'] == "ref://of.message.message")
 
 
 @step("a response should be sent")
@@ -83,7 +83,7 @@ def step_impl(context):
         "sourceProcessId": context.broker_process_id,
         "destinationProcessId": context.process_process_id,
         "data": "The_Data_åäö",
-        "schemaRef": "ref://of.message.message.json",
+        "schemaRef": "ref://of.message.message",
         "source": "broker_peer"
     }
 
@@ -96,7 +96,7 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     time.sleep(0.01)
-    ok_(context.worker_handler.message['schemaRef'] == "ref://of.message.message.json" and
+    ok_(context.worker_handler.message['schemaRef'] == "ref://of.message.message" and
         context.worker_handler.message['data'] == context.message["data"])
 
 
@@ -119,7 +119,7 @@ def step_impl(context):
             "sourceProcessId": str(context.process_process_id),
             "messageId": getNextMessageId(),
             "source": "broker_peer",
-            "schemaRef": "ref://bpm.message.bpm.process.start.json"
+            "schemaRef": "ref://bpm.message.bpm.process.start"
         }
 
     context.broker_socket.received_message(json.dumps(context.message))

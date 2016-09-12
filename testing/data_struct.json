@@ -10,7 +10,7 @@
       }
     },
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.user.json",
+    "schemaRef": "ref://of.node.user",
     "groups": ["000000010000010001e64c29"],
     "canRead": [
       "000000010000010001e64c28",
@@ -29,14 +29,14 @@
     "name": "Processes",
     "description": "Processes",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.processes.json",
+    "schemaRef": "ref://of.node.processes",
     "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],
     "canWrite": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
     ],
     "allowedChildTypes": [
-      "ref://of.node.processe.json"
+      "ref://of.node.processe"
     ]
   },
   {
@@ -45,7 +45,7 @@
     "name": "agent01",
     "description": "Agent number 1",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef":  "ref://of.node.agent.json",
+    "schemaRef":  "ref://of.node.agent",
     "address": "agent01",
     "numberOfWorkers": 3,
     "repositoriesLocation": "~/optimalbpm/agent_repositories",

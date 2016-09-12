@@ -66,7 +66,7 @@ class AgentWebSocketHandler(WebSocketHandler):
 
         self.schema_tools.validate(_message_data)
 
-        if _message_data["schemaRef"] == "ref://bpm.message.worker.process_command.json":
+        if _message_data["schemaRef"] == "ref://bpm.message.worker.process_command":
             self.process_handler.forward_message(_message_data)
         else:
             self.control_queue.put(_message_data)
