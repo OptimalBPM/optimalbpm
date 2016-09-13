@@ -11,6 +11,7 @@ import queue
 
 from bson.objectid import ObjectId
 
+from of.common.logging import write_to_log, EC_BREAKIN, SEV_ERROR
 from of.common.messaging.factory import log_process_state_message, reply_with_error_message, get_current_login
 from plugins.optimalbpm.broker.messaging.factory import bpm_process_control, worker_process_control, get_current_login
 from of.common.queue.handler import Handler
@@ -231,12 +232,18 @@ class WorkerSupervisor(Handler):
         Called when the monitor has gotten a message from a worker process
         """
         if _item[0]:
-            # If the websocket is set, it is not from a worker process, raise error.
+            # If the source websocket is set, it is not from a worker process, raise error.
             raise Exception("The process handler only handles messages from worker processes.")
         else:
 
             # TODO: Should any filtering be done here? (PROD-27)
             _message_data = _item[1]
+
+            if not isinstance(_message_data, dict):
+                write_to_log("A worker process sent message data that is not a dict, this might be a an attack.",
+                             _category=EC_BREAKIN, _severity=SEV_ERROR)
+                raise Exception(self.log_prefix + "A worker process sent message data that is not a dict, this "
+                                                  "might be a an attack: " + str(_message_data))
             if "schemaRef" not in _message_data:
                 raise Exception(self.log_prefix + "Missing schemaRef: " + str(_message_data))
 
