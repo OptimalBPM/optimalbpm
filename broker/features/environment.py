@@ -5,13 +5,9 @@ import os
 import queue
 import time
 
-from bson.objectid import ObjectId
-import cherrypy
 from multiprocessing import Queue
 import sys
 
-from broker.cherrypy.control import CherryPyControl
-from broker.cherrypy.process import CherryPyProcess
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 

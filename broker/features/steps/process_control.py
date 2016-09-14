@@ -89,7 +89,7 @@ def step_impl(context):
     :type context behave.runner.Context
     """
 
-    ok_(context.receiver.message['schemaRef'] == 'ref://bpm.message.bpm.process.start.json')
+    ok_(context.receiver.message['schemaRef'] == 'ref://bpm.message.bpm.process.start')
 
 
 @step("the state must become (?P<process_state>.+)")
