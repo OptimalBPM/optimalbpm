@@ -262,6 +262,32 @@ class WorkerSupervisor(Handler):
             # Pass the message on to the message queue, heading for the last destination
             self.message_monitor.queue.put([_item[0], _item[1]])
 
+
+    def kill_unresponsive_bpm_process(self, _bpmProcessId, _userId):
+        """
+        Kill a worked process
+        :param _bpmProcessId: The process id of the BPM process
+        :param _userId: The user id of the killer
+        """
+        _worker = self.busy_workers[_bpmProcessId]
+
+        _worker["process"].terminate()
+
+        del self.busy_workers[_bpmProcessId]
+        del self.workers[_worker["processId"]]
+        # Send first a state message for the (logical) BPM process
+        self.message_monitor.queue.put([None, log_process_state_message(_changed_by=_userId,
+                                                                        _state="killed",
+                                                                        _process_id=_bpmProcessId,
+                                                                        _reason="Unresponsive, killed.")])
+        # Then a state message for the actual worker process
+        self.message_monitor.queue.put([None, log_process_state_message(_changed_by=_userId,
+                                                                        _state="killed",
+                                                                        _process_id=_worker["processId"],
+                                                                        _reason="Had an unresponsive BPM process")])
+
+        self.write_dbg_info(self.log_prefix + "Killed")
+
     def forward_message(self, _message_data):
         """
         Forwards a incoming message to the proper worker process queue
@@ -272,27 +298,9 @@ class WorkerSupervisor(Handler):
             self.handle_bpm_process_start(_message_data)
         elif _message_data["schemaRef"] == "ref://bpm.message.bpm.process.command" and \
                 _message_data["command"] == "kill":
-            # It is a command to kill a worker, do so.
-            # TODO: This part should be extracted into a function. (PROD-27)
-            _worker = self.busy_workers[_message_data["destinationProcessId"]]
+            # It is a command to kill bpm process, i.e. also the worker, do so.
             self.write_dbg_info(self.log_prefix + "Kill " + str(_message_data))
-            _worker["process"].terminate()
-
-            del self.busy_workers[_message_data["destinationProcessId"]]
-            del self.workers[_worker["processId"]]
-            # Send first a state message for the (logical) BPM process
-            self.message_monitor.queue.put([None, log_process_state_message(_changed_by=_message_data["userId"],
-                                                                            _state="killed",
-                                                                            _process_id=_message_data[
-                                                                                "destinationProcessId"],
-                                                                            _reason="Unresponsive, killed.")])
-            # Then a state message for the actual worker process
-            self.message_monitor.queue.put([None, log_process_state_message(_changed_by=_message_data["userId"],
-                                                                            _state="killed",
-                                                                            _process_id=_worker["processId"],
-                                                                            _reason="Had an unresponsive BPM process")])
-
-            self.write_dbg_info(self.log_prefix + "Killed")
+            self.kill_unresponsive_bpm_process(_message_data["destinationProcessId"], _message_data["userId"])
 
         elif "destinationProcessId" not in _message_data:
             raise Exception("Missing destinationProcessId: " + str(_message_data))
@@ -383,6 +391,7 @@ class WorkerSupervisor(Handler):
             for _process in list(self.workers.values()):
                 self.write_dbg_info("Killing unresponsive process " + _process["processId"] + " (pid:" + str(
                     _process["pid"]) + ")")
+
                 _process["process"].terminate()
                 self.message_monitor.queue.put([None, log_process_state_message(_changed_by=_user_id,
                                                                                 _state="killed",
