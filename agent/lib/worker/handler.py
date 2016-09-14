@@ -115,6 +115,11 @@ class WorkerHandler(Handler):
         """
         self.monitor = _monitor
 
+    def terminate_bpm_process(self, _message_data):
+        self.write_dbg_info("XXXXXXXXXXXX-Telling thread to terminate, script :" + str(self.script_path))
+        self.bpm_process_thread.termination_message = _message_data
+        self.bpm_process_thread.terminated = True
+
     def handle(self, _message):
         """
         Handles all incoming messages to the process handler on the monitor queue.
@@ -140,12 +145,11 @@ class WorkerHandler(Handler):
             # The message is a command to the bpm process
             self.write_dbg_info("Got a BPM process control message:" + _message_data["command"])
             if _message_data["command"] == "stop":
-                # Told to stop. Stopping process.
-                # TODO: Break out BPM process termination, should be done in worker termination as well. (PROD-27)
+                # Told to stop. Stopping BPM process.
+                self.terminate_bpm_process(_message_data)
+
                 # TODO: The broker should be able to offer the users the option to retry running the process (PROD-28)
-                self.write_dbg_info("XXXXXXXXXXXX-Telling thread to terminate, script :" + str(self.script_path))
-                self.bpm_process_thread.termination_message = _message_data
-                self.bpm_process_thread.terminated = True
+
                 # TODO: Implement "pause" (PROD-29)
 
         elif _message_data["schemaRef"] == "ref://bpm.message.worker.process_command":
@@ -156,8 +160,8 @@ class WorkerHandler(Handler):
                 self.write_dbg_info("Told to stop the worker.")
                 # First stop the monitor, we don't want any more commands coming in.
                 self.monitor.stop()
-
-                # TODO: First stop the bpm process thread. (PROD-27)
+                self.write_dbg_info("Terminate BPM thread")
+                self.terminate_bpm_process(_message_data)
 
                 self.write_dbg_info("Worker monitor stopped.")
                 self.send_queue.put([None, log_process_state_message(
