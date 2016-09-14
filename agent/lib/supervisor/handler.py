@@ -263,25 +263,25 @@ class WorkerSupervisor(Handler):
             self.message_monitor.queue.put([_item[0], _item[1]])
 
 
-    def kill_unresponsive_bpm_process(self, _bpmProcessId, _userId):
+    def kill_unresponsive_bpm_process(self, _bpm_process_id, _user_id):
         """
         Kill a worked process
-        :param _bpmProcessId: The process id of the BPM process
-        :param _userId: The user id of the killer
+        :param _bpm_process_id: The process id of the BPM process
+        :param _user_id: The user id of the killer
         """
-        _worker = self.busy_workers[_bpmProcessId]
+        _worker = self.busy_workers[_bpm_process_id]
 
         _worker["process"].terminate()
 
-        del self.busy_workers[_bpmProcessId]
+        del self.busy_workers[_bpm_process_id]
         del self.workers[_worker["processId"]]
         # Send first a state message for the (logical) BPM process
-        self.message_monitor.queue.put([None, log_process_state_message(_changed_by=_userId,
+        self.message_monitor.queue.put([None, log_process_state_message(_changed_by=_user_id,
                                                                         _state="killed",
-                                                                        _process_id=_bpmProcessId,
+                                                                        _process_id=_bpm_process_id,
                                                                         _reason="Unresponsive, killed.")])
         # Then a state message for the actual worker process
-        self.message_monitor.queue.put([None, log_process_state_message(_changed_by=_userId,
+        self.message_monitor.queue.put([None, log_process_state_message(_changed_by=_user_id,
                                                                         _state="killed",
                                                                         _process_id=_worker["processId"],
                                                                         _reason="Had an unresponsive BPM process")])
