@@ -1,3 +1,11 @@
+"""
+This module contains the WorkerHandler class and specialised threading support.
+
+Created on Jan 21, 2016
+
+@author: Nicklas Boerjesson
+
+"""
 import sys
 import os
 import time

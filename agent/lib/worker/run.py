@@ -1,7 +1,11 @@
 """
 This modules sole purpose is providing a starting point for running worker processes.
-"""
 
+Created on Jan 21, 2016
+
+@author: Nicklas Boerjesson
+
+"""
 
 import time
 

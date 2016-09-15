@@ -1,5 +1,9 @@
 """
 The process handler module implements the ProcessHandler class
+
+Created on Jan 21, 2016
+
+@author: Nicklas Boerjesson
 """
 
 import datetime

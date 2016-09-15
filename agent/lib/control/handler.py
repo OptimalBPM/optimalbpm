@@ -1,5 +1,10 @@
 """
-This module holds the ControlHandler class.
+This module contains the ControlHandler class.
+
+Created on Jan 21, 2016
+
+@author: Nicklas Boerjesson
+
 """
 import threading
 

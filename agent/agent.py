@@ -1,5 +1,10 @@
 """
 This module implements the Optimal BPM agent initialization and shut down functionality
+
+Created on Jan 21, 2016
+
+@author: Nicklas Boerjesson
+
 """
 
 import multiprocessing

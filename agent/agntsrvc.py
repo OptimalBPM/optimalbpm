@@ -1,3 +1,13 @@
+
+"""
+This module implements windows service functionality for the Optimal BPM Agent
+
+Created on Jan 21, 2016
+
+@author: Nicklas Boerjesson
+
+"""
+
 import os
 import servicemanager
 import socket

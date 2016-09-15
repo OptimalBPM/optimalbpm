@@ -1,5 +1,9 @@
 """
 This module holds the WebSocketBrokerClient class
+
+Created on Jan 21, 2016
+
+@author: Nicklas Boerjesson
 """
 
 import threading

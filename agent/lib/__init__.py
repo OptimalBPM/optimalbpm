@@ -1,5 +1,5 @@
 """
-The libraries of the Optimal BPM agent
+The internal libraries of the Optimal BPM agent
 """
 
 __author__ = 'Nicklas Borjesson'
