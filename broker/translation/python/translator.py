@@ -1,3 +1,12 @@
+"""
+The this module implements the ProcessTokens and defines the core language files
+
+Created on Jan 23, 2016
+
+@author: Nicklas Boerjesson
+
+"""
+
 import json
 from token import ENDMARKER, INDENT, DEDENT, NEWLINE, NAME, NUMBER, OP, STRING
 from tokenize import TokenInfo, NL
@@ -11,6 +20,8 @@ from .verb import Verb, parse_documentation
 __author__ = 'nibo'
 script_dir = os.path.dirname(__file__)
 
+
+# Define the core language files
 core_language = [os.path.join(script_dir, "system.json"), os.path.join(script_dir, "internal.json")]
 
 class ProcessTokens(object):

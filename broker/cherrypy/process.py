@@ -1,9 +1,9 @@
 """
-This module exposes the Optimal BPM Process API as a web service through a CherryPy module
+This module exposes the Optimal BPM Process API as a web service through a CherryPy helper class
 
 Created on Nov 27, 2014
 
-@author: Nicklas Borjesson
+@author: Nicklas Boerjesson
 """
 
 import sys
@@ -21,7 +21,6 @@ from of.schemas.constants import id_right_admin_everything
 from of.common.security.groups import has_right
 from plugins.optimalbpm.broker.translation.python.translator import ProcessTokens, core_language
 
-# TODO: Consider what the documentation in the top of each module should look like (PROD-40)
 
 __author__ = 'Nicklas Borjesson'
 
@@ -30,7 +29,7 @@ script_dir = os.path.dirname(__file__)
 
 class CherryPyProcess(object):
     """
-    This is a CherryPy helper class that provides the API for processes.
+    This is a CherryPy helper class that provides a web service API for processes.
     """
     # Cached python keywords
     keywords = None

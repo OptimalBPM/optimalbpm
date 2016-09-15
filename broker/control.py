@@ -1,5 +1,10 @@
 """
-The administrative API of Optimal BPM
+This module implements the Control class (administrative API of Optimal BPM processes)
+
+Created on Jan 23, 2016
+
+@author: Nicklas Boerjesson
+
 """
 
 
@@ -18,7 +23,7 @@ __author__ = 'Nicklas Borjesson'
 
 class Control:
     """
-    This class presents the administrative API of Optimal BPM
+    This class presents the administrative API of Optimal BPM processes
     """
     #: An OF database access instance
     db_access = None

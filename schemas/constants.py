@@ -1,5 +1,10 @@
 """
 The constants module add constants for all the schemas defined in Optimal BPM
+
+Created on Jan 21, 2016
+
+@author: Nicklas Boerjesson
+
 """
 
 import of.schemas.constants

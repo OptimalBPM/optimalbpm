@@ -1,5 +1,6 @@
 """
-This package holds the Optimal BPM system, its libraries and UI
+This package holds the Optimal BPM plugin, its libraries and UI
+The Optimal Framework loads this that
 """
 __author__ = 'Nicklas Borjesson'
 

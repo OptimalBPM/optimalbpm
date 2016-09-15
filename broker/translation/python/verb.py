@@ -1,5 +1,10 @@
 """
 The verb module contains the Verb class and helper functions
+
+Created on Jan 23, 2016
+
+@author: Nicklas Boerjesson
+
 """
 import io
 from token import STRING, NEWLINE, NAME, OP, INDENT, DEDENT

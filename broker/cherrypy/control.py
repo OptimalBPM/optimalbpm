@@ -1,5 +1,9 @@
 """
-This module exposes the Optimal BPM Admin API as a web service through a CherryPy module
+This module exposes the Optimal BPM Admin API as a web service through a CherryPy helper class
+
+Created on Nov 27, 2014
+
+@author: Nicklas Boerjesson
 """
 
 import copy

@@ -1,3 +1,12 @@
+"""
+This module contains the Optimal Framework-hooks of Optimal BPM.
+OF calls these hooks at different stages.
+
+Created on Jan 23, 2016
+
+@author: Nicklas Boerjesson
+"""
+
 from plugins.optimalbpm.broker.cherrypy.control import CherryPyControl
 from plugins.optimalbpm.broker.cherrypy.process import CherryPyProcess
 

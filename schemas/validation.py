@@ -1,5 +1,10 @@
 """
 This module holds Optimal BPM-specific JSON schema functionality
+
+Created on Jan 21, 2016
+
+@author: Nicklas Boerjesson
+
 """
 import os
 
