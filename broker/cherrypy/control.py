@@ -79,8 +79,16 @@ class CherryPyControl(object):
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
     @aop_has_right([id_right_admin_everything])
-    def get_processes(self, **kwargs):
-        return self._control.get_processes(kwargs["_user"])
+    def get_system_processes(self, **kwargs):
+        return self._control.get_system_processes(kwargs["_user"])
+
+    @cherrypy.expose
+    @cherrypy.tools.json_out(content_type='application/json')
+    @aop_check_session
+    @aop_has_right([id_right_admin_everything])
+    def get_bpm_processes(self, **kwargs):
+        return self._control.get_bpm_processes(kwargs["_user"])
+
 
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')

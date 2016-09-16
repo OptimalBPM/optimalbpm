@@ -15,9 +15,11 @@ from of.common.security.groups import user_in_any_of_groups
 from of.common.internal import not_implemented
 
 from of.schemas.constants import zero_object_id
-from of.broker.lib.repositories import Repositories
+from plugins.optimalbpm.common.repositories import Repositories
 from plugins.optimalbpm.broker.messaging.factory import agent_control
 from of.common.messaging.factory import log_process_state_message
+from schemas.constants import id_processes
+
 __author__ = 'Nicklas Borjesson'
 
 
@@ -150,15 +152,29 @@ class Control:
 
         return {}
 
-    def get_processes(self, _user):
+    def get_bpm_processes(self, _user):
         """
-        Returns a list of all active processes
+        Returns a list of all active business processes
 
         :return: A list of all active processes
         """
         # TODO: Filter by what canRead on the nodes? Have some node rights cache? (ORG-110)
-        # Also, this is more of a web socket stream.
-        return self.db_access.find({"conditions": {}, "collection": "process"})
+        # TODO: Make a web socket stream version of this function that reports progress.
+        _process_ids = [ObjectId(curr_process["_id"]) for curr_process in self.node.load_children(id_processes, _user)]
+        print(str(_process_ids))
+        return self.db_access.find({"conditions": { "_id": { "$in": _process_ids}}, "collection": "process"})
+
+    def get_system_processes(self, _user):
+        """
+        Returns a list of all active system processes
+
+        :return: A list of all active system processes
+        """
+        # TODO: Filter by what canRead on the nodes? Have some node rights cache? (ORG-110)
+        # TODO: Make a web socket stream version of this function that reports progress.
+        _process_ids = [ObjectId(curr_process["_id"]) for curr_process in self.node.load_children(id_processes, _user)]
+        print(str(_process_ids))
+        return self.db_access.find({"conditions": { "_id": { "$nin": _process_ids}}, "collection": "process"})
 
     def get_schemas(self, _user):
         """
@@ -166,8 +182,7 @@ class Control:
 
         :return: A list of all schemas
         """
-        # TODO: Filter by what canRead on the nodes? Have some node rights cache? (ORG-110)
-        # Also, this is more of a web socket stream.
+        # TODO: Later on, users may add custom schemas that will be kept in the database, filtering is then needed
         result = {}
         for key, schema in self.db_access.schema_tools.json_schema_objects.items():
             result[key] = self.db_access.schema_tools.resolveSchema(schema)
@@ -178,8 +193,8 @@ class Control:
         """
         Returns the history of a process
 
-        :return: A list of all the states
+        :return: A list of all the state changes
         """
-        # TODO: Filter by what canRead on the nodes? Have some node rights cache? (ORG-110)
+        # TODO: Filter by what canRead on the nodes? ave some node rights cache? (ORG-110)
         # Also, this is more of a web socket stream.
         return self.db_access.find({"conditions": {"processId": ObjectId(_process_id)}, "collection": "log"})

@@ -49,7 +49,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    _processes = call_api(_url="https://127.0.0.1:8080/admin/control/get_processes",
+    _processes = call_api(_url="https://127.0.0.1:8080/admin/control/get_system_processes",
              _session_id=context.session["session_id"],
              _data={}, _verify_SSL=False
              )
