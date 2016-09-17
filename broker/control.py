@@ -158,7 +158,6 @@ class Control:
 
         :return: A list of all active processes
         """
-        # TODO: Filter by what canRead on the nodes? Have some node rights cache? (ORG-110)
         # TODO: Make a web socket stream version of this function that reports progress.
         _process_ids = [ObjectId(curr_process["_id"]) for curr_process in self.node.load_children(id_processes, _user)]
         print(str(_process_ids))
@@ -170,11 +169,8 @@ class Control:
 
         :return: A list of all active system processes
         """
-        # TODO: Filter by what canRead on the nodes? Have some node rights cache? (ORG-110)
         # TODO: Make a web socket stream version of this function that reports progress.
-        _process_ids = [ObjectId(curr_process["_id"]) for curr_process in self.node.load_children(id_processes, _user)]
-        print(str(_process_ids))
-        return self.db_access.find({"conditions": { "_id": { "$nin": _process_ids}}, "collection": "process"})
+        return self.db_access.find({"conditions": { "systemPid": { "$ne": None}}, "collection": "process"})
 
     def get_schemas(self, _user):
         """
