@@ -203,7 +203,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
 
                 this.bootstrapAlert("Loading step typ schemas failed: " + status);
             });
-    }
+    };
 
 
     addToList = (listName, value): void => {
@@ -214,7 +214,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
             this.lists[listName].push(value);
         }
         console.log("added " + value + " to " + listName);
-    }
+    };
 
     generateObjectId(): string {
         let increment: string = Math.floor(Math.random() * (16777216)).toString(16);
@@ -281,7 +281,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
                 return item["type_title"];
             }
         }
-    }
+    };
 
     recurseVerbs = (parent, items): ProcessNode[] => {
 
@@ -305,7 +305,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
         });
 
         return result;
-    }
+    };
 
     /**
      * Load process data
@@ -328,11 +328,11 @@ export class ProcessController extends NodeManager implements INodeManagement, I
                     });
             }
         );
-    }
+    };
 
     onSubmit = () => {
 
-    }
+    };
 
     /**
      * Populate the available commands menu
@@ -409,13 +409,13 @@ export class ProcessController extends NodeManager implements INodeManagement, I
                 this.menuColumns.push(new_column);
             }
         }
-    }
+    };
 
     /**
      * Load namespaces array
      */
     loadDefinitions = (): ng.IPromise<any> => {
-        console.log('loading definitions');
+        console.log("loading definitions");
         return this.$q((resolve, reject) => {
                 return this.$http.get("admin/process/load_definitions")
                     .success((data): any => {
@@ -430,7 +430,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
                     });
             }
         );
-    }
+    };
 
     /**
      * Load processes array
@@ -453,7 +453,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
                     });
             }
         );
-    }
+    };
 
 
     parseNamespace(identifier) {
@@ -482,7 +482,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
         }
 
         return {"schema": schema, "form": ["*"]};
-    }
+    };
 
     
     // Generate a form and a schema
