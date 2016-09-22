@@ -130,7 +130,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
 
     bootstrapAlert = (message: string): void => {
         this.$scope.$root.BootstrapDialog.alert(message);
-    }
+    };
 
     /**
      * Returns a CSS base class given a tree item
@@ -158,7 +158,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
          } else {
          return "blank";
          }*/
-    }
+    };
 
     getIconClass = (nodeType: string): string => {
         return "";
@@ -316,6 +316,12 @@ export class ProcessController extends NodeManager implements INodeManagement, I
                 return scope.$http.post("admin/process/load_process", {"processId": processId})
                     .success((data): any => {
                         scope.process_data = data;
+                        if ("description" in scope.process_data) {
+                            this.documentation =  scope.process_data.description;
+                        }
+                        if ("encoding" in scope.process_data) {
+                            this.encoding =  scope.process_data.encoding;
+                        }
                         scope.maxId = 0;
                         scope.paramData = data.paramData;
                         scope.tree.children = scope.recurseVerbs(null, data.verbs);
@@ -464,7 +470,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
         else {
             return [parts.slice(0, parts.length - 1).join("."), parts[parts.length - 1]];
         }
-    }
+    };
 
     getDefinition = (uri: string): any => {
         let parser: HTMLAnchorElement = document.createElement("a");
@@ -661,7 +667,6 @@ export class ProcessController extends NodeManager implements INodeManagement, I
                     "helpvalue": "<i>The variable(s) to assign the data to.</i>"
                 });
 
-            // TODO: Add data from documentation.(PROD-31)
             // TODO: Add new input type for identifiers. (PROD-31)
 
             // Loop assignments
