@@ -129,7 +129,7 @@ class ProcessTokens(object):
         :param _filename:
         :return:
         """
-        # Load all tokens
+        # Load all tokens, i.e. "tokenize" the file
         if _filename is not None:
             with open(_filename, "r", encoding="utf-8") as _file:
                 _tokens = tokenize.tokenize(BytesIO(_file.read().encode('utf-8')).readline)
@@ -137,15 +137,15 @@ class ProcessTokens(object):
             _tokens = tokenize.tokenize(BytesIO(_string.encode('utf-8')).readline);
 
         self._items = []
-
+        # Make into an array
         for _token in _tokens:
             self._items.append(_token)
 
         if len(self._items) == 0:
             raise Exception("The file " + _filename + " doesn't have any content.")
 
-        self.position = -1
-
+        #Load first token
+        self.position = -1 # To end up on position 0
         _token = self.next()
 
         # First load encoding
@@ -160,6 +160,7 @@ class ProcessTokens(object):
 
         _verbs = []
 
+        # Loop the rest of the tokens
         while _token and _token[0] != token.ENDMARKER:
             _verb = Verb()
             print("parsing " + str(_token))

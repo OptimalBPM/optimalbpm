@@ -171,7 +171,7 @@ class Verb(object):
         """
         # Is there some lead-in whitespace?
         self.lead_in_whitespace = []
-        while _token[1].strip() == "" and _token[0] != DEDENT:
+        while _token is not None and _token[1].strip() == "" and _token[0] != DEDENT:
             self.lead_in_whitespace.append(_token)
             _token = _process_tokens.next()
 
@@ -298,6 +298,7 @@ class Verb(object):
             _token = _process_tokens.next()
             if _token[0] == tokenize.COMMENT:
                 # Add any inline documentation
+
                 _token, _documentation = parse_documentation(_token, _process_tokens)
                 if self.documentation:
                     self.documentation += _documentation
@@ -362,6 +363,27 @@ class Verb(object):
         _token = _process_tokens.next()
         return _token
 
+
+    def parse_lineended(self, _token, _process_tokens, _ending):
+        """
+        Parse an area that ends with a line with a text
+
+        :param _token: The current token
+        :param _process_tokens: A
+        :return The ending token
+        """
+        _content = ""
+        # This is a new block of code. Recurse
+
+        while _token is not None and _token[1] != _ending:
+            _content+=_token[1]
+            _token = _process_tokens.next()
+
+        self.parameters["content"] = _content
+        self.parameter_order = ["content"]
+        return _process_tokens.next()
+
+
     def parse_keywords(self, _token, _process_tokens):
         """
         Parse a section beginning with a keyword
@@ -370,6 +392,7 @@ class Verb(object):
         :return The ending token
         """
         # This is only called when it is certain that it is a keyword
+
 
         self.identifier = _token[1]
         _definition = _process_tokens.keywords[self.identifier]
@@ -410,6 +433,8 @@ class Verb(object):
                 _token = self.parse_block(_token, _process_tokens)
             elif _curr_part["kind"] == "parameters":
                 _token = self.parse_parameters(_token, _process_tokens)
+            elif _curr_part["kind"] == "lineended":
+                _token = self.parse_lineended(_token, _process_tokens, _curr_part["key"])
 
         if _token[0] in [NEWLINE, DEDENT, tokenize.NL]:
             _token = _process_tokens.next()
@@ -521,15 +546,16 @@ class Verb(object):
         self._token_begin = _process_tokens.position
 
         # Test there is another token
-        if _token:
+        if _token is not None:
             # Is there any lead-in whitespace?
             _token = self.parse_whitespace(_token, _process_tokens)
 
         # Special Case after a dedent; Documentation might have been defined previously
         if _documentation and len(self.lead_in_whitespace) == 0:
             self.documentation = _documentation
-        if _token:
-            # Is there any documentation?
+
+        if _token and _token[1][0:2] != "#!":
+            # Check for documentation if there is no special instruction
             _token, self.documentation = parse_documentation(_token, _process_tokens)
             if _token[0] in [tokenize.NL, DEDENT]:
                 if self.documentation:
@@ -539,7 +565,7 @@ class Verb(object):
                 self.type = "documentation"
                 return _token
 
-        if _token:
+        if _token is not None:
             # Set the row on which the token is found, used for stepping
             self.row = _token[2][0]
 
@@ -562,6 +588,19 @@ class Verb(object):
             return [[STRING, '"""' + self.documentation + '"""'], [NEWLINE, "\n"]]
         else:
             return []
+
+    def tokenize_lineended(self, _ending):
+        """
+        Creates tokens from the a line-ended section
+        :param _content: The content of the section
+        :return An array of tokens
+        """
+
+        if "content" in self.parameters:
+            return self.tokenize_expression(self.parameters["content"]) + \
+                   [[tokenize.COMMENT, _ending], [NEWLINE, "\n"]]
+        else:
+            return [[tokenize.COMMENT, _ending], [NEWLINE, "\n"]]
 
     @staticmethod
     def tokenize_expression(_expression):
@@ -598,6 +637,9 @@ class Verb(object):
             elif _curr_part["kind"] == "expression":
                 _process_tokens.tokens += self.tokenize_expression(self.parameters[_curr_part["key"]])
 
+            elif _curr_part["kind"] == "lineended":
+                _process_tokens.tokens += self.tokenize_lineended(_curr_part["key"])
+                pass
             elif _curr_part["kind"] == "block":
                 _process_tokens.tokens.append([OP, ":"])
                 _process_tokens.tokens.append([NEWLINE, "\n"])

@@ -274,5 +274,21 @@
         ]
       }
     ]
+  },
+  "#!customstart": {
+    "title": "Custom code <i>%condition%</i>",
+    "description": "Can contain any Python 3 compliant code.<br /><div class='alert alert-danger'> <b>Warning</b>As this can contain any code, care should be taken with what is entered here.</div>",
+    "parts": [
+      {
+        "kind": "keyword",
+        "values": [
+          "#!customstart"
+        ]
+      },
+      {
+        "kind": "lineended",
+        "key": "#!customend"
+      }
+    ]
   }
 }

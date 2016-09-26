@@ -83,10 +83,12 @@ class CherryPyProcess(object):
         _filename_process = os.path.join(_repo_path, "main.py")
         if not os.path.exists(_filename_process):
             # No process definition exists
+            # Parse a dummy string to have something to begin with
             _verbs = _tokens.parse(_string="pass")
             _result["verbs"] = _tokens.verbs_to_json(_verbs)
             _result["paramData"] = {}
         else:
+            # Parse the source file
             _verbs = _tokens.parse(_filename=_filename_process)
             _result["verbs"] = _tokens.verbs_to_json(_verbs)
 
