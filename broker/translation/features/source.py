@@ -106,6 +106,6 @@ function_2_declaration("Param 2_1 value", "Param 2_2 value")
 
 #!customstart
 
-print("My ass is grass")
+print("Example string")
 
 #!customend
