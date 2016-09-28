@@ -1,5 +1,6 @@
 {
   "from": {
+    "name": "Import identifier",
     "title": "from <i>%library%</i> import <i>%reference%</i>",
     "description": "A <b>from</b> statement causes a process to import a certain identifier.",
     "parts": [
@@ -28,6 +29,7 @@
     ]
   },
   "import": {
+    "name": "Import module",
     "title": "import <i>%reference%</i>",
     "description": "A <b>import</b> statement causes a process to import a module.",
     "parts": [
@@ -45,6 +47,7 @@
     ]
   },
   "if": {
+    "name": "If...then",
     "title": "if <i>%condition%</i> then",
     "description": "The content of an <b>if</b> statement is executed if the condition is true.",
     "parts": [
@@ -64,6 +67,7 @@
     ]
   },
   "elif": {
+    "name": "Else if",
     "title": "else if <i>%condition%</i> then",
     "description": "The content of an <b>else if</b> statement is executed it the previous condition wasn't true, but his is.",
     "required_precursor": "if",
@@ -84,6 +88,7 @@
     ]
   },
   "else": {
+    "name": "Else",
     "title": "else",
     "description": "The content of an <b>else</b> is executed if all the other conditions are false.",
     "required_precursor": [
@@ -103,6 +108,7 @@
     ]
   },
   "def": {
+    "name": "Define a function",
     "title": "define function <i>%function_name%</i> (<i>%parameters%</i>)",
     "description": "Creates a function that with the functionality contained in the block.",
     "is_definition": true,
@@ -127,7 +133,8 @@
     ]
   },
   "try": {
-    "title": "<img class='try_except_icons' width='15px' height='15px' src='process/images/try_mid_mid.png'></img>",
+    "name": "Try statement",
+    "title": "<img width='15px' height='15px' src='ui_process/images/try_mid_mid.png'></img>",
     "description": "Tries to execute its content and passes any errors to the following <b>except</b>-statement.<br /><div class='alert alert-danger'>Warning: If there is no following <b>except</b>-statement, the errors will be suppressed.</div>",
     "expanded": true,
     "parts": [
@@ -143,7 +150,8 @@
     ]
   },
   "except": {
-    "title": "<img class='try_except_icons' width='15px' height='15px' src='/images/except_mid_mid.png'></img>",
+    "name": "Exception handler",
+    "title": "<img width='15px' height='15px' src='ui_process/images/except_mid_mid.png'></img>",
     "description": "If an error occured in the previous <b>try</b>-statement, the content will be executed.",
     "required_precursor": "try",
     "expanded": true,
@@ -174,6 +182,7 @@
     ]
   },
   "for": {
+    "name": "For...each",
     "title": "for each <i>%item%</i> in <i>%collection%</i>",
     "description": "Executes it content once for each item in the collection.",
     "parts": [
@@ -203,6 +212,7 @@
     ]
   },
   "while": {
+    "name": "While-loop",
     "title": "while <i>%condition%</i>",
     "description": "Executes its content as long as the condition is true.<br /><div class='alert alert-danger'> <b>Warning</b>, this can cause the process to go into an infinite loop and hang.</div>",
     "parts": [
@@ -222,7 +232,8 @@
     ]
   },
   "pass": {
-    "title": "pass",
+    "name": "Do nothing",
+    "title": "Do nothing",
     "description": "Does nothing",
     "parts": [
       {
@@ -234,10 +245,12 @@
     ]
   },
   "@assign": {
+    "name": "Variable assignment",
     "title": "<i>%assignments%</i>=<b>%parameters%</b>",
     "description": "Assigns a value to the specified variable."
   },
   "@call": {
+    "name": "Function call",
     "title": "Call <i>%functionName%</i><br /> with <i>%parameters%</i>",
     "description": "Call a function with the provided parameters",
     "parts": [
@@ -276,18 +289,18 @@
     ]
   },
   "#!customstart": {
-    "title": "Custom code <i>%condition%</i>",
+    "title": "Custom code",
+    "name": "Custom code",
     "description": "Can contain any Python 3 compliant code.<br /><div class='alert alert-danger'> <b>Warning</b>As this can contain any code, care should be taken with what is entered here.</div>",
     "parts": [
       {
         "kind": "keyword",
-        "values": [
-          "#!customstart"
-        ]
+        "values": ["#!customstart"]
       },
       {
         "kind": "lineended",
         "key": "#!customend"
+
       }
     ]
   }

@@ -390,7 +390,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
         for (let keyword in keywords) {
             new_column["children"].push(createDefinition(
                 "new_keyword_" + keyword, keywords[keyword], true, keyword,
-                ["keyword", "call", "documentation", "assign"], "keyword", keyword));
+                ["keyword", "call", "documentation", "assign"], "keyword", keywords[keyword]["name"]));
         }
         this.menuColumns.push(new_column);
         let namespace: string;
@@ -564,6 +564,10 @@ export class ProcessController extends NodeManager implements INodeManagement, I
                 if (["expression", "python-reference"].indexOf(item["kind"]) > -1) {
                     schema["properties"]["parameters." + item["key"]] = {"type": "string"};
                     form.push(makeField("string", "parameters." + item["key"], prettyfyKey(item["key"])));
+                }
+                else if (item["kind"] === "lineended") {
+                    schema["properties"]["parameters.content"] = {"type": "textarea"};
+                    form.push(makeField("string", "parameters.content", "Content"));
                 }
             });
 

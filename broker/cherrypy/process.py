@@ -46,13 +46,23 @@ class CherryPyProcess(object):
         """
         Initiates the class, loads keywords and namespaces for the translation
         """
-        self.keywords = ProcessTokens.load_keywords()
+        try:
+            self.keywords = ProcessTokens.load_keywords()
+        except Exception as e:
+            raise Exception("Process init - Error loading keywords: " + str(e))
         # Load all of BPAL
         self.namespaces = _namespaces
         self.repository_parent_folder = _repository_parent_folder
-        self.namespaces.load_dicts(
-            core_language + [os.path.join(script_dir, "../translation/features/fake_bpm_lib.json")],
-            _top_attribute="namespaces")
+
+        try:
+            # TODO: Remove this before 1.0 (PROD-39)
+            self.namespaces.load_dicts(
+                core_language + [os.path.join(script_dir, "../translation/features/fake_bpm_lib.json")],
+                _top_attribute="namespaces")
+        except Exception as e:
+            raise Exception("Process init - Error loading testing dummy dictionatries: " + str(e))
+    # Load all of BPAL
+
 
     # TODO: There should exist some special right for this like object_id_admin_process(ORG-110)
 

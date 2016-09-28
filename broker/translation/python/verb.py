@@ -300,7 +300,7 @@ class Verb(object):
                 # Add any inline documentation
 
                 _token, _documentation = parse_documentation(_token, _process_tokens)
-                if self.documentation:
+                if self.documentation is not None:
                     self.documentation += _documentation
                 else:
                     self.documentation = _documentation
@@ -363,7 +363,6 @@ class Verb(object):
         _token = _process_tokens.next()
         return _token
 
-
     def parse_lineended(self, _token, _process_tokens, _ending):
         """
         Parse an area that ends with a line with a text
@@ -376,13 +375,16 @@ class Verb(object):
         # This is a new block of code. Recurse
 
         while _token is not None and _token[1] != _ending:
-            _content+=_token[1]
+            _content += _token[1]
             _token = _process_tokens.next()
+
+        # Content should always at least have a NEWLINE
+        if len(_content) == 0:
+            _content += [NEWLINE, "\n"]
 
         self.parameters["content"] = _content
         self.parameter_order = ["content"]
         return _process_tokens.next()
-
 
     def parse_keywords(self, _token, _process_tokens):
         """
@@ -436,7 +438,7 @@ class Verb(object):
             elif _curr_part["kind"] == "lineended":
                 _token = self.parse_lineended(_token, _process_tokens, _curr_part["key"])
 
-        if _token[0] in [NEWLINE, DEDENT, tokenize.NL]:
+        if _token is not None and _token[0] in [NEWLINE, DEDENT, tokenize.NL]:
             _token = _process_tokens.next()
         return _token
 
@@ -448,7 +450,6 @@ class Verb(object):
         :return The ending token
         """
         _identifier = ""
-        # TODO: Implement custom code (PROD-31)
         if _token[1] in _process_tokens.keywords:
             return self.parse_keywords(_token, _process_tokens)
         else:
@@ -551,19 +552,21 @@ class Verb(object):
             _token = self.parse_whitespace(_token, _process_tokens)
 
         # Special Case after a dedent; Documentation might have been defined previously
-        if _documentation and len(self.lead_in_whitespace) == 0:
+        if _documentation is not None and len(self.lead_in_whitespace) == 0:
             self.documentation = _documentation
 
         if _token and _token[1][0:2] != "#!":
             # Check for documentation if there is no special instruction
             _token, self.documentation = parse_documentation(_token, _process_tokens)
             if _token[0] in [tokenize.NL, DEDENT]:
-                if self.documentation:
+                if self.documentation is not None:
                     self.identifier = "Documentation"
                 else:
                     self.identifier = "Newline"
                 self.type = "documentation"
                 return _token
+        elif self.documentation is None:
+            self.documentation = ""
 
         if _token is not None:
             # Set the row on which the token is found, used for stepping
@@ -584,7 +587,7 @@ class Verb(object):
         :return An array of tokens
         """
 
-        if self.documentation:
+        if self.documentation is not None:
             return [[STRING, '"""' + self.documentation + '"""'], [NEWLINE, "\n"]]
         else:
             return []
@@ -597,7 +600,11 @@ class Verb(object):
         """
 
         if "content" in self.parameters:
-            return self.tokenize_expression(self.parameters["content"]) + \
+            _content = [[NEWLINE, "\n"]] + self.tokenize_expression(self.parameters["content"])
+            # Content always have to end with a newline, even if empty
+            if (len(_content) == 0) or (_content[-1][1] != "\n"):
+                _content += [[NEWLINE, "\n"]]
+            return _content + \
                    [[tokenize.COMMENT, _ending], [NEWLINE, "\n"]]
         else:
             return [[tokenize.COMMENT, _ending], [NEWLINE, "\n"]]
@@ -668,7 +675,6 @@ class Verb(object):
         if _curr_part and _curr_part["kind"] != "block":
             _process_tokens.tokens.append([NEWLINE, "\n"])
 
-
     def tokenize_assignment(self, _process_tokens):
         # Loop assignments
         _assignments = []
@@ -691,7 +697,6 @@ class Verb(object):
         _process_tokens.tokens += _expressions[0:-1]
 
         _process_tokens.tokens.append([NEWLINE, "\n"])
-
 
     def tokenize_call(self, _process_tokens):
         """
@@ -748,4 +753,3 @@ class Verb(object):
             self.to_shortcuts[self.type](_process_tokens)
         except KeyError as e:
             raise KeyError("Invalid key, \"" + str(e) + "\" at " + str(self.identifier))
-
