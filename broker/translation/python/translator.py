@@ -302,9 +302,19 @@ class ProcessTokens(object):
         Load keywords
         :return:
         """
-        with open(os.path.join(script_dir, "keywords.json"), "r") as _file:
-            return json.load(_file)
 
+        with open(os.path.join(script_dir, "keywords.json"), "r") as _file:
+            _result = json.load(_file)
+
+        # TODO: Expand general keywords into handling the special types (like call/assing) aswell
+        # Handle special cases where definitions are complex and not in definition files
+        for _curr_key, _curr_val in _result.items():
+            if "type" in _result[_curr_key]:
+                _result[_curr_key]["type"] = _result[_curr_key]["type"]
+            else:
+                _result[_curr_key]["type"] = "keyword"
+
+        return _result
 
     @staticmethod
     def verbs_to_json(_verbs):

@@ -390,7 +390,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
         for (let keyword in keywords) {
             new_column["children"].push(createDefinition(
                 "new_keyword_" + keyword, keywords[keyword], true, keyword,
-                ["keyword", "call", "documentation", "assign"], "keyword", keywords[keyword]["name"]));
+                ["keyword", "call", "documentation", "assign"], keywords[keyword]["type"], keywords[keyword]["name"]));
         }
         this.menuColumns.push(new_column);
         let namespace: string;

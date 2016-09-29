@@ -134,7 +134,7 @@
   },
   "try": {
     "name": "Try statement",
-    "title": "<img width='15px' height='15px' src='ui_process/images/try_mid_mid.png'></img>",
+    "title": "<img width='15px' height='15px' src='/admin/ui_process/images/try_mid_mid.png'></img>",
     "description": "Tries to execute its content and passes any errors to the following <b>except</b>-statement.<br /><div class='alert alert-danger'>Warning: If there is no following <b>except</b>-statement, the errors will be suppressed.</div>",
     "expanded": true,
     "parts": [
@@ -151,7 +151,7 @@
   },
   "except": {
     "name": "Exception handler",
-    "title": "<img width='15px' height='15px' src='ui_process/images/except_mid_mid.png'></img>",
+    "title": "<img width='15px' height='15px' src='/admin/ui_process/images/except_mid_mid.png'></img>",
     "description": "If an error occured in the previous <b>try</b>-statement, the content will be executed.",
     "required_precursor": "try",
     "expanded": true,
@@ -246,11 +246,13 @@
   },
   "@assign": {
     "name": "Variable assignment",
+    "type": "assign",
     "title": "<i>%assignments%</i>=<b>%parameters%</b>",
     "description": "Assigns a value to the specified variable."
   },
   "@call": {
     "name": "Function call",
+    "type": "call",
     "title": "Call <i>%functionName%</i><br /> with <i>%parameters%</i>",
     "description": "Call a function with the provided parameters",
     "parts": [
