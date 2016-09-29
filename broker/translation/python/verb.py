@@ -471,7 +471,7 @@ class Verb(object):
                         _identifier = ""
                         _token = _process_tokens.next()
                         continue
-                    # TODO: Handle "[", assignments to expressions (ORG-104)
+                    # TODO: Add proper assignment functionality (PROD-148)
                     elif _tokenstring in ["=", "+="]:
                         self.type = "assign"
                         # This is an assignment, add the last assignment

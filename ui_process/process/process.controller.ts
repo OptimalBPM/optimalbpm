@@ -671,7 +671,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
                     "helpvalue": "<i>The variable(s) to assign the data to.</i>"
                 });
 
-            // TODO: Add new input type for identifiers. (PROD-31)
+            // TODO: Add new visual input type for identifiers. (PROD-125)
 
             // Loop assignments
             let key: string;
@@ -824,8 +824,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
 
 
     save = () => {
-        // TODO: Add resetting of token lists for changed items. (PROD-31)
-        
+
         this.process_data["verbs"] = this.recurseData(this.tree.children)
         this.saveProcess(this.process_data);
     };
