@@ -33,10 +33,12 @@
 .loop-indent {
     padding-left: 5px !important;
 }
+/* TODO: Check why relative URLs like ../images doesn't work here
 
+*/
 .loop-top {
     width: 10px;
-    background-image: url("../images/loop_top.png");
+    background-image: url("/admin/ui_process/images/loop_top.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: 2% 50%;
@@ -48,7 +50,7 @@
     display: block;
     height: 100%;
     width: auto;
-    background-image: url("../images/loop_mid.png");
+    background-image: url("/admin/ui_process/images/loop_mid.png");
     background-size: 10px 100%;
     background-repeat: no-repeat;
     background-position-x: 0px;
@@ -60,7 +62,7 @@
 
 .loop-bottom {
     width: 10px;
-    background-image: url("../images/loop_bottom.png");
+    background-image: url("/admin/ui_process/images/loop_bottom.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: 46% 50%;
@@ -78,7 +80,7 @@
     display: block;
     height: 100%;
     width: auto;
-    background-image: url("../images/if-mid.png");
+    background-image: url("/admin/ui_process/images/if-mid.png");
     background-size: 5px 100%;
     background-repeat: no-repeat;
     background-position-x: 0px;
@@ -102,7 +104,7 @@
 .else-top {
     width: 18px;
     height: 18px;
-    background-image: url("../images/else_top.png");
+    background-image: url("/admin/ui_process/images/else_top.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: 2% 50%;
@@ -114,7 +116,7 @@
     display: block;
     height: 100%;
     width: auto;
-    background-image: url("../images/if-mid.png");
+    background-image: url("/admin/ui_process/images/if-mid.png");
     background-size: 5px 100%;
     background-repeat: no-repeat;
     background-position-x: 0px;
@@ -138,7 +140,7 @@
 .try-top {
     width: 12px;
     height: 12px;
-    background-image: url("../images/try_top.png");
+    background-image: url("/admin/ui_process/images/try_top.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: 0px, 0px;
@@ -149,7 +151,7 @@
     display: block;
     height: 100%;
     width: auto;
-    background-image: url("../images/try_mid_line.png");
+    background-image: url("/admin/ui_process/images/try_mid_line.png");
     background-size:  1px 100%;
     background-repeat: no-repeat;
     background-position-x: 0px;
@@ -164,7 +166,7 @@
 .try-bottom {
     width: 12px;
     height: 12px;
-    background-image: url("../images/try_bottom.png");
+    background-image: url("/admin/ui_process/images/try_bottom.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: 0px,0px;
@@ -178,7 +180,7 @@
 .except-top {
     width: 12px;
     height: 12px;
-    background-image: url("../images/try_top.png");
+    background-image: url("/admin/ui_process/images/try_top.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: 0px, 0px;
@@ -189,7 +191,7 @@
     display: block;
     height: 100%;
     width: auto;
-    background-image: url("../images/try_mid_line.png");
+    background-image: url("/admin/ui_process/images/try_mid_line.png");
     background-size:  1px 100%;
     background-repeat: no-repeat;
     background-position-x: 0px;
@@ -204,7 +206,7 @@
 .except-bottom {
     width: 12px;
     height: 12px;
-    background-image: url("../images/try_bottom.png");
+    background-image: url("/admin/ui_process/images/try_bottom.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: 0px,0px;
