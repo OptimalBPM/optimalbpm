@@ -217,7 +217,7 @@ def connect_to_websocket():
     write_srvc_dbg("Connecting web socket to broker done")
     return True
 
-def start_agent():
+def start_agent(_cfg_filename = None):
     """
     Starts the agent; Loads settings, connects to database, registers process and starts the web server.
     """
@@ -231,7 +231,10 @@ def start_agent():
 
     write_srvc_dbg("=====start_agent===============================")
     try:
-        _cfg_filename = resolve_config_path()
+
+        if _cfg_filename is None:
+            _cfg_filename = resolve_config_path()
+
         _settings = JSONXPath(_cfg_filename)
 
     except Exception as e:
