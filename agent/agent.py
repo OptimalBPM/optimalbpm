@@ -279,7 +279,7 @@ def start_agent(_cfg_filename = None):
 
     of.common.logging.callback = log_to_database
 
-    _repository_base_folder = _settings.get("agent/repositoryFolder",
+    _repository_base_folder = _settings.get_path("agent/repositoryFolder",
                                             _default=os.path.join(os.path.dirname(__file__), "repositories"))
 
     write_srvc_dbg("Load schema tool")
