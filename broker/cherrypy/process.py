@@ -24,7 +24,7 @@ from plugins.optimalbpm.broker.translation.python.translator import ProcessToken
 
 __author__ = 'Nicklas Borjesson'
 
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 class CherryPyProcess(object):

@@ -18,7 +18,7 @@ import os
 from .verb import Verb, parse_documentation
 
 __author__ = 'nibo'
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 # Define the core language files

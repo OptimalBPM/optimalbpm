@@ -23,7 +23,7 @@ from plugins.optimalbpm.schemas.validation import bpm_uri_handler
 import of.common.messaging.websocket
 from plugins.optimalbpm.testing.init_env import init_bpm_env
 
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 __author__ = 'nibo'
 
 _log_prefix = str(os.getpid()) + "-Environment.py: "

@@ -12,7 +12,7 @@ from of.schemas.validation import general_uri_handler
 
 __author__ = 'Nicklas Borjesson'
 
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 def bpm_uri_handler(_uri):

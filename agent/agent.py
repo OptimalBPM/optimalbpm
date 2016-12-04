@@ -29,7 +29,7 @@ from of.common.messaging.utils import call_api
 from of.common.settings import JSONXPath
 from of.schemas.schema import SchemaTools
 
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Add relative optimal bpm path
 sys.path.append(os.path.join(script_dir, "../../"))

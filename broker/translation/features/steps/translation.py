@@ -10,7 +10,7 @@ from of.common.cumulative_dict import CumulativeDict
 use_step_matcher("re")
 
 import os
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 
