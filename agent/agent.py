@@ -111,7 +111,7 @@ def log_locally(_data, _category, _severity, _process_id_param, _user_id, _occur
 
 
     if os.name == "nt":
-        write_to_event_log(make_textual_log_message(_data, _data, _category, _severity, _process_id_param, _user_id,
+        write_to_event_log(make_textual_log_message(_data, _category, _severity, _process_id_param, _user_id,
                                                     _occurred_when, _address, _node_id, _uid, _pid),
                            "Application", _category, _severity)
     else:
