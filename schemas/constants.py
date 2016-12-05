@@ -50,3 +50,5 @@ def init():
     of.schemas.constants.intercept_schema_ids = ["ref://bpm.message.bpm.process.result"]
 
     of.schemas.constants.peer_type__schema_id.update({"agent": "ref://of.node.agent"})
+
+    print("Optimal BPM: Constants updated")
