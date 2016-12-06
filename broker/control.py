@@ -18,7 +18,7 @@ from of.schemas.constants import zero_object_id
 from plugins.optimalbpm.common.repositories import Repositories
 from plugins.optimalbpm.broker.messaging.factory import agent_control
 from of.common.messaging.factory import log_process_state_message
-from schemas.constants import id_processes
+from plugins.optimalbpm.schemas.constants import id_processes
 
 __author__ = 'Nicklas Borjesson'
 
