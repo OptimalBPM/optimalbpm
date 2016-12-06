@@ -11,7 +11,7 @@ import multiprocessing
 import os
 import sys
 
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, freeze_support
 import time
 
 
@@ -225,9 +225,14 @@ def start_agent(_cfg_filename = None):
     global process_id, _control_monitor, _terminated, _address, _process_queue_manager, _broker_url, \
         _username, _password, _peers, _log_to_database_severity, _verify_SSL
 
+
+
     _process_id = str(ObjectId())
     of.common.logging.callback = log_locally
     _terminated = False
+
+    # Handle multiprocessing on windows
+    freeze_support()
 
     write_srvc_dbg("=====start_agent===============================")
     try:
@@ -297,7 +302,10 @@ def start_agent(_cfg_filename = None):
         return
 
     write_srvc_dbg("Load schema tool done")
+
     try:
+
+
 
         write_srvc_dbg("Initializing monitors")
 
