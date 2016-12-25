@@ -49,6 +49,8 @@ from of.common.queue.monitor import Monitor
 
 from of.schemas.constants import zero_object_id
 from of.schemas.validation import of_uri_handler, of_schema_folder
+
+import of.common.logging
 import of.common.messaging.websocket
 
 if os.name == "nt":
@@ -226,7 +228,6 @@ def start_agent(_cfg_filename = None):
         _username, _password, _peers, _log_to_database_severity, _verify_SSL
 
 
-
     _process_id = str(ObjectId())
     of.common.logging.callback = log_locally
     _terminated = False
@@ -337,6 +338,7 @@ def start_agent(_cfg_filename = None):
                                     ))
 
         # The global variable for handling websockets. TODO: Could this be done without globals? (PROD-33)
+
         of.common.messaging.websocket.monitor = _message_monitor
         write_srvc_dbg("Initializing monitors done")
 
