@@ -36,7 +36,7 @@
       "000000010000010001e64d02"
     ],
     "allowedChildTypes": [
-      "ref://of.node.processe"
+      "ref://of.node.process"
     ]
   },
   {
