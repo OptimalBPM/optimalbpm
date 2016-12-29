@@ -461,7 +461,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
         );
     };
 
-
+    // Get the dotted namespace from and identifier if existing, a.b.c returns a.b
     parseNamespace(identifier) {
         let parts: string[] = identifier.split(".");
         if (parts.length === 1) {
@@ -471,16 +471,17 @@ export class ProcessController extends NodeManager implements INodeManagement, I
             return [parts.slice(0, parts.length - 1).join("."), parts[parts.length - 1]];
         }
     };
-
+    // Find the schema or subschema that matches the uri
     getDefinition = (uri: string): any => {
         let parser: HTMLAnchorElement = document.createElement("a");
         parser.href = uri;
         let scope: any = this;
         let schema: any = scope.schemas[parser.protocol + parser.pathname];
+        // Is it a path also in the schema? Eg. schema#path/in/schema ?
         if (parser.hash !== "") {
             let parts: any[] = parser.hash.substr(2).split("/");
             let subattr: string = schema;
-            // Drill down the schema
+            // Recurse down the schema
             parts.forEach(function (part) {
                 subattr = subattr[part];
             });
@@ -491,7 +492,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
     };
 
     
-    // Generate a form and a schema
+    // Generate a form and a schema from a node
     generateForm = (node: ProcessNode, data: any) => {
         let type: string = node.type;
         let schema: any = clone(this.tree.schemas[type]);
