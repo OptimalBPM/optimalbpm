@@ -6,7 +6,7 @@ Created on Jan 23, 2016
 
 @author: Nicklas Boerjesson
 """
-
+import os
 from plugins.optimalbpm.broker.cherrypy.control import CherryPyControl
 from plugins.optimalbpm.broker.cherrypy.process import CherryPyProcess
 
@@ -28,3 +28,18 @@ def init_broker_scope(_broker_scope, _settings):
 def after_admin_ui(_broker_scope, _admin_object):
     _admin_object.process = CherryPyProcess(_broker_scope["namespaces"], _broker_scope["repository_parent_folder"])
     _admin_object.control = CherryPyControl(_broker_scope)
+
+
+
+def post_web_init(_broker_scope):
+    # Set all things only if no others have
+
+    _broker_scope["web_config"].update({
+        "/": {
+            "tools.staticdir.on": True,
+            "tools.staticdir.dir": os.path.join(os.path.dirname(__file__), "root"),
+            "tools.trailing_slash.on": True,
+            "tools.staticdir.index": "index.html",
+        }
+    }
+    )
