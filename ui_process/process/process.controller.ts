@@ -216,6 +216,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
         console.log("added " + value + " to " + listName);
     };
 
+    // Generate MongoDB object id on the client to save a roundtrip
     generateObjectId(): string {
         let increment: string = Math.floor(Math.random() * (16777216)).toString(16);
         let pid: string = Math.floor(Math.random() * (65536)).toString(16);
@@ -228,15 +229,8 @@ export class ProcessController extends NodeManager implements INodeManagement, I
             "000000".substr(0, 6 - increment.length) + increment;
     }
 
-    copyDoc(docObj): void {
-        if (docObj) {
-            return Object.create(docObj);
-        }
-        else {
-            return null;
-        }
-    }
 
+    // Pake a list of a parameter dictionary
     makeParameterList (parameters) {
         let list: string[] = [];
         let key: string;
@@ -247,7 +241,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
         }
         return list.join(",");
     }
-
+    // Generate a title for a process step based on available data
     makeTitle = (item): string => {
         if (("documentation" in item) && (item["documentation"] !== "")) {
             return item["documentation"].replace("\\\\n", "<br />");
@@ -283,7 +277,8 @@ export class ProcessController extends NodeManager implements INodeManagement, I
         }
     };
 
-    recurseVerbs = (parent, items): ProcessNode[] => {
+    // Recurse the verb tree and convert into ProcessNodes
+    verbsToProcessNodes = (parent, items): ProcessNode[] => {
 
         let result: ProcessNode[] = [];
         let scope: any = this;
@@ -300,7 +295,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
             currItem.allowedChildTypes = item["allowedChildTypes"];
             currItem.parentItem = parent;
             scope.tree.data[item["id"]] = item;
-            currItem.children = this.recurseVerbs(currItem, item.children);
+            currItem.children = this.verbsToProcessNodes(currItem, item.children);
             result.push(currItem);
         });
 
@@ -324,7 +319,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
                         }
                         scope.maxId = 0;
                         scope.paramData = data.paramData;
-                        scope.tree.children = scope.recurseVerbs(null, data.verbs);
+                        scope.tree.children = scope.verbsToProcessNodes(null, data.verbs);
 
                         resolve();
                     })
@@ -461,7 +456,7 @@ export class ProcessController extends NodeManager implements INodeManagement, I
         );
     };
 
-    // Get the dotted namespace from and identifier if existing, a.b.c returns a.b
+    // Get the dotted namespace from an identifier if existing, a.b.c returns a.b
     parseNamespace(identifier) {
         let parts: string[] = identifier.split(".");
         if (parts.length === 1) {
